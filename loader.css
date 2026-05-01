@@ -1,0 +1,101 @@
+/* ─────────────────────────────────────────────
+   Relovation — Page Loader
+   ───────────────────────────────────────────── */
+
+.r-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #f4edcf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.65s cubic-bezier(0.22, 0.88, 0.2, 1);
+}
+
+.r-loader.is-done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.r-loader.is-gone {
+  display: none;
+}
+
+.r-loader__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.r-loader__note {
+  width: 64px;
+  height: 64px;
+  animation: rl-float 1.9s ease-in-out infinite;
+}
+
+.r-loader__note img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.r-loader__wordmark {
+  font-family: "EB Garamond", serif;
+  font-size: clamp(24px, 4vw, 36px);
+  font-style: italic;
+  font-weight: 400;
+  color: #4c6a57;
+  margin: 0;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  animation: rl-rise 0.72s cubic-bezier(0.22, 0.88, 0.2, 1) forwards 0.18s;
+}
+
+.r-loader__bar {
+  width: clamp(48px, 8vw, 72px);
+  height: 1px;
+  background: rgba(76, 106, 87, 0.22);
+  position: relative;
+  overflow: hidden;
+  border-radius: 1px;
+  opacity: 0;
+  animation: rl-rise 0.5s ease forwards 0.5s;
+}
+
+.r-loader__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #4c6a57;
+  transform: translateX(-100%);
+  animation: rl-bar 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.6s;
+}
+
+@keyframes rl-float {
+  0%, 100% { transform: translateY(0) rotate(-5deg); opacity: 0.72; }
+  50%       { transform: translateY(-11px) rotate(5deg); opacity: 1; }
+}
+
+@keyframes rl-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rl-bar {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r-loader__note,
+  .r-loader__wordmark,
+  .r-loader__bar,
+  .r-loader__bar::after {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
