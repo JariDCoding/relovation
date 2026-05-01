@@ -973,23 +973,55 @@
 <!-- ── Navigation ── -->
 <header class="r-nav" id="r-nav" aria-label="Hoofdnavigatie">
   <div class="r-nav__inner">
+    <!-- Brand -->
     <a class="r-nav__brand" href="./index.html" aria-label="Relovation — home">
-      <span class="r-nav__note"><img src="./note%20relovtion.svg" alt=""></span>
-      Relovation
+      <span class="r-nav__genre">Live jazz</span>
+      <span class="r-nav__wordmark">
+        <span class="r-nav__note"><img src="./note%20relovtion.svg" alt=""></span>
+        Relovation
+      </span>
     </a>
-    <nav class="r-nav__links" aria-label="Primaire navigatie">
-      <a href="./index.html">Home</a>
-      <a href="./over.html">Over</a>
-      <a href="./contact.html">Contact</a>
+
+    <!-- Desktop links -->
+    <nav aria-label="Primaire navigatie">
+      <ul class="r-nav__links">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./diensten.html">Diensten</a></li>
+        <li><a href="./over.html">Over</a></li>
+        <li><a href="./contact.html">Contact</a></li>
+      </ul>
     </nav>
-    <a class="r-nav__cta" href="./contact.html">Boek nu</a>
-    <button class="r-nav__burger" id="r-nav-burger"
-      aria-expanded="false" aria-controls="r-nav-overlay"
-      aria-label="Menu openen">
-      <span></span>
-      <span></span>
-    </button>
+
+    <!-- Actions -->
+    <div class="r-nav__actions">
+      <a class="r-nav__cta" href="./contact.html">
+        Boek nu <span class="r-nav__cta-arrow" aria-hidden="true">→</span>
+      </a>
+      <button class="r-nav__burger" id="r-nav-burger"
+        aria-expanded="false" aria-controls="r-nav-overlay"
+        aria-label="Menu openen">
+        <span></span>
+        <span></span>
+      </button>
+    </div>
   </div>
+</header>
+
+<div class="r-nav__overlay" id="r-nav-overlay" aria-hidden="true">
+  <nav aria-label="Mobiele navigatie">
+    <ol class="r-nav__ovl-list">
+      <li><a href="./index.html"><span class="r-nav__ovl-num">01</span>Home</a></li>
+      <li><a href="./diensten.html"><span class="r-nav__ovl-num">02</span>Diensten</a></li>
+      <li><a href="./over.html"><span class="r-nav__ovl-num">03</span>Over</a></li>
+      <li><a href="./contact.html"><span class="r-nav__ovl-num">04</span>Contact</a></li>
+    </ol>
+  </nav>
+  <div class="r-nav__ovl-bottom">
+    <a class="r-nav__cta-ovl" href="./contact.html">Boek nu</a>
+    <p class="r-nav__ovl-contact"><a href="mailto:info@relovation.be">info@relovation.be</a></p>
+  </div>
+</div>
+
 </header>
 
 <div class="r-nav__overlay" id="r-nav-overlay" aria-hidden="true">
@@ -1176,6 +1208,7 @@
     </a>
     <nav class="r-footer__nav" aria-label="Footer navigatie">
       <a href="./index.html">Home</a>
+      <a href="./diensten.html">Diensten</a>
       <a href="./over.html">Over</a>
       <a href="./contact.html">Contact</a>
     </nav>
