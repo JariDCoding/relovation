@@ -14,12 +14,9 @@ body {
   padding-top: var(--nav-h);
 }
 
-.hero,
-.hero-contact,
-.about-page > section:first-child,
-.page-section:first-child {
+/* Index hero: full-bleed behind transparent nav */
+.hero {
   margin-top: calc(-1 * var(--nav-h));
-  padding-top: var(--nav-h);
 }
 
 /* ── Header bar ── */
