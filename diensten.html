@@ -533,12 +533,12 @@
 
     @media (min-width: 1181px) and (max-width: 1440px) {
       .service-row {
-        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
         gap: clamp(28px, 3vw, 56px);
       }
 
       .service-row:nth-child(even) {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
       }
 
       .service-media {
@@ -547,6 +547,18 @@
         aspect-ratio: 815 / 428;
         outline: none;
         box-shadow: inset 0 0 0 2px rgba(76, 106, 87, 0.32), 0 22px 42px rgba(76, 106, 87, 0.08);
+      }
+
+      .service-title {
+        font-size: clamp(44px, 3.4vw, 58px);
+      }
+
+      .service-description {
+        font-size: clamp(20px, 1.5vw, 28px);
+      }
+
+      .service-points li {
+        font-size: clamp(17px, 1.15vw, 22px);
       }
 
       .service-copy,
