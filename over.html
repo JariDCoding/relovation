@@ -1459,6 +1459,8 @@
         --hero-title: clamp(74px, 15vw, 128px);
       }
 
+      body { background: var(--bg); }
+
       .over-hero .section-shell {
         width: var(--shell-width);
       }
@@ -1590,8 +1592,12 @@
 
       .hero-media {
         width: min(100%, 360px);
-        height: 410px;
+        height: 480px;
         margin-top: 12px;
+      }
+
+      .hero-card--front {
+        clip-path: inset(0 0 0 0 round 0);
       }
 
       .hero-copy .section-title {
