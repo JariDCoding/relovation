@@ -761,8 +761,12 @@
         --section-gap-lg: 110px;
       }
 
+      body { background: var(--bg); }
+
+      .hero-portrait { display: none; }
+
       .hero-contact {
-        padding-top: 18px;
+        padding-top: 0;
       }
 
       .hero-contact-grid {
@@ -777,11 +781,28 @@
       }
 
       .hero-contact-panel {
-        padding: 44px 24px 112px;
+        padding: 100px 28px 96px;
+      }
+
+      .hero-panel-inner {
+        width: 100%;
+      }
+
+      .hero-title {
+        font-size: clamp(44px, 11vw, 66px);
+        white-space: normal;
+        overflow: visible;
       }
 
       .hero-contact-meta {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .form-section {
+        padding-top: 72px;
       }
 
       .form-grid {
@@ -810,6 +831,13 @@
         text-align: left;
         padding: 24px 22px;
         min-height: 220px;
+      }
+
+      .form-actions .button {
+        height: 51px;
+        font-size: 13px;
+        min-width: 0;
+        padding: 0 24px;
       }
 
       .social-visual {
