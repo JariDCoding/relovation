@@ -2335,10 +2335,23 @@
         align-self: stretch;
       }
 
-      .event-row--tomorrowland .event-copy,
       .event-row--kbc .event-copy,
       .event-row--canon .event-copy {
         text-align: left;
+      }
+
+      .event-row--tomorrowland {
+        justify-items: end;
+      }
+
+      .event-row--tomorrowland .event-media {
+        order: -1;
+        justify-self: end;
+      }
+
+      .event-row--tomorrowland .event-copy {
+        text-align: right;
+        width: 100%;
       }
 
       .event-row--tomorrowland .event-copy p {
@@ -3206,15 +3219,28 @@
         margin-right: 0;
       }
 
-      .event-row--tomorrowland .event-copy,
       .event-row--kbc .event-copy,
       .event-row--canon .event-copy {
         text-align: center;
       }
 
+      .event-row--tomorrowland {
+        justify-items: end;
+      }
+
+      .event-row--tomorrowland .event-media {
+        order: -1;
+        justify-self: end;
+      }
+
+      .event-row--tomorrowland .event-copy {
+        text-align: right;
+        width: 100%;
+      }
+
       .event-row--tomorrowland .event-copy p {
         margin-left: auto;
-        margin-right: auto;
+        margin-right: 0;
       }
     }
 
