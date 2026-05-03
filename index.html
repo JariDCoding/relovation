@@ -2574,26 +2574,37 @@
     }
 
     @media (max-width: 768px) {
-      .features-section {
-        min-height: auto;
-        height: auto !important;
-      }
-
       .features-sticky {
-        position: relative;
-        height: auto;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        height: 100dvh;
         grid-template-columns: 1fr;
-        gap: 28px;
-        padding: 64px 6% 80px;
+        grid-template-rows: auto 1fr;
+        align-items: start;
+        gap: 12px;
+        padding: 64px 6% 20px;
+        overflow: hidden;
       }
 
       .feature-list {
         max-width: none;
+        gap: 16px;
+      }
+
+      .feature-item p {
+        display: none;
+      }
+
+      .feature-actions {
+        margin-top: 20px;
       }
 
       .feature-visual {
-        min-height: 420px;
-        aspect-ratio: 455 / 683;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        aspect-ratio: unset;
       }
 
       .feature-visual .svg-draw-frame {
@@ -2604,6 +2615,18 @@
 
       .feature-visual-blend {
         display: none;
+      }
+
+      .feature-notes img.note-a {
+        left: 14%;
+        top: 20%;
+        right: auto;
+      }
+
+      .feature-notes img.note-b {
+        left: 26%;
+        top: 10%;
+        right: auto;
       }
     }
 
@@ -4594,7 +4617,8 @@
       };
 
       const setFeatureSectionHeight = () => {
-        featureSection.style.height = `${Math.max(featureViewportHeight * 3, 1800)}px`;
+        const multiplier = window.innerWidth <= 768 ? 2 : 3;
+        featureSection.style.height = `${Math.max(featureViewportHeight * multiplier, 1800)}px`;
       };
 
       const queueFeatureUpdate = () => {
@@ -4712,41 +4736,30 @@
       };
 
       const updateFeatureVideoFromScroll = () => {
-        const isMobile = window.innerWidth <= 768;
+        const scrollY = getScrollY();
+        const totalTravel = featureSection.offsetHeight - featureViewportHeight;
+        const scrolled = scrollY - featureSectionTop;
+        const progress = totalTravel > 0 ? clamp(scrolled / totalTravel, 0, 1) : 0;
         const sectionRect = featureSection.getBoundingClientRect();
-        let progress;
 
-        if (isMobile) {
-          const frameRect = featureDrawing.getBoundingClientRect();
-          const visible = featureViewportHeight - frameRect.top;
-          const total = featureViewportHeight + featureDrawing.offsetHeight;
-          progress = clamp(visible / total, 0, 1);
-        } else {
-          const scrollY = getScrollY();
-          const totalTravel = featureSection.offsetHeight - featureViewportHeight;
-          const scrolled = scrollY - featureSectionTop;
-
-          if (scrolled <= 0) {
-            featureSticky.style.position = "relative";
-            featureSticky.style.top = "0";
-            featureSticky.style.left = "0";
-            featureSticky.style.right = "0";
-            featureSticky.style.bottom = "auto";
-          } else if (scrolled >= totalTravel) {
-            featureSticky.style.position = "absolute";
-            featureSticky.style.top = "auto";
-            featureSticky.style.left = "0";
-            featureSticky.style.right = "0";
-            featureSticky.style.bottom = "0";
-          } else if (sectionRect.bottom > 0) {
-            featureSticky.style.position = "fixed";
-            featureSticky.style.top = "0";
-            featureSticky.style.left = "0";
-            featureSticky.style.right = "0";
-            featureSticky.style.bottom = "auto";
-          }
-
-          progress = totalTravel > 0 ? clamp((scrollY - featureSectionTop) / totalTravel, 0, 1) : 0;
+        if (scrolled <= 0) {
+          featureSticky.style.position = "relative";
+          featureSticky.style.top = "0";
+          featureSticky.style.left = "0";
+          featureSticky.style.right = "0";
+          featureSticky.style.bottom = "auto";
+        } else if (scrolled >= totalTravel) {
+          featureSticky.style.position = "absolute";
+          featureSticky.style.top = "auto";
+          featureSticky.style.left = "0";
+          featureSticky.style.right = "0";
+          featureSticky.style.bottom = "0";
+        } else if (sectionRect.bottom > 0) {
+          featureSticky.style.position = "fixed";
+          featureSticky.style.top = "0";
+          featureSticky.style.left = "0";
+          featureSticky.style.right = "0";
+          featureSticky.style.bottom = "auto";
         }
 
         if (!featureReady) {
