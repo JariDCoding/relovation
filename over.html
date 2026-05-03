@@ -1153,13 +1153,36 @@
         gap: clamp(60px, 6.5vw, 120px);
       }
 
+      /* Story section: same shell width + margins as hero */
+      .story-section .section-shell {
+        width: min(1440px, calc(100vw - clamp(80px, 10vw, 140px)));
+      }
+
       .story-shell {
-        grid-template-columns: minmax(390px, 500px) minmax(300px, 470px);
+        grid-template-columns: minmax(420px, 1fr) minmax(340px, 500px);
+        justify-content: stretch;
+        gap: clamp(48px, 5vw, 80px);
         min-height: clamp(680px, 64vw, 820px);
       }
 
       .story-media {
-        height: clamp(540px, 50vw, 700px);
+        width: min(100%, 520px);
+        height: clamp(560px, 52vw, 720px);
+      }
+
+      .story-copy {
+        width: min(100%, 480px);
+        margin-top: clamp(60px, 6vw, 100px);
+        gap: clamp(24px, 2.4vw, 36px);
+      }
+
+      .story-copy p {
+        max-width: 34ch;
+        margin-top: 16px;
+      }
+
+      .story-line {
+        margin-top: clamp(24px, 2.6vw, 36px);
       }
     }
 
@@ -1845,7 +1868,7 @@
     <!-- Actions -->
     <div class="r-nav__actions">
       <a class="r-nav__cta" href="./contact.html">
-        Boek nu <span class="r-nav__cta-arrow" aria-hidden="true">→</span>
+        Ontvang offerte <span class="r-nav__cta-arrow" aria-hidden="true">→</span>
       </a>
       <button class="r-nav__burger" id="r-nav-burger"
         aria-expanded="false" aria-controls="r-nav-overlay"
@@ -1867,7 +1890,7 @@
     </ol>
   </nav>
   <div class="r-nav__ovl-bottom">
-    <a class="r-nav__cta-ovl" href="./contact.html">Boek nu</a>
+    <a class="r-nav__cta-ovl" href="./contact.html">Ontvang offerte</a>
     <p class="r-nav__ovl-contact"><a href="mailto:info@relovation.be">info@relovation.be</a></p>
   </div>
 </div>
@@ -1883,7 +1906,7 @@
     </ol>
   </nav>
   <div class="r-nav__ovl-bottom">
-    <a class="r-nav__cta-ovl" href="./contact.html">Boek nu</a>
+    <a class="r-nav__cta-ovl" href="./contact.html">Ontvang offerte</a>
     <p class="r-nav__ovl-contact"><a href="mailto:info@relovation.be">info@relovation.be</a></p>
   </div>
 </div>
