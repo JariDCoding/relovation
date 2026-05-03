@@ -3504,6 +3504,8 @@
         --image-width: clamp(520px, 35vw, 760px);
         --title-size: clamp(126px, 8.4vw, 168px);
         --subtitle-size: clamp(26px, 2.2vw, 38px);
+        --player-ring-size: 200px;
+        --player-ring-font: 27px;
       }
 
       .quote-section,
@@ -3517,6 +3519,15 @@
 
       .cards-shell {
         width: min(100% - 112px, 1600px);
+      }
+
+      .player-wrap {
+        left: calc(700px * var(--hero-scale));
+        top: calc(640px * var(--hero-scale));
+      }
+
+      .about-panel-inner {
+        padding-right: calc(70px * var(--hero-scale));
       }
     }
 
@@ -3556,6 +3567,11 @@
 
       .events-editorial {
         width: min(100%, 1660px);
+      }
+
+      .player-wrap {
+        top: auto;
+        bottom: clamp(80px, 7vh, 120px);
       }
     }
 
@@ -3949,21 +3965,21 @@
 
       <div class="package-table">
         <div class="package-row" style="--package-stagger: 0s;">
-          <div class="package-name">SOLO</div>
-          <div class="package-desc">Verfijnde live jazz voor intieme recepties, walking dinner of exclusieve openingen.</div>
-          <div class="package-desc">Een elegante solo performance met piano of sax, perfect voor kleine settings met veel sfeer.</div>
-        </div>
-
-        <div class="package-row" style="--package-stagger: 0.12s;">
           <div class="package-name">DUO</div>
           <div class="package-desc">Meer dynamiek en samenspel voor trouwfeesten, networking events en stijlvolle avonden.</div>
           <div class="package-desc">Duo-opstelling met een rijker klankbeeld, flexibel inzetbaar voor zowel achtergrond als focusmomenten.</div>
         </div>
 
-        <div class="package-row" style="--package-stagger: 0.24s;">
+        <div class="package-row" style="--package-stagger: 0.12s;">
           <div class="package-name">TRIO</div>
           <div class="package-desc">Een vollere live-ervaring voor corporate events, diners en premium feestconcepten.</div>
           <div class="package-desc">Trio-formaat met extra ritme en presence dat elk event onmiddellijk meer karakter en klasse geeft.</div>
+        </div>
+
+        <div class="package-row" style="--package-stagger: 0.24s;">
+          <div class="package-name">FULL BAND</div>
+          <div class="package-desc">De volledige Relovation-bezetting voor grotere evenementen, recepties en feesten waar muziek centraal staat.</div>
+          <div class="package-desc">Een rijke live presence met meerdere muzikanten, afgestemd op uw locatie en evenementformat.</div>
         </div>
       </div>
     </div>

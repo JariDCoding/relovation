@@ -1137,6 +1137,32 @@
       margin-top: clamp(10px, 1vw, 14px);
     }
 
+    @media (min-width: 1101px) and (max-width: 1440px) {
+      :root {
+        --story-card-lg: clamp(180px, 14vw, 240px);
+        --story-card-md: clamp(148px, 11vw, 196px);
+        --story-card-sm: clamp(110px, 8.2vw, 148px);
+      }
+
+      .over-hero .section-shell {
+        width: min(1440px, calc(100vw - clamp(80px, 10vw, 140px)));
+      }
+
+      .hero-shell {
+        grid-template-columns: minmax(360px, 1fr) minmax(400px, var(--hero-media-width));
+        gap: clamp(60px, 6.5vw, 120px);
+      }
+
+      .story-shell {
+        grid-template-columns: minmax(390px, 500px) minmax(300px, 470px);
+        min-height: clamp(680px, 64vw, 820px);
+      }
+
+      .story-media {
+        height: clamp(540px, 50vw, 700px);
+      }
+    }
+
     @media (max-width: 1100px) {
       .hero-shell,
       .story-shell {

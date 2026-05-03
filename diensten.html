@@ -342,11 +342,11 @@
     }
 
     .service-points img {
-      width: 14px;
-      height: 14px;
+      width: 18px;
+      height: 18px;
       object-fit: contain;
-      margin-top: 0.42em;
-      opacity: 0.9;
+      margin-top: 0.22em;
+      opacity: 1;
     }
 
     .service-cta {
@@ -528,6 +528,30 @@
         opacity: 1;
         transform: translate3d(0, 0, 0);
         filter: blur(0);
+      }
+    }
+
+    @media (min-width: 1181px) and (max-width: 1440px) {
+      .service-row {
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        gap: clamp(28px, 3vw, 56px);
+      }
+
+      .service-row:nth-child(even) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+      }
+
+      .service-media {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 815 / 428;
+        outline: none;
+        box-shadow: inset 0 0 0 2px rgba(76, 106, 87, 0.32), 0 22px 42px rgba(76, 106, 87, 0.08);
+      }
+
+      .service-copy,
+      .service-row:nth-child(even) .service-copy {
+        padding-left: calc(140px + clamp(28px, 3vw, 56px));
       }
     }
 
@@ -740,9 +764,9 @@
                 <h2 class="service-title">Bedrijfsevenementen</h2>
                 <p class="service-description">Live muziek die uw ontvangst, walking dinner of private gathering een elegante en professionele sfeer geeft.</p>
                 <ul class="service-points">
-                  <li><img src="./note%20relovtion.svg" alt="" aria-hidden="true"><span>Verfijnde achtergrondmuziek voor networking en receptiemomenten.</span></li>
-                  <li><img src="./note%20relovtion.svg" alt="" aria-hidden="true"><span>Flexibele bezetting afgestemd op locatie, timing en publiek.</span></li>
-                  <li><img src="./note%20relovtion.svg" alt="" aria-hidden="true"><span>Een stijlvolle live aanwezigheid die rust en klasse uitstraalt.</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Verfijnde achtergrondmuziek voor networking en receptiemomenten.</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Flexibele bezetting afgestemd op locatie, timing en publiek.</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Een stijlvolle live aanwezigheid die rust en klasse uitstraalt.</span></li>
                 </ul>
                 <a class="service-cta" href="#cta">Start aanvraag <span aria-hidden="true">→</span></a>
               </div>
@@ -758,9 +782,9 @@
                 <h2 class="service-title">Recepties</h2>
                 <p class="service-description">Voor openingen, private ontvangsten en culturele momenten waarin sfeer en gastvrijheid centraal staan.</p>
                 <ul class="service-points">
-                  <li><img src="./note%20relovtion.svg" alt="" aria-hidden="true"><span>Een zachte muzikale laag die gesprekken ondersteunt zonder te overheersen.</span></li>
-                  <li><img src="./note%20relovtion.svg" alt="" aria-hidden="true"><span>Ideaal voor foyers, galerieën, salons en verfijnde eventlocaties.</span></li>
-                  <li><img src="./note%20relovtion.svg" alt="" aria-hidden="true"><span>Een premium uitstraling met warme, luxueuze présence.</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Een zachte muzikale laag die gesprekken ondersteunt zonder te overheersen.</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Ideaal voor foyers, galerieën, salons en verfijnde eventlocaties.</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Een premium uitstraling met warme, luxueuze présence.</span></li>
                 </ul>
                 <a class="service-cta" href="#cta">Start aanvraag <span aria-hidden="true">→</span></a>
               </div>
@@ -776,9 +800,9 @@
                 <h2 class="service-title">Trouwfeesten</h2>
                 <p class="service-description">Een muzikale invulling met zachtheid en elegantie voor ceremonies, recepties en het begin van een feestavond.</p>
                 <ul class="service-points">
-                  <li><img src="./note%20relovtion.svg" alt="" aria-hidden="true"><span>Van intieme ceremonie tot stijlvolle receptie met live jazz touch.</span></li>
-                  <li><img src="./note%20relovtion.svg" alt="" aria-hidden="true"><span>Samengesteld op maat van uw verhaal, timing en setting.</span></li>
-                  <li><img src="./note%20relovtion.svg" alt="" aria-hidden="true"><span>Een verfijnd muzikaal kader dat uw dag extra gelaagd maakt.</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Van intieme ceremonie tot stijlvolle receptie met live jazz touch.</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Samengesteld op maat van uw verhaal, timing en setting.</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Een verfijnd muzikaal kader dat uw dag extra gelaagd maakt.</span></li>
                 </ul>
                 <a class="service-cta" href="#cta">Start aanvraag <span aria-hidden="true">→</span></a>
               </div>
@@ -798,19 +822,19 @@
 
           <div class="line-list">
             <article class="line-item reveal-copy">
-              <h3 class="line-item-title">SOLO</h3>
-              <p class="line-item-kicker">Sax of piano</p>
-              <p class="line-item-copy">Een subtiele aanwezigheid voor intieme settings, diners of ontvangsten waar verfijning en rust primeren.</p>
-            </article>
-
-            <article class="line-item reveal-copy" style="transition-delay: 0.06s;">
               <h3 class="line-item-title">DUO</h3>
               <p class="line-item-kicker">Piano en sax</p>
               <p class="line-item-copy">Meer gelaagdheid en warmte, ideaal voor recepties, bedrijfsevents en momenten waarop sfeer zacht mag groeien.</p>
             </article>
 
+            <article class="line-item reveal-copy" style="transition-delay: 0.06s;">
+              <h3 class="line-item-title">TRIO</h3>
+              <p class="line-item-kicker">Piano, sax en drums</p>
+              <p class="line-item-copy">Een vollere live-ervaring voor corporate events, diners en premium feestconcepten met extra ritme en presence.</p>
+            </article>
+
             <article class="line-item reveal-copy" style="transition-delay: 0.12s;">
-              <h3 class="line-item-title">QUATRO</h3>
+              <h3 class="line-item-title">FULL BAND</h3>
               <p class="line-item-kicker">Volledige live bezetting</p>
               <p class="line-item-copy">Een rijkere live presence voor grotere ruimtes, uitgesproken ontvangsten en events waar muziek mee het karakter bepaalt.</p>
             </article>
