@@ -1459,15 +1459,18 @@
         --hero-title: clamp(74px, 15vw, 128px);
       }
 
-      body { background: var(--bg); }
+      body {
+        background: var(--bg);
+      }
 
       .over-hero .section-shell {
         width: var(--shell-width);
       }
 
       .over-hero {
+        min-height: auto;
         padding-top: 48px;
-        padding-bottom: 72px;
+        padding-bottom: 56px;
       }
 
       .hero-shell,
@@ -1480,15 +1483,17 @@
         max-width: none;
       }
 
+      .hero-copy .lead {
+        font-size: clamp(18px, 4vw, 24px);
+        max-width: 100%;
+        margin-top: 28px;
+      }
+
       .hero-media {
         margin: 0 auto;
         width: min(100%, 520px);
         height: clamp(460px, 92vw, 620px);
         margin-top: 18px;
-      }
-
-      .hero-copy .lead {
-        font-size: clamp(20px, 4.5vw, 26px);
       }
 
       .scroll-cue {
@@ -1497,10 +1502,16 @@
 
       .story-section {
         padding-top: 54px;
+        padding-bottom: 72px;
       }
 
       .story-shell {
         min-height: 0;
+      }
+
+      .story-copy .story-title {
+        white-space: normal;
+        text-wrap: balance;
       }
 
       .story-media {
@@ -1519,8 +1530,8 @@
       }
 
       .vision-section {
-        padding-top: 92px;
-        padding-bottom: 118px;
+        padding-top: 80px;
+        padding-bottom: 88px;
       }
 
       .vision-shell {
@@ -1528,14 +1539,59 @@
         gap: 34px;
       }
 
+      .vision-copy {
+        grid-column: auto;
+        width: 100%;
+        margin-top: 0;
+      }
+
+      .vision-notes {
+        display: none;
+      }
+
+      .vision-visual {
+        grid-column: auto;
+        order: 1;
+        min-height: clamp(380px, 86vw, 520px);
+      }
+
+      .vision-quote {
+        grid-column: auto;
+        order: 2;
+        width: 100%;
+        padding-top: 0;
+      }
+
+      .vision-statement {
+        font-size: clamp(34px, 7.5vw, 48px);
+      }
+
+      .presence-section {
+        padding-top: 80px;
+        padding-bottom: 96px;
+      }
+
       .presence-row {
         grid-template-columns: 1fr;
-        gap: 56px;
+        gap: 48px;
+      }
+
+      .presence-title {
+        font-size: clamp(46px, 9.5vw, 62px);
       }
 
       .presence-grid {
         grid-template-columns: 1fr;
         gap: 36px;
+      }
+
+      .musicians-section {
+        padding-top: 80px;
+        padding-bottom: 140px;
+      }
+
+      .musicians-title {
+        font-size: clamp(46px, 9.5vw, 60px);
       }
 
       .musicians-grid-top,
@@ -1552,22 +1608,9 @@
         transform: none;
       }
 
-      .vision-copy {
-        grid-column: auto;
-        width: 100%;
-        margin-top: 0;
-      }
-
-      .vision-visual {
-        grid-column: auto;
-        order: 2;
-        min-height: clamp(400px, 86vw, 540px);
-      }
-
-      .vision-quote {
-        grid-column: auto;
-        width: 100%;
-        padding-top: 0;
+      .cta-banner {
+        padding-top: 80px;
+        padding-bottom: 80px;
       }
     }
 
@@ -1581,13 +1624,33 @@
         --hero-back-height: calc(var(--hero-back-width) * 670.22 / 434.24);
       }
 
+      .over-hero {
+        padding-top: 72px;
+        padding-bottom: 48px;
+      }
+
+      .hero-copy .section-title {
+        white-space: normal;
+      }
+
+      .hero-copy .lead {
+        font-size: 17px;
+        max-width: 100%;
+        margin-top: 20px;
+        line-height: 1.65;
+      }
+
       .hero-actions {
         flex-direction: column;
         align-items: stretch;
+        gap: 12px;
+        margin-top: 24px;
       }
 
       .hero-actions .button {
         width: 100%;
+        height: 52px;
+        font-size: 14px;
       }
 
       .hero-media {
@@ -1598,27 +1661,40 @@
 
       .hero-card--front {
         clip-path: inset(0 0 0 0 round 0);
-      }
-
-      .hero-copy .section-title {
-        white-space: normal;
-      }
-
-      .hero-card--front {
         left: 6px;
       }
 
-      .story-media {
-        height: 500px;
+      .story-section {
+        padding-bottom: 56px;
       }
 
       .story-copy {
-        gap: 24px;
+        gap: 20px;
+      }
+
+      .story-copy .story-title {
+        white-space: normal;
+        font-size: clamp(50px, 13vw, 66px);
+        text-wrap: balance;
+      }
+
+      .story-copy p {
+        font-size: 16px;
+        max-width: 100%;
+      }
+
+      .story-media {
+        height: clamp(340px, 95vw, 440px);
       }
 
       .story-line {
-        margin-top: 26px;
+        margin-top: 24px;
         font-size: 9px;
+      }
+
+      .vision-section {
+        padding-top: 64px;
+        padding-bottom: 64px;
       }
 
       .vision-copy .section-title {
@@ -1628,8 +1704,12 @@
       }
 
       .vision-copy p {
-        max-width: 24ch;
-        font-size: 18px;
+        max-width: 100%;
+        font-size: 17px;
+      }
+
+      .vision-visual {
+        min-height: clamp(300px, 85vw, 400px);
       }
 
       .vision-figure--back {
@@ -1642,9 +1722,109 @@
         width: min(56vw, 280px);
       }
 
+      .vision-statement {
+        font-size: clamp(28px, 7.5vw, 40px);
+      }
+
       .vision-cta .button {
         width: 100%;
         max-width: 280px;
+      }
+
+      .vision-rule {
+        max-width: 200px;
+      }
+
+      .vision-note-text {
+        font-size: 15px;
+        max-width: 100%;
+      }
+
+      .presence-section {
+        padding-top: 60px;
+        padding-bottom: 64px;
+      }
+
+      .presence-row {
+        gap: 40px;
+      }
+
+      .presence-title {
+        font-size: clamp(40px, 10.5vw, 54px);
+      }
+
+      .presence-intro p {
+        font-size: 16px;
+        max-width: 100%;
+      }
+
+      .presence-number {
+        font-size: clamp(26px, 6.5vw, 36px);
+      }
+
+      .presence-item-title {
+        font-size: clamp(16px, 4.2vw, 22px);
+        min-height: auto;
+        max-width: none;
+      }
+
+      .presence-item p:not(.presence-number) {
+        font-size: 14px;
+        max-width: none;
+      }
+
+      .musicians-section {
+        padding-top: 60px;
+        padding-bottom: 120px;
+      }
+
+      .musicians-title {
+        font-size: clamp(42px, 11vw, 54px);
+      }
+
+      .musicians-shell {
+        gap: 28px;
+      }
+
+      .musicians-grid-top {
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 12px;
+      }
+
+      .musicians-grid-bottom {
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 20px;
+        max-width: 260px;
+        margin: 0 auto;
+      }
+
+      .musician-frame {
+        width: 100%;
+        max-width: none;
+      }
+
+      .musician-card {
+        gap: 4px;
+      }
+
+      .musician-name {
+        font-size: 11px;
+        line-height: 1.2;
+      }
+
+      .musician-role {
+        font-size: 10px;
+        line-height: 1.2;
+      }
+
+      .cta-banner {
+        padding-top: 64px;
+        padding-bottom: 64px;
+      }
+
+      .cta-copy {
+        font-size: 16px;
+        max-width: 100%;
       }
 
       .cta-actions {
