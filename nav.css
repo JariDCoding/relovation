@@ -519,7 +519,7 @@ body {
 
 @media (max-width: 860px) {
   .r-nav__links,
-  .r-nav__actions {
+  .r-nav__cta {
     display: none;
   }
 
