@@ -238,8 +238,9 @@ body {
 .r-nav__burger {
   display: none;
   flex-direction: column;
+  align-items: flex-end;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   background: none;
   border: none;
   cursor: pointer;
@@ -250,11 +251,18 @@ body {
 
 .r-nav__burger span {
   display: block;
-  width: 22px;
   height: 1.5px;
   background: var(--nav-ink);
   transform-origin: center;
-  transition: transform 0.38s var(--nav-ease), background 0.3s;
+  transition: transform 0.38s var(--nav-ease), background 0.3s, width 0.38s var(--nav-ease);
+}
+
+.r-nav__burger span:first-child {
+  width: 26px;
+}
+
+.r-nav__burger span:last-child {
+  width: 16px;
 }
 
 .r-nav.overlay-open .r-nav__burger span {
@@ -262,11 +270,13 @@ body {
 }
 
 .r-nav__burger.is-open span:first-child {
-  transform: translateY(3.75px) rotate(45deg);
+  width: 20px;
+  transform: translateY(4.75px) rotate(45deg);
 }
 
 .r-nav__burger.is-open span:last-child {
-  transform: translateY(-3.75px) rotate(-45deg);
+  width: 20px;
+  transform: translateY(-4.75px) rotate(-45deg);
 }
 
 /* ════════════════════════════════════════════
