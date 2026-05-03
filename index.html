@@ -4712,30 +4712,41 @@
       };
 
       const updateFeatureVideoFromScroll = () => {
-        const scrollY = getScrollY();
-        const totalTravel = featureSection.offsetHeight - featureViewportHeight;
-        const scrolled = scrollY - featureSectionTop;
-        const progress = totalTravel > 0 ? clamp(scrolled / totalTravel, 0, 1) : 0;
+        const isMobile = window.innerWidth <= 768;
         const sectionRect = featureSection.getBoundingClientRect();
+        let progress;
 
-        if (scrolled <= 0) {
-          featureSticky.style.position = "relative";
-          featureSticky.style.top = "0";
-          featureSticky.style.left = "0";
-          featureSticky.style.right = "0";
-          featureSticky.style.bottom = "auto";
-        } else if (scrolled >= totalTravel) {
-          featureSticky.style.position = "absolute";
-          featureSticky.style.top = "auto";
-          featureSticky.style.left = "0";
-          featureSticky.style.right = "0";
-          featureSticky.style.bottom = "0";
-        } else if (sectionRect.bottom > 0) {
-          featureSticky.style.position = "fixed";
-          featureSticky.style.top = "0";
-          featureSticky.style.left = "0";
-          featureSticky.style.right = "0";
-          featureSticky.style.bottom = "auto";
+        if (isMobile) {
+          const frameRect = featureDrawing.getBoundingClientRect();
+          const visible = featureViewportHeight - frameRect.top;
+          const total = featureViewportHeight + featureDrawing.offsetHeight;
+          progress = clamp(visible / total, 0, 1);
+        } else {
+          const scrollY = getScrollY();
+          const totalTravel = featureSection.offsetHeight - featureViewportHeight;
+          const scrolled = scrollY - featureSectionTop;
+
+          if (scrolled <= 0) {
+            featureSticky.style.position = "relative";
+            featureSticky.style.top = "0";
+            featureSticky.style.left = "0";
+            featureSticky.style.right = "0";
+            featureSticky.style.bottom = "auto";
+          } else if (scrolled >= totalTravel) {
+            featureSticky.style.position = "absolute";
+            featureSticky.style.top = "auto";
+            featureSticky.style.left = "0";
+            featureSticky.style.right = "0";
+            featureSticky.style.bottom = "0";
+          } else if (sectionRect.bottom > 0) {
+            featureSticky.style.position = "fixed";
+            featureSticky.style.top = "0";
+            featureSticky.style.left = "0";
+            featureSticky.style.right = "0";
+            featureSticky.style.bottom = "auto";
+          }
+
+          progress = totalTravel > 0 ? clamp((scrollY - featureSectionTop) / totalTravel, 0, 1) : 0;
         }
 
         if (!featureReady) {
