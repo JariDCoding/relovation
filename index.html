@@ -2307,7 +2307,7 @@
         --event-media-h: 338px;
         --event-copy-w: min(100%, 480px);
         min-height: auto;
-        gap: var(--content-gap-lg);
+        gap: clamp(72px, 14vw, 96px);
         align-items: stretch;
       }
 
@@ -2351,7 +2351,8 @@
 
       .event-row--tomorrowland .event-copy {
         text-align: right;
-        width: 100%;
+        width: var(--event-media-w);
+        justify-self: end;
       }
 
       .event-row--tomorrowland .event-copy p {
@@ -3235,7 +3236,8 @@
 
       .event-row--tomorrowland .event-copy {
         text-align: right;
-        width: 100%;
+        width: var(--event-media-w);
+        justify-self: end;
       }
 
       .event-row--tomorrowland .event-copy p {
