@@ -261,75 +261,60 @@ body {
 
 .r-nav__burger {
   display: none;
-  flex-direction: row;
+  position: relative;
   align-items: center;
-  gap: 10px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 10px;
-  margin: -10px;
+  padding: 8px 0;
+  margin: -8px 0;
   flex-shrink: 0;
+  min-width: 44px; /* touch target */
 }
 
-/* "Menu" text label */
-.r-nav__burger-label {
-  font-family: "DM Sans", sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--nav-ink);
+/* Italic serif text — the two states cross-fade */
+.r-nav__burger-open,
+.r-nav__burger-close {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: 17px;
+  letter-spacing: 0.01em;
   line-height: 1;
+  color: var(--nav-ink);
   transition:
-    opacity 0.26s ease,
-    transform 0.32s var(--nav-ease-out),
+    opacity 0.30s var(--nav-ease-out),
+    transform 0.36s var(--nav-ease-out),
     color 0.32s var(--nav-ease-out);
 }
 
-/* Two-line icon */
-.r-nav__burger-lines {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 6px;
-}
-
-.r-nav__burger-lines span {
+.r-nav__burger-open {
   display: block;
-  height: 1.5px;
-  background: var(--nav-ink);
-  transform-origin: center;
-  transition:
-    transform 0.42s var(--nav-ease-out),
-    background 0.32s var(--nav-ease-out),
-    width 0.38s var(--nav-ease-out);
 }
 
-.r-nav__burger-lines span:first-child { width: 24px; }
-.r-nav__burger-lines span:last-child  { width: 15px; }
-
-/* Overlay-open: burger goes cream + label fades */
-.r-nav.overlay-open .r-nav__burger-label {
-  color: var(--nav-cream);
+/* Close glyph — absolutely overlaid, hidden at rest */
+.r-nav__burger-close {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(calc(-50% + 10px));
   opacity: 0;
-  transform: translateX(6px);
 }
 
-.r-nav.overlay-open .r-nav__burger-lines span {
-  background: var(--nav-cream);
+/* Overlay open: both become cream */
+.r-nav.overlay-open .r-nav__burger-open,
+.r-nav.overlay-open .r-nav__burger-close {
+  color: var(--nav-cream);
 }
 
-/* is-open → thin elegant X */
-.r-nav__burger.is-open .r-nav__burger-lines span:first-child {
-  width: 20px;
-  transform: translateY(4.75px) rotate(45deg);
+/* is-open: "Menu" fades up, "×" slides into place */
+.r-nav__burger.is-open .r-nav__burger-open {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 
-.r-nav__burger.is-open .r-nav__burger-lines span:last-child {
-  width: 20px;
-  transform: translateY(-4.75px) rotate(-45deg);
+.r-nav__burger.is-open .r-nav__burger-close {
+  opacity: 1;
+  transform: translateY(-50%);
 }
 
 /* ════════════════════════════════════════════
@@ -343,7 +328,8 @@ body {
   background: #3a5543;
   display: flex;
   flex-direction: column;
-  padding: var(--nav-h) 26px calc(clamp(36px, 8vw, 52px) + env(safe-area-inset-bottom, 0px));
+  justify-content: flex-end;
+  padding: var(--nav-h) 26px calc(clamp(40px, 9vw, 60px) + env(safe-area-inset-bottom, 0px));
   pointer-events: none;
   clip-path: inset(0 0 100% 0);
   transition: clip-path 0.72s var(--nav-ease-out);
@@ -387,8 +373,8 @@ body {
 
 .r-nav__ovl-list {
   list-style: none;
-  margin: 0 0 auto;
-  padding: clamp(20px, 5vw, 34px) 0 0;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -671,8 +657,8 @@ body {
   .r-nav__overlay,
   .r-nav__ovl-list a,
   .r-nav__ovl-bottom,
-  .r-nav__burger-lines span,
-  .r-nav__burger-label,
+  .r-nav__burger-open,
+  .r-nav__burger-close,
   .r-nav__ovl-title,
   .r-nav__note {
     transition: none !important;
