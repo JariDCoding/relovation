@@ -2574,6 +2574,10 @@
     }
 
     @media (max-width: 768px) {
+      .features-section {
+        width: 100% !important;
+      }
+
       .features-sticky {
         position: sticky;
         top: 0;
@@ -4617,8 +4621,11 @@
       };
 
       const setFeatureSectionHeight = () => {
-        const multiplier = window.innerWidth <= 768 ? 2 : 3;
-        featureSection.style.height = `${Math.max(featureViewportHeight * multiplier, 1800)}px`;
+        const isMobile = window.innerWidth <= 768;
+        const height = isMobile
+          ? Math.max(featureViewportHeight * 1.9, 1200)
+          : Math.max(featureViewportHeight * 3, 1800);
+        featureSection.style.height = `${height}px`;
       };
 
       const queueFeatureUpdate = () => {
