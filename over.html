@@ -3128,6 +3128,9 @@
         slide.setAttribute('aria-label', `Muzikant ${i + 1} van ${cards.length}`);
 
         const frame = card.querySelector('.musician-frame').cloneNode(true);
+        // reveal-visual starts at opacity:0 — remove it so frame is immediately visible
+        frame.classList.remove('reveal-visual');
+        frame.removeAttribute('aria-hidden');
         const name = document.createElement('p');
         name.className = 'musician-name';
         name.textContent = card.querySelector('.musician-name').textContent;
