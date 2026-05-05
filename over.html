@@ -2056,48 +2056,121 @@
       }
 
       /* ── Musicians section ── */
+      /* ── Musicians: swipeable carousel ── */
       .musicians-section {
-        padding-top: 60px;
-        padding-bottom: 120px;
+        padding-top: 48px;
+        padding-bottom: 80px;
       }
 
       .musicians-title {
-        font-size: clamp(42px, 11vw, 54px);
+        font-size: 42px;
+        line-height: 1;
+        text-align: center;
       }
 
       .musicians-shell {
-        gap: 28px;
+        gap: 24px;
       }
 
-      .musicians-grid-top {
-        grid-template-columns: repeat(3, 1fr);
-        column-gap: 12px;
-      }
-
+      /* Desktop grids hidden — carousel takes over */
+      .musicians-grid-top,
       .musicians-grid-bottom {
-        grid-template-columns: repeat(2, 1fr);
-        column-gap: 20px;
-        max-width: 260px;
-        margin: 0 auto;
+        display: none;
       }
 
-      .musician-frame {
+      /* Carousel wrapper */
+      .musicians-carousel {
+        position: relative;
         width: 100%;
+        overflow: hidden;
+        padding-bottom: 44px;
+      }
+
+      .musicians-track {
+        display: flex;
+        transition: transform 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        will-change: transform;
+      }
+
+      .musicians-slide {
+        flex: 0 0 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .musicians-slide .musician-frame {
+        width: clamp(180px, 50vw, 214px);
         max-width: none;
+        aspect-ratio: 154 / 210;
       }
 
-      .musician-card {
-        gap: 4px;
-      }
-
-      .musician-name {
-        font-size: 11px;
+      .musicians-slide .musician-name {
+        font-size: 26px;
+        font-weight: 500;
+        color: var(--bg);
+        text-align: center;
+        margin-top: 20px;
         line-height: 1.2;
       }
 
-      .musician-role {
-        font-size: 10px;
-        line-height: 1.2;
+      .musicians-slide .musician-role {
+        font-size: 16px;
+        font-family: "EB Garamond", serif;
+        font-style: italic;
+        color: #b1935f;
+        text-align: center;
+        margin-top: 5px;
+        line-height: 1.3;
+      }
+
+      /* Circular nav buttons with chevrons */
+      .musicians-prev-btn,
+      .musicians-next-btn {
+        position: absolute;
+        top: 145px;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(76, 106, 87, 0.45);
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        z-index: 10;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .musicians-prev-btn { left: 12px; }
+      .musicians-next-btn { right: 12px; }
+
+      .musicians-prev-btn::after,
+      .musicians-next-btn::after {
+        content: '';
+        display: block;
+        width: 9px;
+        height: 9px;
+        border-style: solid;
+        border-color: var(--ink);
+      }
+
+      .musicians-prev-btn::after {
+        border-width: 1.5px 0 0 1.5px;
+        transform: rotate(-45deg) translate(2px, -2px);
+      }
+
+      .musicians-next-btn::after {
+        border-width: 1.5px 1.5px 0 0;
+        transform: rotate(45deg) translate(-2px, 2px);
+      }
+
+      /* Tune green base height for carousel proportions */
+      .musicians-green-base {
+        height: 52%;
       }
 
       /* ── CTA banner ── */
@@ -3009,6 +3082,92 @@
       };
       window.requestAnimationFrame(introLoop);
       requestUpdate();
+    })();
+
+    // ── Musicians carousel (mobile only) ──
+    (() => {
+      if (window.innerWidth > 640) return;
+
+      const shell = document.querySelector('.musicians-shell');
+      const title = shell && shell.querySelector('.musicians-title');
+      const cards = shell ? Array.from(shell.querySelectorAll('.musician-card')) : [];
+      const grids = shell ? shell.querySelectorAll('.musicians-grid') : [];
+
+      if (!title || !cards.length) return;
+
+      // Build carousel DOM
+      const carousel = document.createElement('div');
+      carousel.className = 'musicians-carousel';
+      carousel.setAttribute('role', 'region');
+      carousel.setAttribute('aria-label', 'Onze muzikanten');
+      carousel.setAttribute('tabindex', '0');
+
+      const track = document.createElement('div');
+      track.className = 'musicians-track';
+
+      cards.forEach((card, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'musicians-slide';
+        slide.setAttribute('role', 'group');
+        slide.setAttribute('aria-label', `Muzikant ${i + 1} van ${cards.length}`);
+
+        const frame = card.querySelector('.musician-frame').cloneNode(true);
+        const name = document.createElement('p');
+        name.className = 'musician-name';
+        name.textContent = card.querySelector('.musician-name').textContent;
+        const role = document.createElement('p');
+        role.className = 'musician-role';
+        role.textContent = card.querySelector('.musician-role').textContent;
+
+        slide.append(frame, name, role);
+        track.appendChild(slide);
+      });
+
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'musicians-prev-btn';
+      prevBtn.type = 'button';
+      prevBtn.setAttribute('aria-label', 'Vorige muzikant');
+
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'musicians-next-btn';
+      nextBtn.type = 'button';
+      nextBtn.setAttribute('aria-label', 'Volgende muzikant');
+
+      carousel.append(track, prevBtn, nextBtn);
+      title.after(carousel);
+      grids.forEach(g => { g.style.display = 'none'; });
+
+      // State & navigation
+      let current = 0;
+      const total = cards.length;
+
+      const goTo = (index) => {
+        current = ((index % total) + total) % total;
+        track.style.transform = `translateX(${-current * 100}%)`;
+      };
+
+      prevBtn.addEventListener('click', () => goTo(current - 1));
+      nextBtn.addEventListener('click', () => goTo(current + 1));
+
+      // Touch swipe
+      let tx = 0, ty = 0;
+      carousel.addEventListener('touchstart', e => {
+        tx = e.touches[0].clientX;
+        ty = e.touches[0].clientY;
+      }, { passive: true });
+      carousel.addEventListener('touchend', e => {
+        const dx = tx - e.changedTouches[0].clientX;
+        const dy = ty - e.changedTouches[0].clientY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+          goTo(current + (dx > 0 ? 1 : -1));
+        }
+      }, { passive: true });
+
+      // Keyboard
+      carousel.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+      });
     })();
   </script>
 
