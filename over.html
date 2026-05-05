@@ -1816,58 +1816,58 @@
         display: none;
       }
 
-      /* Staircase: 20% smaller cards, same step pattern */
+      /* Desktop-proportional cascade — left-based, decreasing sizes */
       .story-media {
         order: 2;
         position: relative;
         width: 100%;
         left: 0;
-        height: clamp(340px, 87vw, 395px);
+        height: clamp(400px, 123vw, 510px);
         margin: clamp(28px, 7vw, 40px) auto 0;
       }
 
-      /* Card 1 — top-right */
+      /* Card 1 — top-right, largest */
       .story-card--1 {
-        top: 0;
-        right: 0;
-        left: auto;
-        width: clamp(160px, 45.6vw, 196px);
+        top: 7.3%;
+        left: 36%;
+        right: auto;
+        width: 51%;
         aspect-ratio: 4 / 3;
       }
 
-      /* Card 2 — step left + down */
+      /* Card 2 — steps left and down */
       .story-card--2 {
-        top: clamp(62px, 16.8vw, 72px);
-        right: clamp(42px, 12vw, 52px);
-        left: auto;
-        width: clamp(160px, 45.6vw, 196px);
+        top: 30.6%;
+        left: 10%;
+        right: auto;
+        width: 46%;
         aspect-ratio: 4 / 3;
       }
 
-      /* Card 3 — step further left + down */
+      /* Card 3 — far left, smaller */
       .story-card--3 {
-        top: clamp(118px, 32vw, 138px);
-        right: clamp(84px, 24vw, 103px);
-        left: auto;
-        width: clamp(160px, 45.6vw, 196px);
+        top: 56.9%;
+        left: 0;
+        right: auto;
+        width: 41%;
         aspect-ratio: 4 / 3;
       }
 
-      /* Card 4 — step back right + down */
+      /* Card 4 — steps back right, smallest */
       .story-card--4 {
-        top: clamp(174px, 47.2vw, 203px);
-        right: clamp(42px, 12vw, 52px);
-        left: auto;
-        width: clamp(160px, 45.6vw, 196px);
+        top: 79.3%;
+        left: 22%;
+        right: auto;
+        width: 34%;
         aspect-ratio: 4 / 3;
       }
 
-      /* Floating music notes left of cascade */
+      /* Floating music notes — tucked in open space left of card 2 */
       .story-notes {
         display: block;
         position: absolute;
         left: 6px;
-        top: clamp(55px, 16vw, 74px);
+        top: 28%;
         z-index: 5;
         pointer-events: none;
       }
@@ -2080,40 +2080,6 @@
         font-size: clamp(36px, 9.8vw, 42px);
       }
 
-      .story-media {
-        height: clamp(308px, 87vw, 348px);
-      }
-
-      .story-card--1 {
-        width: clamp(148px, 45.6vw, 178px);
-        right: 0;
-        left: auto;
-        aspect-ratio: 4 / 3;
-      }
-
-      .story-card--2 {
-        top: clamp(56px, 16.8vw, 66px);
-        right: clamp(38px, 12vw, 47px);
-        left: auto;
-        width: clamp(148px, 45.6vw, 178px);
-        aspect-ratio: 4 / 3;
-      }
-
-      .story-card--3 {
-        top: clamp(106px, 32vw, 124px);
-        right: clamp(76px, 24vw, 94px);
-        left: auto;
-        width: clamp(148px, 45.6vw, 178px);
-        aspect-ratio: 4 / 3;
-      }
-
-      .story-card--4 {
-        top: clamp(157px, 47.2vw, 184px);
-        right: clamp(38px, 12vw, 47px);
-        left: auto;
-        width: clamp(148px, 45.6vw, 178px);
-        aspect-ratio: 4 / 3;
-      }
     }
 
     @media (prefers-reduced-motion: reduce) {
