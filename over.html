@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-  <title>Over Relovation — Jazz band voor trouwfeesten & events</title>
+  <title>Over ons — Relovation | Jazz band voor trouwfeesten & events</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -312,6 +312,26 @@
       font-size: 17px;
       font-weight: 500;
       box-shadow: 0 16px 28px rgba(87, 110, 89, 0.06);
+    }
+
+    .hero-eyebrow {
+      margin: 0 0 clamp(20px, 2.4vw, 30px);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      color: rgba(76, 106, 87, 0.50);
+    }
+
+    .hero-eyebrow::before {
+      content: "";
+      flex-shrink: 0;
+      width: 36px;
+      height: 1px;
+      background: rgba(76, 106, 87, 0.28);
     }
 
     .hero-media {
@@ -1614,56 +1634,92 @@
       }
     }
 
+    /* ─── Mobile: primary target iPhone 14 Pro Max (430px) ─── */
     @media (max-width: 640px) {
       :root {
-        --shell-width: calc(100vw - 34px);
-        --hero-title: clamp(62px, 16vw, 92px);
-        --hero-front-width: min(56vw, 250px);
-        --hero-front-height: calc(var(--hero-front-width) * 131 / 141);
-        --hero-back-width: min(62vw, 280px);
+        --shell-width: calc(100vw - 40px);
+        /* Fluid title: 68px at 430px, 54px at 360px */
+        --hero-title: clamp(54px, 15.8vw, 68px);
+        /* Back card: narrow portrait arch ~38% viewport */
+        --hero-back-width: min(38vw, 163px);
         --hero-back-height: calc(var(--hero-back-width) * 670.22 / 434.24);
+        /* Front card: wider landscape ~43% viewport */
+        --hero-front-width: min(43vw, 185px);
+        --hero-front-height: calc(var(--hero-front-width) * 131 / 141);
       }
 
+      /* ── Hero section ── */
       .over-hero {
-        padding-top: 72px;
+        padding-top: 64px;
         padding-bottom: 48px;
+      }
+
+      /* Block layout so hero-copy flows and hero-media sits absolutely on top */
+      .hero-shell {
+        display: block;
+        position: relative;
+        /* Ensure shell is tall enough for the floating image pair */
+        min-height: max(500px, calc(44vw + clamp(300px, 78vw, 380px) + 48px));
+      }
+
+      /* Text column — full natural width, z-index above images */
+      .hero-copy {
+        position: relative;
+        z-index: 2;
+        max-width: 100%;
+      }
+
+      .hero-eyebrow {
+        margin-bottom: 16px;
       }
 
       .hero-copy .section-title {
         white-space: normal;
+        line-height: 0.96;
       }
 
       .hero-copy .lead {
-        font-size: 17px;
-        max-width: 100%;
-        margin-top: 20px;
+        font-size: clamp(15px, 3.8vw, 17px);
+        max-width: 56vw; /* keep text left so images can peek right */
+        margin-top: clamp(14px, 4vw, 20px);
         line-height: 1.65;
       }
 
       .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
         gap: 12px;
-        margin-top: 24px;
+        margin-top: clamp(20px, 5vw, 28px);
       }
 
       .hero-actions .button {
-        width: 100%;
-        height: 52px;
+        width: auto;
+        min-width: 0;
+        height: 50px;
+        padding: 0 28px;
         font-size: 14px;
       }
 
+      /* Image pair floats to bottom-right, z-index below text */
       .hero-media {
-        width: min(100%, 360px);
-        height: 480px;
-        margin-top: 12px;
+        position: absolute;
+        right: -20px; /* slight edge bleed for drama */
+        top: clamp(170px, 42vw, 210px); /* starts alongside lead text */
+        width: 60vw;
+        height: clamp(300px, 78vw, 380px);
+        margin: 0;
+        z-index: 1;
       }
 
+      /* Front card repositioned for tighter overlap at mobile scale */
       .hero-card--front {
         clip-path: inset(0 0 0 0 round 0);
-        left: 6px;
+        left: 0;
+        top: clamp(140px, 35vw, 180px);
       }
 
+      /* ── Story section ── */
       .story-section {
         padding-bottom: 56px;
       }
@@ -1692,6 +1748,7 @@
         font-size: 9px;
       }
 
+      /* ── Vision section ── */
       .vision-section {
         padding-top: 64px;
         padding-bottom: 64px;
@@ -1740,6 +1797,7 @@
         max-width: 100%;
       }
 
+      /* ── Presence section ── */
       .presence-section {
         padding-top: 60px;
         padding-bottom: 64px;
@@ -1773,6 +1831,7 @@
         max-width: none;
       }
 
+      /* ── Musicians section ── */
       .musicians-section {
         padding-top: 60px;
         padding-bottom: 120px;
@@ -1817,6 +1876,7 @@
         line-height: 1.2;
       }
 
+      /* ── CTA banner ── */
       .cta-banner {
         padding-top: 64px;
         padding-bottom: 64px;
@@ -1833,6 +1893,43 @@
 
       .cta-actions .button {
         width: min(100%, 280px);
+      }
+    }
+
+    /* ─── Small phones: iPhone SE / ≤390px ─── */
+    @media (max-width: 390px) {
+      :root {
+        --hero-title: clamp(50px, 14.5vw, 56px);
+        --hero-back-width: min(40vw, 156px);
+        --hero-back-height: calc(var(--hero-back-width) * 670.22 / 434.24);
+        --hero-front-width: min(45vw, 175px);
+        --hero-front-height: calc(var(--hero-front-width) * 131 / 141);
+      }
+
+      .hero-shell {
+        min-height: max(480px, calc(42vw + clamp(280px, 76vw, 340px) + 48px));
+      }
+
+      .hero-media {
+        right: -12px;
+        top: clamp(155px, 42vw, 190px);
+        width: 62vw;
+        height: clamp(275px, 76vw, 330px);
+      }
+
+      .hero-card--front {
+        top: clamp(125px, 34vw, 155px);
+      }
+
+      .hero-copy .lead {
+        max-width: 54vw;
+        font-size: 15px;
+      }
+
+      .hero-actions .button {
+        height: 46px;
+        padding: 0 24px;
+        font-size: 13px;
       }
     }
 
@@ -2333,10 +2430,11 @@
     <section class="page-section over-hero" id="top">
       <div class="section-shell hero-shell">
         <div class="hero-copy reveal-copy">
-          <h1 class="section-title hero-title reveal-title" aria-label="Over Relovation">
+          <p class="hero-eyebrow reveal-copy" aria-hidden="true">Live Jazz</p>
+          <h1 class="section-title hero-title reveal-title" aria-label="Over ons">
             <span class="reveal-line">
               <span class="reveal-word" style="animation-delay: 0.04s;">Over</span>
-              <span class="reveal-word" style="animation-delay: 0.1s;">Relovation</span>
+              <span class="reveal-word" style="animation-delay: 0.1s;">ons</span>
             </span>
           </h1>
           <p class="lead">Relovation is een band opgestart door Robin Crauwels met jonge artiesten die zich vooral focusen op Jazz en live muziek aanbieden op verschillende soorten evenementen</p>
