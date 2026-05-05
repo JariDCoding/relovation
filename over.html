@@ -2058,18 +2058,21 @@
       /* ── Musicians section ── */
       /* ── Musicians: swipeable carousel ── */
       .musicians-section {
-        padding-top: 48px;
-        padding-bottom: 80px;
+        padding-top: 52px;
+        padding-bottom: 100px;
       }
 
+      /* Center title — override reveal-title's align-items: flex-start */
       .musicians-title {
         font-size: 42px;
         line-height: 1;
         text-align: center;
+        align-items: center;
+        width: 100%;
       }
 
       .musicians-shell {
-        gap: 24px;
+        gap: 32px;
       }
 
       /* Desktop grids hidden — carousel takes over */
@@ -2078,12 +2081,11 @@
         display: none;
       }
 
-      /* Carousel wrapper */
+      /* Carousel wrapper — overflow hidden for horizontal clipping only */
       .musicians-carousel {
         position: relative;
         width: 100%;
         overflow: hidden;
-        padding-bottom: 44px;
       }
 
       .musicians-track {
@@ -2097,34 +2099,42 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding-bottom: 56px;
       }
 
+      /* Arch frame — visible outlined portrait shape */
       .musicians-slide .musician-frame {
         width: clamp(180px, 50vw, 214px);
         max-width: none;
         aspect-ratio: 154 / 210;
+        border: 1.5px solid rgba(76, 106, 87, 0.5);
+        background: rgba(76, 106, 87, 0.06);
+        border-radius: 999px 999px 0 0;
+        overflow: hidden;
       }
 
+      /* Name: cream, large, in the green band */
       .musicians-slide .musician-name {
         font-size: 26px;
         font-weight: 500;
         color: var(--bg);
         text-align: center;
-        margin-top: 20px;
+        margin-top: 22px;
         line-height: 1.2;
       }
 
+      /* Role: gold italic, in the green band */
       .musicians-slide .musician-role {
         font-size: 16px;
         font-family: "EB Garamond", serif;
         font-style: italic;
         color: #b1935f;
         text-align: center;
-        margin-top: 5px;
+        margin-top: 6px;
         line-height: 1.3;
       }
 
-      /* Circular nav buttons with chevrons */
+      /* Nav buttons: circles at frame mid-height */
       .musicians-prev-btn,
       .musicians-next-btn {
         position: absolute;
@@ -2168,9 +2178,15 @@
         transform: rotate(45deg) translate(-2px, 2px);
       }
 
-      /* Tune green base height for carousel proportions */
+      /* Taller green base so name/role sit fully inside it */
       .musicians-green-base {
-        height: 52%;
+        height: 58%;
+      }
+
+      /* Bigger curve to fill the scallop bottom */
+      .musicians-curve {
+        height: 160px;
+        width: 160vw;
       }
 
       /* ── CTA banner ── */
