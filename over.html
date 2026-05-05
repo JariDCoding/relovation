@@ -1894,50 +1894,130 @@
 
       /* ── Vision section ── */
       .vision-section {
-        padding-top: 64px;
-        padding-bottom: 64px;
+        padding-top: 52px;
+        padding-bottom: 80px;
+      }
+
+      /* Show notes, tucked top-right */
+      .vision-notes {
+        display: flex;
+        position: absolute;
+        top: -8px;
+        right: 0;
+        left: auto;
+        flex-direction: column-reverse;
+        align-items: flex-end;
+        gap: 6px;
+      }
+
+      .vision-notes img:first-child {
+        width: 21px;
+        height: auto;
+        margin-top: 0;
+      }
+
+      .vision-notes img:last-child {
+        width: 17px;
+        height: auto;
+        margin-top: 0;
+      }
+
+      /* Single-column flex — overrides 900px grid */
+      .vision-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      /* Copy: title + body + button stacked with gap */
+      .vision-copy {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        position: relative;
+        z-index: 2;
       }
 
       .vision-copy .section-title {
-        max-width: none;
+        font-size: 42px;
+        line-height: 1.1;
         white-space: normal;
         text-wrap: balance;
+        max-width: none;
       }
 
       .vision-copy p {
+        font-size: 16px;
         max-width: 100%;
-        font-size: 17px;
+        margin: 0;
+        line-height: 1.5;
       }
 
-      .vision-visual {
-        min-height: clamp(300px, 85vw, 400px);
-      }
-
-      .vision-figure--back {
-        left: 24%;
-        width: min(52vw, 250px);
-      }
-
-      .vision-figure--front {
-        top: 42%;
-        width: min(56vw, 280px);
-      }
-
-      .vision-statement {
-        font-size: clamp(28px, 7.5vw, 40px);
+      .vision-cta {
+        margin-top: 4px;
       }
 
       .vision-cta .button {
+        width: 187px;
+        max-width: 187px;
+      }
+
+      /* Visual pulled up to sit alongside the button on the right */
+      .vision-visual {
+        order: unset;
+        position: relative;
         width: 100%;
-        max-width: 280px;
+        min-height: clamp(258px, 74vw, 320px);
+        margin-top: -55px;
+        z-index: 1;
+        overflow: visible;
+        --vision-back-y: 0px;
+        --vision-front-x: 0px;
+        --vision-front-y: 0px;
+      }
+
+      /* Back: portrait arch on far right */
+      .vision-figure--back {
+        top: 0;
+        left: 57%;
+        right: auto;
+        width: 43%;
+        aspect-ratio: 165 / 249;
+      }
+
+      /* Front: landscape below and slightly left of back */
+      .vision-figure--front {
+        top: clamp(90px, 30vw, 135px);
+        left: 38%;
+        right: auto;
+        width: 50%;
+        aspect-ratio: 184 / 171;
+      }
+
+      /* Quote: full width, left indent matching Figma */
+      .vision-quote {
+        order: unset;
+        width: 100%;
+        padding-top: clamp(36px, 13vw, 60px);
+        padding-left: clamp(16px, 5.5vw, 48px);
+        position: relative;
+        z-index: 3;
+      }
+
+      .vision-statement {
+        font-size: 42px;
+        line-height: 1.2;
+        text-wrap: balance;
       }
 
       .vision-rule {
-        max-width: 200px;
+        width: 174px;
+        max-width: 174px;
       }
 
       .vision-note-text {
-        font-size: 15px;
+        font-size: 16px;
         max-width: 100%;
       }
 
@@ -2653,6 +2733,11 @@
 
     <section class="page-section vision-section" id="visie">
       <div class="section-shell vision-shell">
+        <div class="vision-notes" aria-hidden="true">
+          <img src="./note%20relovtion.svg" alt="">
+          <img src="./note%20relovtion.svg" alt="">
+        </div>
+
         <div class="vision-copy reveal-copy">
           <h2 class="section-title reveal-title" aria-label="Onze visie">
             <span class="reveal-line">
