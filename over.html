@@ -1761,11 +1761,13 @@
         padding-bottom: 56px;
       }
 
+      /* flex-column keeps 'order' working; block kills it */
       .story-shell {
-        display: block;
+        display: flex;
+        flex-direction: column;
       }
 
-      /* Text block: right-aligned */
+      /* Text block first, right-aligned */
       .story-copy {
         order: 1;
         width: 100%;
@@ -1773,19 +1775,26 @@
         gap: 14px;
       }
 
+      /* Expand title container to full width so align-items: flex-end has room */
       .story-copy .reveal-title {
+        width: 100%;
         align-items: flex-end;
       }
 
       .story-copy .reveal-line {
+        width: 100%;
         justify-content: flex-end;
       }
 
+      /* Reset base offsets that fight right-alignment */
       .story-copy .story-title {
         white-space: normal;
         text-wrap: balance;
         font-size: 42px;
         line-height: 1;
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
       }
 
       .story-copy p {
