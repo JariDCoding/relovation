@@ -1640,11 +1640,11 @@
         --shell-width: calc(100vw - 40px);
         /* Fluid title: 68px at 430px, 54px at 360px */
         --hero-title: clamp(54px, 15.8vw, 68px);
-        /* Back card: narrow portrait arch ~38% viewport */
-        --hero-back-width: min(38vw, 163px);
+        /* Back card: ~10% larger than previous iteration */
+        --hero-back-width: min(41.8vw, 179px);
         --hero-back-height: calc(var(--hero-back-width) * 670.22 / 434.24);
-        /* Front card: wider landscape ~43% viewport */
-        --hero-front-width: min(43vw, 185px);
+        /* Front card: ~10% larger */
+        --hero-front-width: min(47.3vw, 204px);
         --hero-front-height: calc(var(--hero-front-width) * 131 / 141);
       }
 
@@ -1707,8 +1707,8 @@
         position: absolute;
         right: -20px;
         top: clamp(290px, 70vw, 360px);
-        width: 60vw;
-        height: clamp(300px, 78vw, 380px);
+        width: 66vw;
+        height: clamp(330px, 86vw, 418px);
         margin: 0;
         z-index: 1;
       }
@@ -1720,7 +1720,7 @@
         top: clamp(140px, 35vw, 180px);
       }
 
-      /* Scroll cue: left-aligned circle on mobile */
+      /* Scroll cue: left-aligned circle with down arrow on mobile */
       .scroll-cue {
         display: flex;
         align-items: center;
@@ -1733,6 +1733,22 @@
         position: relative;
         text-decoration: none;
         background: transparent;
+      }
+
+      /* Hide original music-note / arrow SVGs */
+      .scroll-cue img {
+        display: none;
+      }
+
+      /* CSS chevron pointing downward */
+      .scroll-cue::after {
+        content: "";
+        display: block;
+        width: 8px;
+        height: 8px;
+        border-right: 1.5px solid rgba(76, 106, 87, 0.78);
+        border-bottom: 1.5px solid rgba(76, 106, 87, 0.78);
+        transform: rotate(45deg) translate(-1px, -2px);
       }
 
       /* ── Story section — Figma: right-aligned text, diagonal cascade ── */
@@ -1983,9 +1999,9 @@
     @media (max-width: 390px) {
       :root {
         --hero-title: clamp(50px, 14.5vw, 56px);
-        --hero-back-width: min(40vw, 156px);
+        --hero-back-width: min(44vw, 172px);
         --hero-back-height: calc(var(--hero-back-width) * 670.22 / 434.24);
-        --hero-front-width: min(45vw, 175px);
+        --hero-front-width: min(49.5vw, 193px);
         --hero-front-height: calc(var(--hero-front-width) * 131 / 141);
       }
 
