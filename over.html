@@ -464,6 +464,10 @@
       --card-4-clip: inset(24% 0 0 0 round 0);
     }
 
+    .story-notes {
+      display: none;
+    }
+
     .story-card {
       position: absolute;
       overflow: hidden;
@@ -1751,7 +1755,7 @@
         transform: rotate(45deg) translate(-1px, -2px);
       }
 
-      /* ── Story section — Figma: right-aligned text, diagonal cascade ── */
+      /* ── Story section — right text + big staircase cascade ── */
       .story-section {
         padding-top: 56px;
         padding-bottom: 56px;
@@ -1767,10 +1771,8 @@
         width: 100%;
         margin-top: 0;
         gap: 14px;
-        text-align: right;
       }
 
-      /* Align reveal-title words to the right */
       .story-copy .reveal-title {
         align-items: flex-end;
       }
@@ -1793,7 +1795,6 @@
         margin-left: auto;
       }
 
-      /* Story line: right-aligned, no left decorative bar */
       .story-line {
         justify-content: flex-end;
         margin-top: clamp(14px, 3.5vw, 20px);
@@ -1805,46 +1806,79 @@
         display: none;
       }
 
-      /* Image diagonal cascade: upper-right → lower-left, shrinking */
+      /* Staircase: equal-size cards stepping top-right → bottom-left → bottom-right */
       .story-media {
         order: 2;
         position: relative;
         width: 100%;
         left: 0;
-        height: clamp(300px, 78vw, 345px);
+        height: clamp(420px, 108vw, 490px);
         margin: clamp(28px, 7vw, 40px) auto 0;
       }
 
+      /* Card 1 — top-right */
       .story-card--1 {
         top: 0;
         right: 0;
         left: auto;
-        width: clamp(128px, 35.5vw, 153px);
+        width: clamp(200px, 57vw, 245px);
         aspect-ratio: 4 / 3;
       }
 
+      /* Card 2 — step left + down */
       .story-card--2 {
-        top: clamp(68px, 19.5vw, 84px);
-        right: clamp(64px, 18vw, 78px);
+        top: clamp(78px, 21vw, 90px);
+        right: clamp(42px, 12vw, 52px);
         left: auto;
-        width: clamp(113px, 31.4vw, 135px);
+        width: clamp(200px, 57vw, 245px);
         aspect-ratio: 4 / 3;
       }
 
+      /* Card 3 — step further left + down */
       .story-card--3 {
-        top: clamp(140px, 41.5vw, 178px);
-        left: 0;
-        right: auto;
-        width: clamp(98px, 27.7vw, 119px);
+        top: clamp(148px, 40vw, 172px);
+        right: clamp(84px, 24vw, 103px);
+        left: auto;
+        width: clamp(200px, 57vw, 245px);
         aspect-ratio: 4 / 3;
       }
 
+      /* Card 4 — step back right + down */
       .story-card--4 {
-        top: clamp(200px, 60vw, 258px);
-        left: clamp(40px, 12vw, 52px);
-        right: auto;
-        width: clamp(82px, 23.5vw, 101px);
+        top: clamp(218px, 59vw, 254px);
+        right: clamp(42px, 12vw, 52px);
+        left: auto;
+        width: clamp(200px, 57vw, 245px);
         aspect-ratio: 4 / 3;
+      }
+
+      /* Floating music notes left of cascade */
+      .story-notes {
+        display: block;
+        position: absolute;
+        left: 6px;
+        top: clamp(55px, 16vw, 74px);
+        z-index: 5;
+        pointer-events: none;
+      }
+
+      .story-notes img {
+        display: block;
+        opacity: 0.85;
+        transform-origin: 50% 80%;
+        animation: noteJiggle 3.2s ease-in-out infinite;
+      }
+
+      .story-notes img:first-child {
+        width: 18px;
+        margin-left: 14px;
+        animation-delay: 0.4s;
+      }
+
+      .story-notes img:last-child {
+        width: 13px;
+        margin-top: 8px;
+        animation-delay: 1.2s;
       }
 
       /* ── Vision section ── */
@@ -2031,34 +2065,44 @@
         font-size: 13px;
       }
 
-      /* Story cascade scaled for small screen */
+      /* Story cascade for small phones — same staircase, scaled down */
       .story-copy .story-title {
         font-size: clamp(36px, 9.8vw, 42px);
       }
 
       .story-media {
-        height: clamp(260px, 74vw, 300px);
+        height: clamp(385px, 108vw, 430px);
       }
 
       .story-card--1 {
-        width: clamp(112px, 35.5vw, 135px);
+        width: clamp(185px, 57vw, 222px);
+        right: 0;
+        left: auto;
+        aspect-ratio: 4 / 3;
       }
 
       .story-card--2 {
-        top: clamp(58px, 18.5vw, 76px);
-        right: clamp(54px, 17vw, 68px);
-        width: clamp(100px, 31vw, 118px);
+        top: clamp(70px, 21vw, 82px);
+        right: clamp(38px, 12vw, 47px);
+        left: auto;
+        width: clamp(185px, 57vw, 222px);
+        aspect-ratio: 4 / 3;
       }
 
       .story-card--3 {
-        top: clamp(118px, 39vw, 154px);
-        width: clamp(86px, 27vw, 104px);
+        top: clamp(133px, 40vw, 156px);
+        right: clamp(76px, 24vw, 94px);
+        left: auto;
+        width: clamp(185px, 57vw, 222px);
+        aspect-ratio: 4 / 3;
       }
 
       .story-card--4 {
-        top: clamp(170px, 57vw, 222px);
-        left: clamp(34px, 11vw, 46px);
-        width: clamp(72px, 23vw, 90px);
+        top: clamp(196px, 59vw, 230px);
+        right: clamp(38px, 12vw, 47px);
+        left: auto;
+        width: clamp(185px, 57vw, 222px);
+        aspect-ratio: 4 / 3;
       }
     }
 
@@ -2591,6 +2635,10 @@
     <section class="page-section story-section" id="verhaal">
       <div class="section-shell story-shell">
         <div class="story-media reveal-visual" data-scroll-scene="story">
+          <div class="story-notes" aria-hidden="true">
+            <img src="./note%20relovtion.svg" alt="">
+            <img src="./note%20relovtion.svg" alt="">
+          </div>
           <figure class="story-card story-card--1" aria-hidden="true">
             <img src="https://www.figma.com/api/mcp/asset/e07d4d7f-750a-4ade-9054-6fe5677f8e22" alt="">
           </figure>
