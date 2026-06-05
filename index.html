@@ -4691,7 +4691,7 @@
             loadHeroDrawing().catch(() => { heroDrawFrame.textContent = ""; });
           }
         });
-      }, { threshold: 0.3 });
+      }, { threshold: 0.7 });
 
       heroObserver.observe(heroDrawFrame);
 
@@ -4851,7 +4851,7 @@
             loadAboutDrawing().catch(() => { aboutDrawFrame.textContent = ""; });
           }
         });
-      }, { threshold: 0.3 });
+      }, { threshold: 0.7 });
 
       aboutObserver.observe(aboutDrawFrame);
     }
@@ -4901,7 +4901,7 @@
             loadFeatureDrawing().catch(() => { featureDrawing.textContent = ""; });
           }
         });
-      }, { threshold: 0.3 });
+      }, { threshold: 0.7 });
 
       featureObserver.observe(featureVisual);
     }
