@@ -4734,39 +4734,40 @@
           measured.filter((m) => m.cx >= midX && m.length > 0)
         ];
 
-        // FASE 1 (t 0 -> ~0.58): tekenen van BUITEN naar BINNEN -> de strokes het
-        //   verst van het midden van elke figuur eerst (de buitencontour/vorm),
-        //   dan naar binnen. Beide figuren in lockstep.
-        // FASE 2 (t ~0.58 -> 1.0): inkleuren -> alle vlakken vullen samen solide in.
+        // FASE 1 (t 0 -> ~0.66): de VOLLEDIGE lijntekening tekenen, per figuur van
+        //   BUITEN naar BINNEN. Verdeling op gedekte LENGTE (coverage) PER FIGUUR ->
+        //   beide figuren raken even snel vol; geen van beide loopt voor.
+        // FASE 2 (t ~0.68 -> 1.0): PAS DAARNA inkleuren -> de grote vlakken vullen
+        //   solide in (de tekening is dan al volledig getekend).
         heroDrawItems = [];
         groups.forEach((group) => {
           if (!group.length) {
             return;
           }
-          // Middelpunt van de figuur.
           let sumX = 0;
           let sumY = 0;
           group.forEach((m) => { sumX += m.cx; sumY += m.cy; });
           const fcx = sumX / group.length;
           const fcy = sumY / group.length;
-          // Afstand tot het midden -> buitenste eerst.
           group.forEach((m) => {
             const dx = m.cx - fcx;
             const dy = m.cy - fcy;
             m.outer = Math.sqrt((dx * dx) + (dy * dy));
           });
           group.sort((a, b) => b.outer - a.outer);
-          const n = group.length || 1;
-          group.forEach((item, rank) => {
-            const phase = rank / n;
-            const strokeStart = phase * 0.46;
-            const strokeEnd = Math.min(0.58, strokeStart + 0.14);
+          const groupLen = group.reduce((s, m) => s + m.length, 0) || 1;
+          let accum = 0;
+          group.forEach((item) => {
+            const phase = accum / groupLen;
+            accum += item.length;
+            const strokeStart = phase * 0.54;
+            const strokeEnd = Math.min(0.66, strokeStart + 0.12);
             heroDrawItems.push({
               element: item.element,
               length: item.length,
               strokeStart,
               strokeEnd,
-              fillStart: 0.58,
+              fillStart: 0.68,
               fillEnd: 1.0,
               done: false
             });
