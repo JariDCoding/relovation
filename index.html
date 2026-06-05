@@ -4604,19 +4604,20 @@
       let heroInView = false;
       let heroPlayed = false;
       let heroAnimStart = 0;
-      let heroTracePath = null;
-      let heroTraceLength = 0;
+      let heroDrawItems = [];
       let heroLastTrace = -1;
       let heroLastArt = -1;
+      const HERO_SVGNS = "http://www.w3.org/2000/svg";
 
       const heroClamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
       const updateHeroDrawing = (progress) => {
         const p = heroClamp(progress, 0, 1);
-        const traceBuild = heroClamp((p - 0.02) / 0.5, 0, 1);
-        const traceFade = heroClamp((p - 0.82) / 0.16, 0, 1);
-        const traceOpacity = traceBuild * (1 - traceFade);
-        const artworkOpacity = heroClamp((p - 0.72) / 0.22, 0, 1);
+        const traceBuild = heroClamp((p - 0.006) / 0.64, 0, 1);
+        const traceHold = heroClamp((p - 0.1) / 0.68, 0, 1);
+        const traceFade = heroClamp((p - 0.965) / 0.035, 0, 1);
+        const traceOpacity = traceBuild * (0.6 + (0.4 * traceHold)) * (1 - (0.96 * traceFade));
+        const artworkOpacity = heroClamp((p - 0.9) / 0.08, 0, 1);
 
         if (Math.abs(traceOpacity - heroLastTrace) > 0.004) {
           heroDrawFrame.style.setProperty("--hero-trace-opacity", `${traceOpacity}`);
@@ -4627,10 +4628,20 @@
           heroLastArt = artworkOpacity;
         }
 
-        if (heroTracePath) {
-          const eased = 1 - Math.pow(1 - p, 1.8);
-          heroTracePath.style.strokeDashoffset = `${heroTraceLength * (1 - eased)}`;
-        }
+        heroDrawItems.forEach((item) => {
+          if (item.done) {
+            return;
+          }
+          const localProgress = heroClamp((p - item.start) / (item.end - item.start || 1), 0, 1);
+          if (localProgress <= 0) {
+            return;
+          }
+          const eased = 1 - Math.pow(1 - localProgress, 1.9);
+          item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
+          if (localProgress >= 1) {
+            item.done = true;
+          }
+        });
       };
 
       const runHeroAnimation = (timestamp) => {
@@ -4688,6 +4699,7 @@
           return;
         }
 
+        // De donkerste laag is de inkt-/lijnlaag -> die tekenen we met de pen-truc.
         let darkest = paths[0];
         let minLum = Infinity;
         paths.forEach((path) => {
@@ -4698,31 +4710,56 @@
           }
         });
 
-        paths.forEach((path) => {
-          if (path !== darkest) {
-            path.remove();
+        const strokeColor = darkest.getAttribute("fill") || "#2c3a30";
+        const parent = darkest.parentNode;
+        const d = darkest.getAttribute("d") || "";
+        const subpaths = d.match(/M[^M]*/g) || [];
+
+        // Alle originele fill-paden uit de trace-laag halen; we vervangen ze
+        // door losse stroke-paden (1 per subpad) zodat ze één voor één getekend worden.
+        paths.forEach((path) => path.remove());
+
+        const items = [];
+        subpaths.forEach((sub) => {
+          const el = document.createElementNS(HERO_SVGNS, "path");
+          el.setAttribute("d", sub);
+          parent.appendChild(el);
+
+          let length = 0;
+          try {
+            length = el.getTotalLength();
+          } catch (error) {
+            length = 0;
           }
+
+          if (!length || !Number.isFinite(length)) {
+            el.remove();
+            return;
+          }
+
+          el.style.fill = "none";
+          el.style.stroke = strokeColor;
+          el.style.strokeWidth = "1.1";
+          el.style.strokeLinecap = "round";
+          el.style.strokeLinejoin = "round";
+          el.style.vectorEffect = "non-scaling-stroke";
+          el.style.strokeDasharray = `${length}`;
+          el.style.strokeDashoffset = `${length}`;
+
+          items.push({ element: el, length });
         });
 
-        let length = 0;
-        try {
-          length = darkest.getTotalLength();
-        } catch (error) {
-          length = 0;
-        }
-
-        const strokeColor = darkest.getAttribute("fill") || "#2c3a30";
-        darkest.style.fill = "none";
-        darkest.style.stroke = strokeColor;
-        darkest.style.strokeWidth = "1.2";
-        darkest.style.strokeLinecap = "round";
-        darkest.style.strokeLinejoin = "round";
-        darkest.style.vectorEffect = "non-scaling-stroke";
-        darkest.style.strokeDasharray = `${length}`;
-        darkest.style.strokeDashoffset = `${length}`;
-
-        heroTracePath = darkest;
-        heroTraceLength = length;
+        const total = items.length || 1;
+        heroDrawItems = items.map((item, index) => {
+          const start = Math.pow(index / total, 1.08) * 0.92;
+          const end = Math.min(1, start + 0.16);
+          return {
+            element: item.element,
+            length: item.length,
+            start,
+            end
+          };
+        });
       };
 
       const loadHeroDrawing = async () => {
