@@ -422,6 +422,25 @@
       justify-self: start;
     }
 
+    /* Gouden band-autodraw vervangt de foto: tekent zichzelf van een leeg vlak. */
+    .about-draw-frame {
+      aspect-ratio: 1448 / 1086;
+      object-fit: contain;
+      opacity: 0;
+    }
+
+    /* Direct zichtbaar (geen fade): canvas start leeg en tekent echt van 0. */
+    .about-draw-frame.is-drawn {
+      opacity: 1;
+    }
+
+    .about-draw-frame svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
     .about-copy {
       width: 100%;
       max-width: 760px;
@@ -3717,20 +3736,8 @@
     }
   </style>
   <link rel="stylesheet" href="./nav.css">
-  <link rel="stylesheet" href="./loader.css">
 </head>
 <body>
-<!-- ── Loader ── -->
-<div class="r-loader" id="r-loader" role="status" aria-label="Pagina laden">
-  <div class="r-loader__inner">
-    <div class="r-loader__note">
-      <img src="./note%20relovtion.svg" alt="">
-    </div>
-    <p class="r-loader__wordmark">Relovation</p>
-    <div class="r-loader__bar"></div>
-  </div>
-</div>
-
 <!-- ── Navigation ── -->
 <header class="r-nav" id="r-nav" aria-label="Hoofdnavigatie">
   <div class="r-nav__inner">
@@ -3852,12 +3859,12 @@
 
       <div class="about-panel" data-node-id="128:4422">
         <div class="about-panel-inner">
-          <img
-            class="about-visual reveal-visual"
-            src="https://www.figma.com/api/mcp/asset/52cdac08-adc6-4429-9427-436aeb61b72a"
-            alt="Elegant geklede gasten met champagne onder zwevende muzieknoten"
+          <div
+            class="about-visual about-draw-frame"
+            role="img"
+            aria-label="Getekende illustratie van de Relovation band"
             data-node-id="99:34"
-          >
+          ></div>
 
           <div class="about-copy reveal-copy">
           <h2 class="about-heading reveal-title" id="about-title" data-node-id="98:3379">
@@ -4791,6 +4798,57 @@
       // (zodra de hero in beeld komt; hero staat bovenaan -> vrijwel meteen).
     }
 
+    // --- Gouden band-autodraw in "Wat is Relovation?" (vervangt de foto) ---
+    const aboutDrawFrame = document.querySelector(".about-draw-frame");
+
+    if (aboutDrawFrame) {
+      const aboutReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let aboutDrawLoaded = false;
+
+      const loadAboutDrawing = async () => {
+        if (aboutDrawLoaded) {
+          return;
+        }
+        aboutDrawLoaded = true;
+
+        const response = await fetch("./about-band.svg");
+        const svgMarkup = await response.text();
+        aboutDrawFrame.innerHTML = svgMarkup;
+
+        const svgElement = aboutDrawFrame.querySelector("svg");
+        if (!svgElement) {
+          return;
+        }
+        svgElement.removeAttribute("width");
+        svgElement.removeAttribute("height");
+        svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        svgElement.setAttribute("aria-hidden", "true");
+
+        // Frame tonen (reveal-mask is nog leeg, dus niets zichtbaar), dan op de
+        // volgende frame "go" zetten -> de tekening start gegarandeerd vanaf leeg.
+        aboutDrawFrame.classList.add("is-drawn");
+        if (!aboutReducedMotion.matches) {
+          window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+              svgElement.classList.add("go");
+            });
+          });
+        }
+        // Bij prefers-reduced-motion toont de @media-regel in de SVG meteen alles.
+      };
+
+      const aboutObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            observer.unobserve(aboutDrawFrame);
+            loadAboutDrawing().catch(() => { aboutDrawFrame.textContent = ""; });
+          }
+        });
+      }, { threshold: 0.3 });
+
+      aboutObserver.observe(aboutDrawFrame);
+    }
+
     const featureSection = document.querySelector(".features-section");
     const featureSticky = document.querySelector(".features-sticky");
     const featureVisual = document.querySelector(".feature-visual");
@@ -5041,6 +5099,5 @@
   </div>
 </footer>
   <script src="./nav.js"></script>
-  <script src="./loader.js"></script>
 </body>
 </html>
