@@ -1714,10 +1714,9 @@
 
     .hero-draw-frame {
       opacity: 0;
-      transition: opacity 320ms ease;
-      will-change: opacity;
     }
 
+    /* Direct zichtbaar (geen fade) -> canvas start leeg en tekent echt van 0. */
     .hero-draw-frame.is-drawn {
       opacity: 1;
     }
