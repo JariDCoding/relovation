@@ -4772,9 +4772,19 @@
         svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
         svgElement.setAttribute("aria-hidden", "true");
 
-        // De SVG tekent zichzelf via ingebouwde CSS (stroke-dashoffset pen-truc,
-        // per-pad animation-delay, prefers-reduced-motion). Wij tonen 'm enkel.
+        // De SVG tekent zichzelf via ingebouwde CSS zodra de klasse "go" erop staat.
+        // Frame tonen (toont nog niets: de reveal-mask is leeg), dan op de volgende
+        // frame "go" zetten -> de tekening start gegarandeerd vanaf een leeg vlak.
         heroDrawFrame.classList.add("is-drawn");
+        if (!heroReducedMotion.matches) {
+          window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+              svgElement.classList.add("go");
+            });
+          });
+        }
+        // Bij prefers-reduced-motion: de @media-regel in de SVG toont meteen het
+        // volledige beeld (geen "go" nodig).
       };
 
       // Injectie + start gebeuren via de IntersectionObserver hierboven
