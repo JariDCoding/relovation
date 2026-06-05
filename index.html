@@ -4608,36 +4608,36 @@
 
       const heroClamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-      // Pen-truc op de gevulde vormen: de contour (stroke-dashoffset) tekent en
-      // de inkt vult in DEZELFDE kleur mee aan -> geen swap, geen pop.
+      // Twee fasen: 1) het silhouet/de vorm tekenen met de lijnen (contour via
+      // stroke-dashoffset), 2) daarna de vlakken inkleuren (fill).
       const updateHeroDrawing = (progress) => {
         const p = heroClamp(progress, 0, 1);
         heroDrawItems.forEach((item) => {
           if (item.done) {
             return;
           }
-          const lp = heroClamp((p - item.start) / (item.end - item.start || 1), 0, 1);
-          if (lp <= 0) {
-            return;
-          }
-          // Smoothstep -> vloeiende pen-beweging.
-          const eased = lp * lp * (3 - (2 * lp));
-          // Quantiseren: alleen herschrijven bij merkbare verandering -> minder
-          // repaints, hogere FPS (bij een gelijkmatige reveal animeert bijna alles tegelijk).
+          // Fase 1 - contour tekenen (het silhouet, met de lijnen).
           if (item.length > 0) {
-            const off = item.length * (1 - eased);
-            if (item.lastOff === undefined || Math.abs(off - item.lastOff) > item.length * 0.012) {
-              item.element.style.strokeDashoffset = `${off}`;
-              item.lastOff = off;
+            const sLp = heroClamp((p - item.strokeStart) / (item.strokeEnd - item.strokeStart || 1), 0, 1);
+            if (sLp > 0) {
+              const eased = sLp * sLp * (3 - (2 * sLp));
+              const off = item.length * (1 - eased);
+              if (item.lastOff === undefined || Math.abs(off - item.lastOff) > item.length * 0.012) {
+                item.element.style.strokeDashoffset = `${off}`;
+                item.lastOff = off;
+              }
             }
           }
-          const fillP = heroClamp((lp - 0.4) / 0.6, 0, 1);
-          const fo = fillP * fillP;
-          if (item.lastFill === undefined || Math.abs(fo - item.lastFill) > 0.06) {
-            item.element.style.fillOpacity = `${fo}`;
-            item.lastFill = fo;
+          // Fase 2 - inkleuren (de vlakken vullen).
+          const fLp = heroClamp((p - item.fillStart) / (item.fillEnd - item.fillStart || 1), 0, 1);
+          if (fLp > 0) {
+            const fo = fLp * fLp * (3 - (2 * fLp));
+            if (item.lastFill === undefined || Math.abs(fo - item.lastFill) > 0.06) {
+              item.element.style.fillOpacity = `${fo}`;
+              item.lastFill = fo;
+            }
           }
-          if (lp >= 1) {
+          if (p >= 1) {
             if (item.length > 0) {
               item.element.style.strokeDashoffset = "0";
             }
@@ -4699,10 +4699,12 @@
         paths.forEach((el) => {
           let length = 0;
           let cx = 0;
+          let area = 0;
           try {
             length = el.getTotalLength();
             const bb = el.getBBox();
             cx = bb.x + (bb.width / 2);
+            area = bb.width * bb.height;
           } catch (error) {
             length = 0;
           }
@@ -4723,7 +4725,7 @@
           }
           if (cx < minX) { minX = cx; }
           if (cx > maxX) { maxX = cx; }
-          measured.push({ element: el, length, cx });
+          measured.push({ element: el, length, cx, area });
         });
 
         // Splits in linker figuur (sax) en rechter figuur (piano) op x-positie.
@@ -4733,17 +4735,27 @@
           measured.filter((m) => m.cx >= midX)
         ];
 
-        // Per figuur groot->klein: eerst de structuur, dan het detail. Beide figuren
-        // krijgen dezelfde fase (rank/aantal) -> ze tekenen in lockstep, gelijk op.
+        // FASE 1 (t 0 -> ~0.55): het SILHOUET tekenen -> elke vorm tekent z'n contour
+        //   als dunne lijn (fill nog 0). Per figuur groot->klein, beide in lockstep.
+        // FASE 2 (t ~0.55 -> 1.0): inkleuren -> alle vlakken vullen samen solide in.
         heroDrawItems = [];
         groups.forEach((group) => {
-          group.sort((a, b) => b.length - a.length);
-          const n = group.length || 1;
-          group.forEach((item, rank) => {
+          const items = group.filter((m) => m.length > 0);
+          items.sort((a, b) => b.length - a.length);
+          const n = items.length || 1;
+          items.forEach((item, rank) => {
             const phase = rank / n;
-            const start = phase * 0.3;
-            const end = Math.min(1, start + 0.7);
-            heroDrawItems.push({ element: item.element, length: item.length, start, end, done: false });
+            const strokeStart = phase * 0.4;
+            const strokeEnd = Math.min(0.55, strokeStart + 0.15);
+            heroDrawItems.push({
+              element: item.element,
+              length: item.length,
+              strokeStart,
+              strokeEnd,
+              fillStart: 0.55,
+              fillEnd: 1.0,
+              done: false
+            });
           });
         });
       };
