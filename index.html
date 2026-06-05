@@ -4599,7 +4599,7 @@
 
     if (heroDrawFrame) {
       const heroReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const HERO_DURATION = 6000;
+      const HERO_DURATION = 4500;
       let heroReady = false;
       let heroInView = false;
       let heroPlayed = false;
@@ -4693,10 +4693,16 @@
         const paths = Array.from(svgElement.querySelectorAll("path"));
         const measured = [];
 
+        let minX = Infinity;
+        let maxX = -Infinity;
+
         paths.forEach((el) => {
           let length = 0;
+          let cx = 0;
           try {
             length = el.getTotalLength();
+            const bb = el.getBBox();
+            cx = bb.x + (bb.width / 2);
           } catch (error) {
             length = 0;
           }
@@ -4715,30 +4721,30 @@
           } else {
             length = 0;
           }
-          measured.push({ element: el, length });
+          if (cx < minX) { minX = cx; }
+          if (cx > maxX) { maxX = cx; }
+          measured.push({ element: el, length, cx });
         });
 
-        // Gelijkmatig over de HELE tekening verspreiden (deterministische shuffle)
-        // -> beide figuren worden samen voller, geen richting/figuur-voor-figuur.
-        let seed = 20260605;
-        const rand = () => {
-          seed = ((seed * 1664525) + 1013904223) % 4294967296;
-          return seed / 4294967296;
-        };
-        for (let i = measured.length - 1; i > 0; i -= 1) {
-          const j = Math.floor(rand() * (i + 1));
-          const tmp = measured[i];
-          measured[i] = measured[j];
-          measured[j] = tmp;
-        }
+        // Splits in linker figuur (sax) en rechter figuur (piano) op x-positie.
+        const midX = (minX + maxX) / 2;
+        const groups = [
+          measured.filter((m) => m.cx < midX),
+          measured.filter((m) => m.cx >= midX)
+        ];
 
-        // Breed venster + kleine spreiding -> bijna alle strokes tekenen SAMEN over
-        // de hele tekening (overal tegelijk voller), onafhankelijk van stroke-grootte.
-        const total = measured.length || 1;
-        heroDrawItems = measured.map((item, index) => {
-          const start = (index / total) * 0.32;
-          const end = Math.min(1, start + 0.68);
-          return { element: item.element, length: item.length, start, end, done: false };
+        // Per figuur groot->klein: eerst de structuur, dan het detail. Beide figuren
+        // krijgen dezelfde fase (rank/aantal) -> ze tekenen in lockstep, gelijk op.
+        heroDrawItems = [];
+        groups.forEach((group) => {
+          group.sort((a, b) => b.length - a.length);
+          const n = group.length || 1;
+          group.forEach((item, rank) => {
+            const phase = rank / n;
+            const start = phase * 0.3;
+            const end = Math.min(1, start + 0.7);
+            heroDrawItems.push({ element: item.element, length: item.length, start, end, done: false });
+          });
         });
       };
 
