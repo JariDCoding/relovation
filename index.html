@@ -4599,7 +4599,7 @@
 
     if (heroDrawFrame) {
       const heroReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const HERO_DURATION = 5600;
+      const HERO_DURATION = 6000;
       let heroReady = false;
       let heroInView = false;
       let heroPlayed = false;
@@ -4620,18 +4620,16 @@
           if (lp <= 0) {
             return;
           }
-          // Contour tekent over de eerste 65% van het venster (de pen-beweging).
-          const drawP = heroClamp(lp / 0.65, 0, 1);
-          const eased = 1 - Math.pow(1 - drawP, 1.9);
+          // De pen-lijn (stroke) tekent over het hele venster en blijft staan.
+          const eased = 1 - Math.pow(1 - lp, 1.9);
           item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
-          // Inkt vult vloeiend in over de laatste 55% en lost de contour op (geen pop).
-          const fillP = heroClamp((lp - 0.45) / 0.55, 0, 1);
-          item.element.style.fillOpacity = `${fillP}`;
-          item.element.style.strokeOpacity = `${1 - fillP}`;
+          // Inkt vult in DEZELFDE kleur mee aan, net achter de pen -> geen swap,
+          // geen fade, één doorlopende tekenbeweging.
+          const fillP = heroClamp((lp - 0.35) / 0.65, 0, 1);
+          item.element.style.fillOpacity = `${fillP * fillP}`;
           if (lp >= 1) {
             item.element.style.strokeDashoffset = "0";
             item.element.style.fillOpacity = "1";
-            item.element.style.strokeOpacity = "0";
             item.done = true;
           }
         });
