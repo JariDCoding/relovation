@@ -1729,6 +1729,14 @@
       overflow: visible;
     }
 
+    /* Op desktop 10% groter vanuit dezelfde positie. */
+    @media (min-width: 1025px) {
+      .hero-draw-frame {
+        transform: scale(1.1);
+        transform-origin: center center;
+      }
+    }
+
     .notes {
       position: absolute;
       left: calc(681px * var(--hero-scale));
@@ -4591,7 +4599,7 @@
 
     if (heroDrawFrame) {
       const heroReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const HERO_DURATION = 4600;
+      const HERO_DURATION = 5600;
       let heroReady = false;
       let heroInView = false;
       let heroPlayed = false;
@@ -4612,13 +4620,18 @@
           if (lp <= 0) {
             return;
           }
-          const eased = 1 - Math.pow(1 - lp, 1.9);
+          // Contour tekent over de eerste 65% van het venster (de pen-beweging).
+          const drawP = heroClamp(lp / 0.65, 0, 1);
+          const eased = 1 - Math.pow(1 - drawP, 1.9);
           item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
+          // Inkt vult vloeiend in over de laatste 55% en lost de contour op (geen pop).
+          const fillP = heroClamp((lp - 0.45) / 0.55, 0, 1);
+          item.element.style.fillOpacity = `${fillP}`;
+          item.element.style.strokeOpacity = `${1 - fillP}`;
           if (lp >= 1) {
-            // Contour klaar -> vul de vorm met inkt (zoals de originele tekening).
             item.element.style.strokeDashoffset = "0";
-            item.element.style.fill = HERO_INK;
-            item.element.style.stroke = "none";
+            item.element.style.fillOpacity = "1";
+            item.element.style.strokeOpacity = "0";
             item.done = true;
           }
         });
@@ -4667,36 +4680,45 @@
 
       const prepareHeroStrokes = (svgElement) => {
         const paths = Array.from(svgElement.querySelectorAll("path"));
-        const items = [];
+        const measured = [];
 
         paths.forEach((el) => {
           let length = 0;
+          let bbox = null;
           try {
             length = el.getTotalLength();
+            bbox = el.getBBox();
           } catch (error) {
             length = 0;
           }
           if (!length || !Number.isFinite(length)) {
             return;
           }
-          // Fill-vormen: tijdens het tekenen tonen we alleen een dunne contour
-          // (pen-truc), daarna vullen we de vorm met de inkt -> exact de tekening.
-          el.style.fill = "none";
+          // Fill-vormen: tijdens het tekenen tonen we de contour (pen-truc),
+          // daarna lost die op in de gevulde inkt -> exact de originele tekening.
+          el.style.fill = HERO_INK;
+          el.style.fillOpacity = "0";
           el.style.stroke = HERO_INK;
           el.style.strokeWidth = "1.3";
+          el.style.strokeOpacity = "1";
           el.style.strokeLinecap = "round";
           el.style.strokeLinejoin = "round";
           el.style.vectorEffect = "non-scaling-stroke";
           el.style.strokeDasharray = `${length}`;
           el.style.strokeDashoffset = `${length}`;
-          items.push({ element: el, length });
+          // De <g> spiegelt Y (scale -0.1): grotere lokale Y = hoger in beeld.
+          const orderKey = bbox ? -(bbox.y + (bbox.height / 2)) : 0;
+          measured.push({ element: el, length, orderKey });
         });
 
-        const total = items.length || 1;
-        heroDrawItems = items.map((item, index) => {
-          const start = Math.pow(index / total, 1.04) * 0.84;
-          const end = Math.min(1, start + 0.12);
-          return { element: item.element, length: item.length, start, end, filled: false };
+        // Ruimtelijke volgorde van boven naar onder -> bouwt op als een tekening.
+        measured.sort((a, b) => a.orderKey - b.orderKey);
+
+        const total = measured.length || 1;
+        heroDrawItems = measured.map((item, index) => {
+          const start = (index / total) * 0.85;
+          const end = Math.min(1, start + 0.1);
+          return { element: item.element, length: item.length, start, end, done: false };
         });
       };
 
