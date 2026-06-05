@@ -4615,7 +4615,10 @@
           const eased = 1 - Math.pow(1 - lp, 1.9);
           item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
           if (lp >= 1) {
+            // Contour klaar -> vul de vorm met inkt (zoals de originele tekening).
             item.element.style.strokeDashoffset = "0";
+            item.element.style.fill = HERO_INK;
+            item.element.style.stroke = "none";
             item.done = true;
           }
         });
@@ -4660,6 +4663,8 @@
 
       heroObserver.observe(heroDrawFrame);
 
+      const HERO_INK = "#4c6a57";
+
       const prepareHeroStrokes = (svgElement) => {
         const paths = Array.from(svgElement.querySelectorAll("path"));
         const items = [];
@@ -4674,8 +4679,14 @@
           if (!length || !Number.isFinite(length)) {
             return;
           }
-          // Lijndiktes uit de SVG behouden (variërend 2-11) -> sketch-look
-          // die overeenkomt met de originele tekening. Alleen de dash voor de pen-truc.
+          // Fill-vormen: tijdens het tekenen tonen we alleen een dunne contour
+          // (pen-truc), daarna vullen we de vorm met de inkt -> exact de tekening.
+          el.style.fill = "none";
+          el.style.stroke = HERO_INK;
+          el.style.strokeWidth = "1.3";
+          el.style.strokeLinecap = "round";
+          el.style.strokeLinejoin = "round";
+          el.style.vectorEffect = "non-scaling-stroke";
           el.style.strokeDasharray = `${length}`;
           el.style.strokeDashoffset = `${length}`;
           items.push({ element: el, length });
@@ -4683,10 +4694,9 @@
 
         const total = items.length || 1;
         heroDrawItems = items.map((item, index) => {
-          // Strokes lopen door tot p=1 -> de tekening wordt volledig uitgetekend.
-          const start = Math.pow(index / total, 1.04) * 0.86;
-          const end = Math.min(1, start + 0.14);
-          return { element: item.element, length: item.length, start, end };
+          const start = Math.pow(index / total, 1.04) * 0.84;
+          const end = Math.min(1, start + 0.12);
+          return { element: item.element, length: item.length, start, end, filled: false };
         });
       };
 
