@@ -1057,11 +1057,9 @@
       z-index: 1;
       transform: translateY(calc(-50% + 10px));
       transform-origin: center center;
-      filter: sepia(0.03) saturate(0.92) contrast(1) brightness(0.995);
-      will-change: transform, opacity;
+      will-change: opacity;
       opacity: 0;
       transition: opacity 260ms ease;
-      isolation: isolate;
     }
 
     .feature-visual.is-video-ready .svg-draw-frame {
@@ -1083,13 +1081,10 @@
 
     .svg-artwork-layer {
       opacity: var(--usp-artwork-opacity, 0);
-      transition: opacity 140ms linear;
     }
 
     .svg-trace-layer {
       opacity: var(--usp-trace-opacity, 0);
-      mix-blend-mode: multiply;
-      transition: opacity 140ms linear;
     }
 
     .feature-visual-blend {
@@ -4596,6 +4591,8 @@
       let inView = false;
       let hasPlayed = false;
       let animStart = 0;
+      let lastTraceOpacity = -1;
+      let lastArtworkOpacity = -1;
       const DRAW_DURATION = 4500;
 
       const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -4638,8 +4635,14 @@
         const traceOpacity = traceBuild * (0.6 + (0.4 * traceHold)) * (1 - (0.96 * traceFade));
         const artworkOpacity = clamp((p - 0.88) / 0.09, 0, 1);
 
-        featureDrawing.style.setProperty("--usp-trace-opacity", `${traceOpacity}`);
-        featureDrawing.style.setProperty("--usp-artwork-opacity", `${artworkOpacity}`);
+        if (Math.abs(traceOpacity - lastTraceOpacity) > 0.004) {
+          featureDrawing.style.setProperty("--usp-trace-opacity", `${traceOpacity}`);
+          lastTraceOpacity = traceOpacity;
+        }
+        if (Math.abs(artworkOpacity - lastArtworkOpacity) > 0.004) {
+          featureDrawing.style.setProperty("--usp-artwork-opacity", `${artworkOpacity}`);
+          lastArtworkOpacity = artworkOpacity;
+        }
 
         drawItems.forEach((item) => {
           if (item.done) {
@@ -4676,9 +4679,9 @@
           .filter((item) => item.length && Number.isFinite(item.length));
 
         const simplifiedTrace = drawableElements
-          .filter((item) => item.length >= 4)
+          .filter((item) => item.length >= 8)
           .sort((a, b) => b.length - a.length)
-          .slice(0, 2400)
+          .slice(0, 1100)
           .sort((a, b) => a.index - b.index);
 
         const kept = new Set(simplifiedTrace.map((item) => item.element));
@@ -4707,7 +4710,7 @@
           item.element.style.strokeDashoffset = `${item.length}`;
 
           const start = Math.pow(index / simplifiedTrace.length, 1.08) * 0.92;
-          const end = Math.min(1, start + 0.16);
+          const end = Math.min(1, start + 0.1);
 
           return {
             element: item.element,
