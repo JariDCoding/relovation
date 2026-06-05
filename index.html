@@ -4674,10 +4674,8 @@
           if (!length || !Number.isFinite(length)) {
             return;
           }
-          el.style.strokeWidth = "1.6";
-          el.style.strokeLinecap = "round";
-          el.style.strokeLinejoin = "round";
-          el.style.vectorEffect = "non-scaling-stroke";
+          // Lijndiktes uit de SVG behouden (variërend 2-11) -> sketch-look
+          // die overeenkomt met de originele tekening. Alleen de dash voor de pen-truc.
           el.style.strokeDasharray = `${length}`;
           el.style.strokeDashoffset = `${length}`;
           items.push({ element: el, length });
