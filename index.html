@@ -4673,9 +4673,8 @@
       const heroObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            heroInView = true;
             observer.unobserve(heroDrawFrame);
-            startHeroDrawing();
+            loadHeroDrawing().catch(() => { heroDrawFrame.textContent = ""; });
           }
         });
       }, { threshold: 0.3 });
@@ -4773,24 +4772,13 @@
         svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
         svgElement.setAttribute("aria-hidden", "true");
 
-        prepareHeroStrokes(svgElement);
-
-        heroReady = true;
-        updateHeroDrawing(0);
-        startHeroDrawing();
+        // De SVG tekent zichzelf via ingebouwde CSS (stroke-dashoffset pen-truc,
+        // per-pad animation-delay, prefers-reduced-motion). Wij tonen 'm enkel.
+        heroDrawFrame.classList.add("is-drawn");
       };
 
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", () => {
-          loadHeroDrawing().catch(() => {
-            heroDrawFrame.textContent = "";
-          });
-        }, { once: true });
-      } else {
-        loadHeroDrawing().catch(() => {
-          heroDrawFrame.textContent = "";
-        });
-      }
+      // Injectie + start gebeuren via de IntersectionObserver hierboven
+      // (zodra de hero in beeld komt; hero staat bovenaan -> vrijwel meteen).
     }
 
     const featureSection = document.querySelector(".features-section");
