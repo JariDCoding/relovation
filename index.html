@@ -1729,19 +1729,6 @@
       overflow: visible;
     }
 
-    /* Kleurcompositie die met een diagonale squeegee-wipe over de
-       getekende lijnen wordt ingezeefd. JS stuurt clip-path + transform. */
-    .hero-draw-frame .hero-art-layer {
-      position: absolute;
-      inset: 0;
-      will-change: clip-path, transform;
-      transform: translateZ(0);
-    }
-
-    .hero-draw-frame .svg-trace-layer {
-      opacity: var(--hero-trace-opacity, 0);
-    }
-
     .notes {
       position: absolute;
       left: calc(681px * var(--hero-scale));
@@ -4604,41 +4591,19 @@
 
     if (heroDrawFrame) {
       const heroReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const HERO_DURATION = 4400;
-      const HERO_SVGNS = "http://www.w3.org/2000/svg";
+      const HERO_DURATION = 4600;
       let heroReady = false;
       let heroInView = false;
       let heroPlayed = false;
       let heroAnimStart = 0;
       let heroDrawItems = [];
-      let heroPrintLayers = [];
-      let heroLastTrace = -1;
 
       const heroClamp = (value, min, max) => Math.min(max, Math.max(min, value));
-      const easeOutExpo = (x) => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x));
 
-      const heroLuminance = (fill) => {
-        if (!fill || fill[0] !== "#" || fill.length < 7) {
-          return 999;
-        }
-        const r = parseInt(fill.slice(1, 3), 16);
-        const g = parseInt(fill.slice(3, 5), 16);
-        const b = parseInt(fill.slice(5, 7), 16);
-        return (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
-      };
-
-      // Zeefdruk-wipe: diagonale squeegee van bovenaf (links loopt voorop).
-      const heroPrintClip = (eased) => {
-        const edge = eased * 122;
-        const lead = heroClamp(edge, 0, 122);
-        const trail = heroClamp(edge - 22, -22, 122);
-        return `polygon(0% 0%, 100% 0%, 100% ${trail}%, 0% ${lead}%)`;
-      };
-
+      // Pen-truc: elke stroke wordt via stroke-dashoffset getekend, gespreid
+      // over de hele tijdlijn zodat de tekening volledig wordt uitgetekend.
       const updateHeroDrawing = (progress) => {
         const p = heroClamp(progress, 0, 1);
-
-        // 1) Inkt-lijnen tekenen (pen-truc) in de eerste ~65%.
         heroDrawItems.forEach((item) => {
           if (item.done) {
             return;
@@ -4650,33 +4615,10 @@
           const eased = 1 - Math.pow(1 - lp, 1.9);
           item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
           if (lp >= 1) {
+            item.element.style.strokeDashoffset = "0";
             item.done = true;
           }
         });
-
-        // 2) Kleurtonen er één voor één inzeven (squeegee-wipe + settle).
-        heroPrintLayers.forEach((layer) => {
-          if (layer.done) {
-            return;
-          }
-          const lp = heroClamp((p - layer.start) / (layer.end - layer.start || 1), 0, 1);
-          const eased = easeOutExpo(lp);
-          layer.el.style.clipPath = heroPrintClip(eased);
-          layer.el.style.transform = `translateY(${(1 - eased) * 9}px)`;
-          if (lp >= 1) {
-            layer.el.style.clipPath = "none";
-            layer.el.style.transform = "none";
-            layer.done = true;
-          }
-        });
-
-        // 3) De getekende lijnen overhandigen aan de gedrukte donkere laag.
-        const traceFade = heroClamp((p - 0.8) / 0.16, 0, 1);
-        const traceOpacity = 1 - traceFade;
-        if (Math.abs(traceOpacity - heroLastTrace) > 0.004) {
-          heroDrawFrame.style.setProperty("--hero-trace-opacity", `${traceOpacity}`);
-          heroLastTrace = traceOpacity;
-        }
       };
 
       const runHeroAnimation = (timestamp) => {
@@ -4718,21 +4660,11 @@
 
       heroObserver.observe(heroDrawFrame);
 
-      // Splitst de donkerste (inkt-)laag op in losse stroke-paden voor de pen-truc.
-      const buildTraceStrokes = (darkPathData, strokeColor) => {
-        const traceSvg = heroDrawFrame.querySelector(".svg-trace-layer svg");
-        if (!traceSvg) {
-          return;
-        }
-        const group = traceSvg.querySelector("g") || traceSvg;
-        const subpaths = darkPathData.match(/M[^M]*/g) || [];
+      const prepareHeroStrokes = (svgElement) => {
+        const paths = Array.from(svgElement.querySelectorAll("path"));
         const items = [];
 
-        subpaths.forEach((sub) => {
-          const el = document.createElementNS(HERO_SVGNS, "path");
-          el.setAttribute("d", sub);
-          group.appendChild(el);
-
+        paths.forEach((el) => {
           let length = 0;
           try {
             length = el.getTotalLength();
@@ -4740,13 +4672,9 @@
             length = 0;
           }
           if (!length || !Number.isFinite(length)) {
-            el.remove();
             return;
           }
-
-          el.style.fill = "none";
-          el.style.stroke = strokeColor;
-          el.style.strokeWidth = "1.1";
+          el.style.strokeWidth = "1.6";
           el.style.strokeLinecap = "round";
           el.style.strokeLinejoin = "round";
           el.style.vectorEffect = "non-scaling-stroke";
@@ -4757,8 +4685,9 @@
 
         const total = items.length || 1;
         heroDrawItems = items.map((item, index) => {
-          const start = Math.pow(index / total, 1) * 0.52;
-          const end = Math.min(1, start + 0.13);
+          // Strokes lopen door tot p=1 -> de tekening wordt volledig uitgetekend.
+          const start = Math.pow(index / total, 1.04) * 0.86;
+          const end = Math.min(1, start + 0.14);
           return { element: item.element, length: item.length, start, end };
         });
       };
@@ -4767,50 +4696,21 @@
         const response = await fetch("./hero-band.svg");
         const svgMarkup = await response.text();
 
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(svgMarkup, "image/svg+xml");
-        const srcSvg = doc.querySelector("svg");
-        if (!srcSvg) {
+        // Transparante achtergrond: alleen de lijntekening (stroke-paden).
+        heroDrawFrame.innerHTML = svgMarkup;
+
+        const svgElement = heroDrawFrame.querySelector("svg");
+        if (!svgElement) {
           return;
         }
-        const viewBox = srcSvg.getAttribute("viewBox") || "0 0 1254 836";
+        svgElement.removeAttribute("width");
+        svgElement.removeAttribute("height");
+        svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        svgElement.setAttribute("aria-hidden", "true");
 
-        // Donkerste toon = inkt-/lijnlaag (voor de pen-truc).
-        let dark = { d: "", fill: "#2c3a30" };
-        let minLum = Infinity;
-        Array.from(srcSvg.querySelectorAll("path")).forEach((path) => {
-          const fill = path.getAttribute("fill") || "#2c3a30";
-          const lum = heroLuminance(fill);
-          if (lum < minLum) {
-            minLum = lum;
-            dark = { d: path.getAttribute("d") || "", fill };
-          }
-        });
-
-        // Volledige kleurcompositie (alle tonen, correcte stapeling) als één laag,
-        // de getekende lijnen erbovenop, en een grain-overlay.
-        heroDrawFrame.innerHTML = `
-          <div class="hero-art-layer">${svgMarkup}</div>
-          <div class="svg-trace-layer"><svg viewBox="${viewBox}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><g></g></svg></div>
-        `;
-
-        const artSvg = heroDrawFrame.querySelector(".hero-art-layer svg");
-        if (artSvg) {
-          artSvg.removeAttribute("width");
-          artSvg.removeAttribute("height");
-          artSvg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-          artSvg.setAttribute("aria-hidden", "true");
-        }
-
-        const artLayer = heroDrawFrame.querySelector(".hero-art-layer");
-        artLayer.style.clipPath = heroPrintClip(0);
-        artLayer.style.transform = "translateY(10px)";
-        heroPrintLayers = [{ el: artLayer, start: 0.5, end: 0.94, done: false }];
-
-        buildTraceStrokes(dark.d, dark.fill);
+        prepareHeroStrokes(svgElement);
 
         heroReady = true;
-        heroDrawFrame.style.setProperty("--hero-trace-opacity", "0");
         updateHeroDrawing(0);
         startHeroDrawing();
       };
