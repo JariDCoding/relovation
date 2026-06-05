@@ -4622,12 +4622,21 @@
           }
           // Smoothstep -> vloeiende pen-beweging.
           const eased = lp * lp * (3 - (2 * lp));
+          // Quantiseren: alleen herschrijven bij merkbare verandering -> minder
+          // repaints, hogere FPS (bij een gelijkmatige reveal animeert bijna alles tegelijk).
           if (item.length > 0) {
-            item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
+            const off = item.length * (1 - eased);
+            if (item.lastOff === undefined || Math.abs(off - item.lastOff) > item.length * 0.012) {
+              item.element.style.strokeDashoffset = `${off}`;
+              item.lastOff = off;
+            }
           }
-          // Inkt vult mee aan, net achter de pen (zelfde kleur, geen omklap).
           const fillP = heroClamp((lp - 0.4) / 0.6, 0, 1);
-          item.element.style.fillOpacity = `${fillP * fillP}`;
+          const fo = fillP * fillP;
+          if (item.lastFill === undefined || Math.abs(fo - item.lastFill) > 0.06) {
+            item.element.style.fillOpacity = `${fo}`;
+            item.lastFill = fo;
+          }
           if (lp >= 1) {
             if (item.length > 0) {
               item.element.style.strokeDashoffset = "0";
@@ -4686,10 +4695,8 @@
 
         paths.forEach((el) => {
           let length = 0;
-          let bbox = null;
           try {
             length = el.getTotalLength();
-            bbox = el.getBBox();
           } catch (error) {
             length = 0;
           }
@@ -4708,20 +4715,29 @@
           } else {
             length = 0;
           }
-          // De <g> spiegelt Y (scale -0.1): grotere lokale Y = hoger in beeld.
-          const orderKey = bbox ? -(bbox.y + (bbox.height / 2)) : 0;
-          measured.push({ element: el, length, orderKey });
+          measured.push({ element: el, length });
         });
 
-        // Ruimtelijke volgorde van boven naar onder -> bouwt op als een tekening.
-        measured.sort((a, b) => a.orderKey - b.orderKey);
+        // Gelijkmatig over de HELE tekening verspreiden (deterministische shuffle)
+        // -> beide figuren worden samen voller, geen richting/figuur-voor-figuur.
+        let seed = 20260605;
+        const rand = () => {
+          seed = ((seed * 1664525) + 1013904223) % 4294967296;
+          return seed / 4294967296;
+        };
+        for (let i = measured.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(rand() * (i + 1));
+          const tmp = measured[i];
+          measured[i] = measured[j];
+          measured[j] = tmp;
+        }
 
-        // Klein venster + brede spreiding -> weinig lijnen tegelijk zichtbaar,
-        // een rustig tekenfront dat stilletjes van boven naar onder zakt.
+        // Breed venster + kleine spreiding -> bijna alle strokes tekenen SAMEN over
+        // de hele tekening (overal tegelijk voller), onafhankelijk van stroke-grootte.
         const total = measured.length || 1;
         heroDrawItems = measured.map((item, index) => {
-          const start = (index / total) * 0.94;
-          const end = Math.min(1, start + 0.05);
+          const start = (index / total) * 0.32;
+          const end = Math.min(1, start + 0.68);
           return { element: item.element, length: item.length, start, end, done: false };
         });
       };
