@@ -680,3 +680,162 @@ body {
     transform: none !important;
   }
 }
+
+/* ════════════════════════════════════════════
+   DESKTOP — Editorial "concert programme" masthead
+   (≥861px only — mobile overlay stays untouched)
+   ════════════════════════════════════════════ */
+@media (min-width: 861px) {
+
+  /* — Brand: editorial kicker rule before "Live jazz" — */
+  .r-nav__genre {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .r-nav__genre::before {
+    content: "";
+    width: 16px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+
+  /* — Centre: framed programme column — */
+  .r-nav__inner > nav {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 clamp(24px, 2.8vw, 46px);
+  }
+  .r-nav__inner > nav::before,
+  .r-nav__inner > nav::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 22px;
+    background: rgba(76, 106, 87, 0.2);
+  }
+  .r-nav__inner > nav::before { left: 0; }
+  .r-nav__inner > nav::after  { right: 0; }
+
+  /* TOC index numerals replace the dot separators */
+  .r-nav__links {
+    gap: clamp(24px, 2.6vw, 44px);
+    counter-reset: navindex;
+  }
+  .r-nav__links li + li::before { content: none; }
+  .r-nav__links a {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .r-nav__links a::before {
+    counter-increment: navindex;
+    content: counter(navindex, decimal-leading-zero);
+    font-family: "DM Sans", sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    color: rgba(76, 106, 87, 0.42);
+    transform: translateY(3px);
+    transition: color 0.26s, transform 0.4s var(--nav-ease);
+  }
+  .r-nav__links a:hover::before,
+  .r-nav__links a.r-active::before {
+    color: var(--nav-ink-deep);
+    transform: translateY(0);
+  }
+
+  /* — Printed double hairline under the bar — */
+  .r-nav::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 1px;
+    background: rgba(76, 106, 87, 0.12);
+    transition: background 0.5s var(--nav-ease);
+  }
+  .r-nav.is-scrolled::after { background: rgba(76, 106, 87, 0.18); }
+
+  /* — Live "on-air" status chip (JS-injected into actions) — */
+  .r-nav__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 4px;
+    font-family: "DM Sans", sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(76, 106, 87, 0.5);
+    white-space: nowrap;
+    user-select: none;
+  }
+  .r-nav__meta-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #af8f48;
+    flex-shrink: 0;
+    animation: navPulse 2.6s var(--nav-ease) infinite;
+  }
+  .r-nav__meta-time {
+    color: rgba(76, 106, 87, 0.74);
+    font-variant-numeric: tabular-nums;
+  }
+  .r-nav__meta-time::before {
+    content: "·";
+    margin-right: 8px;
+    color: rgba(76, 106, 87, 0.3);
+  }
+  @keyframes navPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(175, 143, 72, 0.5); }
+    70%  { box-shadow: 0 0 0 6px rgba(175, 143, 72, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(175, 143, 72, 0); }
+  }
+
+  /* — One-time staggered entrance on load — */
+  .r-nav__brand,
+  .r-nav__links li,
+  .r-nav__meta,
+  .r-nav__cta {
+    animation: navRise 0.7s var(--nav-ease-out) both;
+  }
+  .r-nav__brand                 { animation-delay: 0.05s; }
+  .r-nav__links li:nth-child(1) { animation-delay: 0.16s; }
+  .r-nav__links li:nth-child(2) { animation-delay: 0.22s; }
+  .r-nav__links li:nth-child(3) { animation-delay: 0.28s; }
+  .r-nav__links li:nth-child(4) { animation-delay: 0.34s; }
+  .r-nav__meta                  { animation-delay: 0.4s; }
+  .r-nav__cta                   { animation-delay: 0.46s; }
+
+  @keyframes navRise {
+    from { opacity: 0; transform: translateY(-9px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Overlay-open recolour for the chip (cream on green) */
+.r-nav.overlay-open .r-nav__meta { color: rgba(244, 237, 207, 0.5); }
+.r-nav.overlay-open .r-nav__meta-time { color: rgba(244, 237, 207, 0.72); }
+
+/* Reduced motion — kill the new movement */
+@media (prefers-reduced-motion: reduce) {
+  .r-nav__brand,
+  .r-nav__links li,
+  .r-nav__meta,
+  .r-nav__cta,
+  .r-nav__meta-dot {
+    animation: none !important;
+  }
+  .r-nav__links a::before { transition: none !important; }
+}
