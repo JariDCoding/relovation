@@ -409,7 +409,7 @@
       justify-content: space-between;
       gap: clamp(58px, 5vw, 96px);
       padding-left: calc(70px * var(--hero-scale));
-      padding-right: calc(30px * var(--hero-scale));
+      padding-right: calc(70px * var(--hero-scale));
     }
 
     .about-visual {
@@ -439,6 +439,9 @@
       height: 100%;
       display: block;
       overflow: visible;
+      /* 10% kleiner, verankerd links zodat de linker-offset gelijk blijft. */
+      transform: scale(0.9);
+      transform-origin: left center;
     }
 
     .about-copy {
@@ -498,7 +501,7 @@
       }
 
       .about-copy {
-        transform: translateX(-5%);
+        transform: translateX(0);
       }
 
       .about-heading {
