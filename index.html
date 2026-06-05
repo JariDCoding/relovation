@@ -957,7 +957,7 @@
       position: relative;
       width: 100%;
       background: var(--bg);
-      min-height: 300vh;
+      min-height: 100vh;
       margin-top: -4%;
     }
 
@@ -4591,46 +4591,14 @@
     if (featureSection && featureSticky && featureVisual && featureDrawing) {
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-      let featureSectionTop = 0;
-      let featureViewportHeight = window.innerHeight || document.documentElement.clientHeight;
       let featureReady = false;
-      let drawingProgress = 0;
       let drawItems = [];
-      let lastFeatureScrollY = -1;
-      let featureNeedsUpdate = true;
+      let inView = false;
+      let hasPlayed = false;
+      let animStart = 0;
+      const DRAW_DURATION = 4500;
 
       const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-
-      const getScrollY = () => (
-        window.pageYOffset !== undefined
-          ? window.pageYOffset
-          : (document.documentElement || document.body.parentNode || document.body).scrollTop
-      );
-
-      const calcFeatureSectionTop = () => {
-        let element = featureSection;
-        let top = 0;
-
-        while (element) {
-          top += element.offsetTop;
-          element = element.offsetParent;
-        }
-
-        featureSectionTop = top;
-        featureViewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      };
-
-      const setFeatureSectionHeight = () => {
-        const isMobile = window.innerWidth <= 768;
-        const height = isMobile
-          ? Math.max(featureViewportHeight * 1.9, 1200)
-          : Math.max(featureViewportHeight * 3, 1800);
-        featureSection.style.height = `${height}px`;
-      };
-
-      const queueFeatureUpdate = () => {
-        featureNeedsUpdate = true;
-      };
 
       const getElementLength = (element) => {
         try {
@@ -4663,21 +4631,29 @@
       };
 
       const updateSvgDrawing = (progress) => {
-        drawingProgress = clamp(progress, 0, 1);
-        const traceBuild = clamp((drawingProgress - 0.006) / 0.64, 0, 1);
-        const traceHold = clamp((drawingProgress - 0.1) / 0.68, 0, 1);
-        const traceFade = clamp((drawingProgress - 0.965) / 0.035, 0, 1);
+        const p = clamp(progress, 0, 1);
+        const traceBuild = clamp((p - 0.006) / 0.64, 0, 1);
+        const traceHold = clamp((p - 0.1) / 0.68, 0, 1);
+        const traceFade = clamp((p - 0.965) / 0.035, 0, 1);
         const traceOpacity = traceBuild * (0.6 + (0.4 * traceHold)) * (1 - (0.96 * traceFade));
-        const artworkOpacity = clamp((drawingProgress - 0.88) / 0.09, 0, 1);
+        const artworkOpacity = clamp((p - 0.88) / 0.09, 0, 1);
 
         featureDrawing.style.setProperty("--usp-trace-opacity", `${traceOpacity}`);
         featureDrawing.style.setProperty("--usp-artwork-opacity", `${artworkOpacity}`);
 
         drawItems.forEach((item) => {
-          const localProgress = clamp((drawingProgress - item.start) / (item.end - item.start || 1), 0, 1);
+          if (item.done) {
+            return;
+          }
+          const localProgress = clamp((p - item.start) / (item.end - item.start || 1), 0, 1);
+          if (localProgress <= 0) {
+            return;
+          }
           const eased = 1 - Math.pow(1 - localProgress, 1.9);
-
           item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
+          if (localProgress >= 1) {
+            item.done = true;
+          }
         });
       };
 
@@ -4700,9 +4676,9 @@
           .filter((item) => item.length && Number.isFinite(item.length));
 
         const simplifiedTrace = drawableElements
-          .filter((item) => item.length >= 14)
+          .filter((item) => item.length >= 4)
           .sort((a, b) => b.length - a.length)
-          .slice(0, 260)
+          .slice(0, 2400)
           .sort((a, b) => a.index - b.index);
 
         const kept = new Set(simplifiedTrace.map((item) => item.element));
@@ -4742,69 +4718,44 @@
         });
       };
 
-      const updateFeatureVideoFromScroll = () => {
-        const scrollY = getScrollY();
-        const totalTravel = featureSection.offsetHeight - featureViewportHeight;
-        const scrolled = scrollY - featureSectionTop;
-        const progress = totalTravel > 0 ? clamp(scrolled / totalTravel, 0, 1) : 0;
-        const sectionRect = featureSection.getBoundingClientRect();
-
-        if (scrolled <= 0) {
-          featureSticky.style.position = "relative";
-          featureSticky.style.top = "0";
-          featureSticky.style.left = "0";
-          featureSticky.style.right = "0";
-          featureSticky.style.bottom = "auto";
-        } else if (scrolled >= totalTravel) {
-          featureSticky.style.position = "absolute";
-          featureSticky.style.top = "auto";
-          featureSticky.style.left = "0";
-          featureSticky.style.right = "0";
-          featureSticky.style.bottom = "0";
-        } else if (sectionRect.bottom > 0) {
-          featureSticky.style.position = "fixed";
-          featureSticky.style.top = "0";
-          featureSticky.style.left = "0";
-          featureSticky.style.right = "0";
-          featureSticky.style.bottom = "auto";
+      const runDrawAnimation = (timestamp) => {
+        if (!animStart) {
+          animStart = timestamp;
         }
+        const elapsed = timestamp - animStart;
+        const progress = clamp(elapsed / DRAW_DURATION, 0, 1);
+        updateSvgDrawing(progress);
+        if (progress < 1) {
+          window.requestAnimationFrame(runDrawAnimation);
+        }
+      };
 
-        if (!featureReady) {
+      const startDrawing = () => {
+        if (hasPlayed || !featureReady || !inView) {
+          return;
+        }
+        hasPlayed = true;
+        featureVisual.classList.add("is-video-ready");
+
+        if (prefersReducedMotion.matches) {
+          updateSvgDrawing(1);
           return;
         }
 
-        featureVisual.classList.add("is-video-ready");
-        updateSvgDrawing(prefersReducedMotion.matches ? 1 : progress);
-        featureNeedsUpdate = false;
+        animStart = 0;
+        window.requestAnimationFrame(runDrawAnimation);
       };
 
-      const featurePoll = () => {
-        window.requestAnimationFrame(featurePoll);
+      const drawObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            inView = true;
+            startDrawing();
+          }
+        });
+      }, { threshold: 0.25 });
 
-        const scrollY = getScrollY();
-
-        if (scrollY !== lastFeatureScrollY) {
-          lastFeatureScrollY = scrollY;
-          featureNeedsUpdate = true;
-        }
-
-        if (featureNeedsUpdate) {
-          updateFeatureVideoFromScroll();
-        }
-      };
-
-      window.addEventListener("scroll", queueFeatureUpdate, { passive: true });
-      window.addEventListener("resize", () => {
-        calcFeatureSectionTop();
-        setFeatureSectionHeight();
-        queueFeatureUpdate();
-      });
-
-      prefersReducedMotion.addEventListener("change", () => {
-        calcFeatureSectionTop();
-        setFeatureSectionHeight();
-        queueFeatureUpdate();
-      });
+      drawObserver.observe(featureVisual);
 
       const loadFeatureDrawing = async () => {
         const response = await fetch("./usp-drawing.svg");
@@ -4831,17 +4782,13 @@
 
         prepareSvgTrace(traceSvg);
         featureReady = true;
-        featureVisual.classList.add("is-video-ready");
         featureDrawing.style.setProperty("--usp-trace-opacity", "0");
         featureDrawing.style.setProperty("--usp-artwork-opacity", "0");
-        queueFeatureUpdate();
+        updateSvgDrawing(0);
+        startDrawing();
       };
 
       const initFeatureSection = () => {
-        calcFeatureSectionTop();
-        setFeatureSectionHeight();
-        queueFeatureUpdate();
-        featurePoll();
         loadFeatureDrawing().catch(() => {
           featureDrawing.textContent = "";
         });
@@ -4852,12 +4799,6 @@
       } else {
         initFeatureSection();
       }
-
-      window.addEventListener("load", () => {
-        calcFeatureSectionTop();
-        setFeatureSectionHeight();
-        queueFeatureUpdate();
-      });
     }
   </script>
 
