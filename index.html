@@ -4735,24 +4735,35 @@
           measured.filter((m) => m.cx >= midX)
         ];
 
-        // FASE 1 (t 0 -> ~0.55): het SILHOUET tekenen -> elke vorm tekent z'n contour
-        //   als dunne lijn (fill nog 0). Per figuur groot->klein, beide in lockstep.
-        // FASE 2 (t ~0.55 -> 1.0): inkleuren -> alle vlakken vullen samen solide in.
+        // FASE 1a (t 0 -> ~0.32): de UITERSTE lijnen (langste strokes = de omtrek)
+        //   -> teken puur de vorm van het manneke.
+        // FASE 1b (t ~0.3 -> 0.64): de rest van de lijnen tekenen.
+        // FASE 2 (t ~0.62 -> 1.0): inkleuren -> alle vlakken vullen samen solide in.
+        // Beide figuren (sax links / piano rechts) in lockstep.
         heroDrawItems = [];
         groups.forEach((group) => {
           const items = group.filter((m) => m.length > 0);
           items.sort((a, b) => b.length - a.length);
           const n = items.length || 1;
+          const outlineCount = Math.max(1, Math.round(n * 0.12));
           items.forEach((item, rank) => {
-            const phase = rank / n;
-            const strokeStart = phase * 0.4;
-            const strokeEnd = Math.min(0.55, strokeStart + 0.15);
+            let strokeStart;
+            let strokeEnd;
+            if (rank < outlineCount) {
+              const ph = rank / outlineCount;
+              strokeStart = ph * 0.22;
+              strokeEnd = strokeStart + 0.1;
+            } else {
+              const ph = (rank - outlineCount) / ((n - outlineCount) || 1);
+              strokeStart = 0.3 + (ph * 0.3);
+              strokeEnd = Math.min(0.64, strokeStart + 0.12);
+            }
             heroDrawItems.push({
               element: item.element,
               length: item.length,
               strokeStart,
               strokeEnd,
-              fillStart: 0.55,
+              fillStart: 0.62,
               fillEnd: 1.0,
               done: false
             });
