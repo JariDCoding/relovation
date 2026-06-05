@@ -4598,7 +4598,7 @@
 
     if (heroDrawFrame) {
       const heroReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const HERO_DURATION = 4500;
+      const HERO_DURATION = 5000;
       let heroReady = false;
       let heroInView = false;
       let heroPlayed = false;
@@ -4607,40 +4607,26 @@
 
       const heroClamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-      // Twee fasen: 1) het silhouet/de vorm tekenen met de lijnen (contour via
-      // stroke-dashoffset), 2) daarna de vlakken inkleuren (fill).
+      // Zuivere pen-truc: elk lijn-pad (pathLength=1, dasharray=1) animeert van
+      // dashoffset 1 (onzichtbaar) -> 0 (volledig getekend). Geen fill, geen wipe.
       const updateHeroDrawing = (progress) => {
         const p = heroClamp(progress, 0, 1);
         heroDrawItems.forEach((item) => {
           if (item.done) {
             return;
           }
-          // Fase 1 - contour tekenen (het silhouet, met de lijnen).
-          if (item.length > 0) {
-            const sLp = heroClamp((p - item.strokeStart) / (item.strokeEnd - item.strokeStart || 1), 0, 1);
-            if (sLp > 0) {
-              const eased = sLp * sLp * (3 - (2 * sLp));
-              const off = item.length * (1 - eased);
-              if (item.lastOff === undefined || Math.abs(off - item.lastOff) > item.length * 0.012) {
-                item.element.style.strokeDashoffset = `${off}`;
-                item.lastOff = off;
-              }
-            }
+          const lp = heroClamp((p - item.start) / (item.end - item.start || 1), 0, 1);
+          if (lp <= 0) {
+            return;
           }
-          // Fase 2 - inkleuren (de vlakken vullen).
-          const fLp = heroClamp((p - item.fillStart) / (item.fillEnd - item.fillStart || 1), 0, 1);
-          if (fLp > 0) {
-            const fo = fLp * fLp * (3 - (2 * fLp));
-            if (item.lastFill === undefined || Math.abs(fo - item.lastFill) > 0.06) {
-              item.element.style.fillOpacity = `${fo}`;
-              item.lastFill = fo;
-            }
+          const eased = lp * lp * (3 - (2 * lp));
+          const off = 1 - eased;
+          if (item.lastOff === undefined || Math.abs(off - item.lastOff) > 0.02) {
+            item.element.style.strokeDashoffset = `${off}`;
+            item.lastOff = off;
           }
-          if (p >= 1) {
-            if (item.length > 0) {
-              item.element.style.strokeDashoffset = "0";
-            }
-            item.element.style.fillOpacity = "1";
+          if (lp >= 1) {
+            item.element.style.strokeDashoffset = "0";
             item.done = true;
           }
         });
@@ -4675,103 +4661,33 @@
         window.requestAnimationFrame(runHeroAnimation);
       };
 
-      const heroObserver = new IntersectionObserver((entries) => {
+      const heroObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             heroInView = true;
+            observer.unobserve(heroDrawFrame);
             startHeroDrawing();
           }
         });
-      }, { threshold: 0.2 });
+      }, { threshold: 0.3 });
 
       heroObserver.observe(heroDrawFrame);
 
-      const HERO_INK = "#4c6a57";
-
       const prepareHeroStrokes = (svgElement) => {
+        // Lijn-paden: fill=none en stroke staan al in de SVG (1:1 behouden).
+        // pathLength="1" zit in het bestand -> dasharray/dashoffset genormaliseerd.
         const paths = Array.from(svgElement.querySelectorAll("path"));
-        const measured = [];
-
-        let minX = Infinity;
-        let maxX = -Infinity;
-
         paths.forEach((el) => {
-          let length = 0;
-          let cx = 0;
-          let cy = 0;
-          try {
-            length = el.getTotalLength();
-            const bb = el.getBBox();
-            cx = bb.x + (bb.width / 2);
-            cy = bb.y + (bb.height / 2);
-          } catch (error) {
-            length = 0;
-          }
-          // ALLE paden vanaf 0 verbergen (ook niet-meetbare) -> niets staat
-          // meteen zichtbaar; de tekening start volledig leeg.
-          el.style.fill = HERO_INK;
-          el.style.fillOpacity = "0";
-          if (length && Number.isFinite(length)) {
-            el.style.stroke = HERO_INK;
-            el.style.strokeWidth = "1.1";
-            el.style.strokeLinecap = "round";
-            el.style.strokeLinejoin = "round";
-            el.style.vectorEffect = "non-scaling-stroke";
-            el.style.strokeDasharray = `${length}`;
-            el.style.strokeDashoffset = `${length}`;
-          } else {
-            length = 0;
-          }
-          if (cx < minX) { minX = cx; }
-          if (cx > maxX) { maxX = cx; }
-          measured.push({ element: el, length, cx, cy });
+          el.style.strokeDasharray = "1";
+          el.style.strokeDashoffset = "1"; // start: volledig onzichtbaar
         });
 
-        // Splits in linker figuur (sax) en rechter figuur (piano) op x-positie.
-        const midX = (minX + maxX) / 2;
-        const groups = [
-          measured.filter((m) => m.cx < midX && m.length > 0),
-          measured.filter((m) => m.cx >= midX && m.length > 0)
-        ];
-
-        // FASE 1 (t 0 -> ~0.66): de VOLLEDIGE lijntekening tekenen, per figuur van
-        //   BUITEN naar BINNEN. Verdeling op gedekte LENGTE (coverage) PER FIGUUR ->
-        //   beide figuren raken even snel vol; geen van beide loopt voor.
-        // FASE 2 (t ~0.68 -> 1.0): PAS DAARNA inkleuren -> de grote vlakken vullen
-        //   solide in (de tekening is dan al volledig getekend).
-        heroDrawItems = [];
-        groups.forEach((group) => {
-          if (!group.length) {
-            return;
-          }
-          let sumX = 0;
-          let sumY = 0;
-          group.forEach((m) => { sumX += m.cx; sumY += m.cy; });
-          const fcx = sumX / group.length;
-          const fcy = sumY / group.length;
-          group.forEach((m) => {
-            const dx = m.cx - fcx;
-            const dy = m.cy - fcy;
-            m.outer = Math.sqrt((dx * dx) + (dy * dy));
-          });
-          group.sort((a, b) => b.outer - a.outer);
-          const groupLen = group.reduce((s, m) => s + m.length, 0) || 1;
-          let accum = 0;
-          group.forEach((item) => {
-            const phase = accum / groupLen;
-            accum += item.length;
-            const strokeStart = phase * 0.54;
-            const strokeEnd = Math.min(0.66, strokeStart + 0.12);
-            heroDrawItems.push({
-              element: item.element,
-              length: item.length,
-              strokeStart,
-              strokeEnd,
-              fillStart: 0.68,
-              fillEnd: 1.0,
-              done: false
-            });
-          });
+        // Natuurlijke tekenvolgorde (document/export-volgorde) met lichte stagger.
+        const total = paths.length || 1;
+        heroDrawItems = paths.map((el, index) => {
+          const start = (index / total) * 0.85;
+          const end = Math.min(1, start + 0.15);
+          return { element: el, start, end, done: false };
         });
       };
 
