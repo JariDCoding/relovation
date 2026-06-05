@@ -14,34 +14,6 @@
     }
   });
 
-  // ── Editorial live status chip (desktop) ──
-  var actions = nav.querySelector('.r-nav__actions');
-  var cta = nav.querySelector('.r-nav__cta');
-  if (actions && cta && !nav.querySelector('.r-nav__meta')) {
-    var meta = document.createElement('span');
-    meta.className = 'r-nav__meta';
-    meta.setAttribute('aria-hidden', 'true');
-    meta.innerHTML =
-      '<span class="r-nav__meta-dot"></span>' +
-      '<span class="r-nav__meta-loc">Brussel</span>' +
-      '<span class="r-nav__meta-time"></span>';
-    actions.insertBefore(meta, cta);
-
-    var timeEl = meta.querySelector('.r-nav__meta-time');
-    function tickClock() {
-      try {
-        timeEl.textContent = new Date().toLocaleTimeString('nl-BE', {
-          hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Brussels'
-        });
-      } catch (e) {
-        var d = new Date();
-        timeEl.textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
-      }
-    }
-    tickClock();
-    setInterval(tickClock, 30000);
-  }
-
   // ── Scroll ──
   function tick() {
     if (window.scrollY > 58) {

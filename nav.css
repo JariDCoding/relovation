@@ -765,48 +765,9 @@ body {
   }
   .r-nav.is-scrolled::after { background: rgba(76, 106, 87, 0.18); }
 
-  /* — Live "on-air" status chip (JS-injected into actions) — */
-  .r-nav__meta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-right: 4px;
-    font-family: "DM Sans", sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgba(76, 106, 87, 0.5);
-    white-space: nowrap;
-    user-select: none;
-  }
-  .r-nav__meta-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #af8f48;
-    flex-shrink: 0;
-    animation: navPulse 2.6s var(--nav-ease) infinite;
-  }
-  .r-nav__meta-time {
-    color: rgba(76, 106, 87, 0.74);
-    font-variant-numeric: tabular-nums;
-  }
-  .r-nav__meta-time::before {
-    content: "·";
-    margin-right: 8px;
-    color: rgba(76, 106, 87, 0.3);
-  }
-  @keyframes navPulse {
-    0%   { box-shadow: 0 0 0 0 rgba(175, 143, 72, 0.5); }
-    70%  { box-shadow: 0 0 0 6px rgba(175, 143, 72, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(175, 143, 72, 0); }
-  }
-
   /* — One-time staggered entrance on load — */
   .r-nav__brand,
   .r-nav__links li,
-  .r-nav__meta,
   .r-nav__cta {
     animation: navRise 0.7s var(--nav-ease-out) both;
   }
@@ -815,7 +776,6 @@ body {
   .r-nav__links li:nth-child(2) { animation-delay: 0.22s; }
   .r-nav__links li:nth-child(3) { animation-delay: 0.28s; }
   .r-nav__links li:nth-child(4) { animation-delay: 0.34s; }
-  .r-nav__meta                  { animation-delay: 0.4s; }
   .r-nav__cta                   { animation-delay: 0.46s; }
 
   @keyframes navRise {
@@ -824,17 +784,11 @@ body {
   }
 }
 
-/* Overlay-open recolour for the chip (cream on green) */
-.r-nav.overlay-open .r-nav__meta { color: rgba(244, 237, 207, 0.5); }
-.r-nav.overlay-open .r-nav__meta-time { color: rgba(244, 237, 207, 0.72); }
-
 /* Reduced motion — kill the new movement */
 @media (prefers-reduced-motion: reduce) {
   .r-nav__brand,
   .r-nav__links li,
-  .r-nav__meta,
-  .r-nav__cta,
-  .r-nav__meta-dot {
+  .r-nav__cta {
     animation: none !important;
   }
   .r-nav__links a::before { transition: none !important; }
