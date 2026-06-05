@@ -4849,230 +4849,54 @@
       aboutObserver.observe(aboutDrawFrame);
     }
 
-    const featureSection = document.querySelector(".features-section");
-    const featureSticky = document.querySelector(".features-sticky");
     const featureVisual = document.querySelector(".feature-visual");
     const featureDrawing = document.querySelector(".feature-visual .svg-draw-frame");
 
-    if (featureSection && featureSticky && featureVisual && featureDrawing) {
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-      let featureReady = false;
-      let drawItems = [];
-      let inView = false;
-      let hasPlayed = false;
-      let animStart = 0;
-      let lastTraceOpacity = -1;
-      let lastArtworkOpacity = -1;
-      const DRAW_DURATION = 4500;
-
-      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-
-      const getElementLength = (element) => {
-        try {
-          if (typeof element.getTotalLength === "function") {
-            return element.getTotalLength();
-          }
-        } catch (error) {
-        }
-
-        const tagName = element.tagName.toLowerCase();
-
-        if (tagName === "rect") {
-          const width = Number(element.getAttribute("width") || 0);
-          const height = Number(element.getAttribute("height") || 0);
-          return (width * 2) + (height * 2);
-        }
-
-        if (tagName === "circle") {
-          const radius = Number(element.getAttribute("r") || 0);
-          return 2 * Math.PI * radius;
-        }
-
-        if (tagName === "ellipse") {
-          const rx = Number(element.getAttribute("rx") || 0);
-          const ry = Number(element.getAttribute("ry") || 0);
-          return 2 * Math.PI * Math.sqrt((rx * rx + ry * ry) / 2);
-        }
-
-        return 0;
-      };
-
-      const updateSvgDrawing = (progress) => {
-        const p = clamp(progress, 0, 1);
-        const traceBuild = clamp((p - 0.006) / 0.64, 0, 1);
-        const traceHold = clamp((p - 0.1) / 0.68, 0, 1);
-        const traceFade = clamp((p - 0.965) / 0.035, 0, 1);
-        const traceOpacity = traceBuild * (0.6 + (0.4 * traceHold)) * (1 - (0.96 * traceFade));
-        const artworkOpacity = clamp((p - 0.88) / 0.09, 0, 1);
-
-        if (Math.abs(traceOpacity - lastTraceOpacity) > 0.004) {
-          featureDrawing.style.setProperty("--usp-trace-opacity", `${traceOpacity}`);
-          lastTraceOpacity = traceOpacity;
-        }
-        if (Math.abs(artworkOpacity - lastArtworkOpacity) > 0.004) {
-          featureDrawing.style.setProperty("--usp-artwork-opacity", `${artworkOpacity}`);
-          lastArtworkOpacity = artworkOpacity;
-        }
-
-        drawItems.forEach((item) => {
-          if (item.done) {
-            return;
-          }
-          const localProgress = clamp((p - item.start) / (item.end - item.start || 1), 0, 1);
-          if (localProgress <= 0) {
-            return;
-          }
-          const eased = 1 - Math.pow(1 - localProgress, 1.9);
-          item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
-          if (localProgress >= 1) {
-            item.done = true;
-          }
-        });
-      };
-
-      const prepareSvgTrace = (svgElement) => {
-        const drawableSelector = "path, line, polyline, polygon, rect, circle, ellipse";
-        const drawableElements = Array.from(svgElement.querySelectorAll(drawableSelector))
-          .map((element, index) => {
-            const length = getElementLength(element);
-            const fill = element.getAttribute("fill");
-            const stroke = element.getAttribute("stroke");
-
-            return {
-              element,
-              index,
-              length,
-              fill,
-              stroke
-            };
-          })
-          .filter((item) => item.length && Number.isFinite(item.length));
-
-        const simplifiedTrace = drawableElements
-          .filter((item) => item.length >= 8)
-          .sort((a, b) => b.length - a.length)
-          .slice(0, 1100)
-          .sort((a, b) => a.index - b.index);
-
-        const kept = new Set(simplifiedTrace.map((item) => item.element));
-
-        drawableElements.forEach((item) => {
-          if (!kept.has(item.element)) {
-            item.element.remove();
-          }
-        });
-
-        drawItems = simplifiedTrace.map((item, index) => {
-          const strokeColor = item.stroke && item.stroke !== "none"
-            ? item.stroke
-            : ((item.fill && item.fill !== "none") ? item.fill : "#566552");
-
-          item.element.style.fill = "none";
-          item.element.style.stroke = strokeColor;
-          item.element.style.strokeWidth = item.stroke && item.stroke !== "none"
-            ? (item.element.getAttribute("stroke-width") || "1")
-            : "1";
-          item.element.style.strokeLinecap = "round";
-          item.element.style.strokeLinejoin = "round";
-          item.element.style.vectorEffect = "non-scaling-stroke";
-          item.element.style.opacity = "0.9";
-          item.element.style.strokeDasharray = `${item.length}`;
-          item.element.style.strokeDashoffset = `${item.length}`;
-
-          const start = Math.pow(index / simplifiedTrace.length, 1.08) * 0.92;
-          const end = Math.min(1, start + 0.1);
-
-          return {
-            element: item.element,
-            length: item.length,
-            start,
-            end
-          };
-        });
-      };
-
-      const runDrawAnimation = (timestamp) => {
-        if (!animStart) {
-          animStart = timestamp;
-        }
-        const elapsed = timestamp - animStart;
-        const progress = clamp(elapsed / DRAW_DURATION, 0, 1);
-        updateSvgDrawing(progress);
-        if (progress < 1) {
-          window.requestAnimationFrame(runDrawAnimation);
-        }
-      };
-
-      const startDrawing = () => {
-        if (hasPlayed || !featureReady || !inView) {
-          return;
-        }
-        hasPlayed = true;
-        featureVisual.classList.add("is-video-ready");
-
-        if (prefersReducedMotion.matches) {
-          updateSvgDrawing(1);
-          return;
-        }
-
-        animStart = 0;
-        window.requestAnimationFrame(runDrawAnimation);
-      };
-
-      const drawObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            inView = true;
-            startDrawing();
-          }
-        });
-      }, { threshold: 0.25 });
-
-      drawObserver.observe(featureVisual);
+    if (featureVisual && featureDrawing) {
+      const featureReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let featureDrawLoaded = false;
 
       const loadFeatureDrawing = async () => {
-        const response = await fetch("./usp-drawing.svg");
-        const svgMarkup = await response.text();
-
-        featureDrawing.innerHTML = `
-          <div class="svg-artwork-layer">${svgMarkup}</div>
-          <div class="svg-trace-layer">${svgMarkup}</div>
-        `;
-
-        const artworkSvg = featureDrawing.querySelector(".svg-artwork-layer svg");
-        const traceSvg = featureDrawing.querySelector(".svg-trace-layer svg");
-
-        if (!artworkSvg || !traceSvg) {
+        if (featureDrawLoaded) {
           return;
         }
+        featureDrawLoaded = true;
 
-        [artworkSvg, traceSvg].forEach((svgElement) => {
-          svgElement.removeAttribute("width");
-          svgElement.removeAttribute("height");
-          svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
-          svgElement.setAttribute("aria-hidden", "true");
-        });
+        const response = await fetch("./usp-band.svg");
+        const svgMarkup = await response.text();
+        featureDrawing.innerHTML = svgMarkup;
 
-        prepareSvgTrace(traceSvg);
-        featureReady = true;
-        featureDrawing.style.setProperty("--usp-trace-opacity", "0");
-        featureDrawing.style.setProperty("--usp-artwork-opacity", "0");
-        updateSvgDrawing(0);
-        startDrawing();
+        const svgElement = featureDrawing.querySelector("svg");
+        if (!svgElement) {
+          return;
+        }
+        svgElement.removeAttribute("width");
+        svgElement.removeAttribute("height");
+        svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        svgElement.setAttribute("aria-hidden", "true");
+
+        // Frame tonen (reveal-mask nog leeg), dan volgende frame "go" -> tekent van 0,
+        // zelfde self-draw als de hero/about band.
+        featureVisual.classList.add("is-video-ready");
+        if (!featureReducedMotion.matches) {
+          window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+              svgElement.classList.add("go");
+            });
+          });
+        }
       };
 
-      const initFeatureSection = () => {
-        loadFeatureDrawing().catch(() => {
-          featureDrawing.textContent = "";
+      const featureObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            observer.unobserve(featureVisual);
+            loadFeatureDrawing().catch(() => { featureDrawing.textContent = ""; });
+          }
         });
-      };
+      }, { threshold: 0.3 });
 
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initFeatureSection, { once: true });
-      } else {
-        initFeatureSection();
-      }
+      featureObserver.observe(featureVisual);
     }
   </script>
 
