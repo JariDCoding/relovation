@@ -4607,8 +4607,9 @@
 
       const heroClamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-      // Zuivere pen-truc: elk lijn-pad (pathLength=1, dasharray=1) animeert van
-      // dashoffset 1 (onzichtbaar) -> 0 (volledig getekend). Geen fill, geen wipe.
+      // De detailrijke tekening bestaat uit gevulde vormen. De pen tekent per vorm
+      // de contour (stroke-dashoffset) en inkt dan in DEZELFDE kleur mee aan
+      // -> geen swap/wipe, eindigt 1:1 op de originele detailtekening.
       const updateHeroDrawing = (progress) => {
         const p = heroClamp(progress, 0, 1);
         heroDrawItems.forEach((item) => {
@@ -4620,13 +4621,21 @@
             return;
           }
           const eased = lp * lp * (3 - (2 * lp));
-          const off = 1 - eased;
-          if (item.lastOff === undefined || Math.abs(off - item.lastOff) > 0.02) {
+          const off = item.length * (1 - eased);
+          if (item.lastOff === undefined || Math.abs(off - item.lastOff) > item.length * 0.02) {
             item.element.style.strokeDashoffset = `${off}`;
             item.lastOff = off;
           }
+          // Inkt vult mee aan, net achter de pen (zelfde groen).
+          const fillP = heroClamp((lp - 0.35) / 0.65, 0, 1);
+          const fo = fillP * fillP;
+          if (item.lastFill === undefined || Math.abs(fo - item.lastFill) > 0.05) {
+            item.element.style.fillOpacity = `${fo}`;
+            item.lastFill = fo;
+          }
           if (lp >= 1) {
             item.element.style.strokeDashoffset = "0";
+            item.element.style.fillOpacity = "1";
             item.done = true;
           }
         });
@@ -4673,21 +4682,78 @@
 
       heroObserver.observe(heroDrawFrame);
 
+      const HERO_INK = "#4c6a57";
+
       const prepareHeroStrokes = (svgElement) => {
-        // Lijn-paden: fill=none en stroke staan al in de SVG (1:1 behouden).
-        // pathLength="1" zit in het bestand -> dasharray/dashoffset genormaliseerd.
         const paths = Array.from(svgElement.querySelectorAll("path"));
+        const measured = [];
+        let minX = Infinity;
+        let maxX = -Infinity;
+
         paths.forEach((el) => {
-          el.style.strokeDasharray = "1";
-          el.style.strokeDashoffset = "1"; // start: volledig onzichtbaar
+          let length = 0;
+          let cx = 0;
+          let cy = 0;
+          try {
+            length = el.getTotalLength();
+            const bb = el.getBBox();
+            cx = bb.x + (bb.width / 2);
+            cy = bb.y + (bb.height / 2);
+          } catch (error) {
+            length = 0;
+          }
+          // Alles vanaf 0 onzichtbaar: inkt op 0, contour volledig "weggeschoven".
+          el.style.fill = HERO_INK;
+          el.style.fillOpacity = "0";
+          if (length && Number.isFinite(length)) {
+            el.style.stroke = HERO_INK;
+            el.style.strokeWidth = "1.1";
+            el.style.strokeLinecap = "round";
+            el.style.strokeLinejoin = "round";
+            el.style.vectorEffect = "non-scaling-stroke";
+            el.style.strokeDasharray = `${length}`;
+            el.style.strokeDashoffset = `${length}`;
+          } else {
+            length = 0;
+          }
+          if (cx < minX) { minX = cx; }
+          if (cx > maxX) { maxX = cx; }
+          measured.push({ element: el, length, cx, cy });
         });
 
-        // Natuurlijke tekenvolgorde (document/export-volgorde) met lichte stagger.
-        const total = paths.length || 1;
-        heroDrawItems = paths.map((el, index) => {
-          const start = (index / total) * 0.85;
-          const end = Math.min(1, start + 0.15);
-          return { element: el, start, end, done: false };
+        // Twee figuren (sax links / piano rechts); per figuur van buiten naar binnen,
+        // verdeeld op gedekte LENGTE (coverage) -> beide even snel, geen voorloper.
+        const midX = (minX + maxX) / 2;
+        const groups = [
+          measured.filter((m) => m.cx < midX && m.length > 0),
+          measured.filter((m) => m.cx >= midX && m.length > 0)
+        ];
+
+        heroDrawItems = [];
+        groups.forEach((group) => {
+          if (!group.length) {
+            return;
+          }
+          let sumX = 0;
+          let sumY = 0;
+          group.forEach((m) => { sumX += m.cx; sumY += m.cy; });
+          const fcx = sumX / group.length;
+          const fcy = sumY / group.length;
+          group.forEach((m) => {
+            const dx = m.cx - fcx;
+            const dy = m.cy - fcy;
+            m.outer = Math.sqrt((dx * dx) + (dy * dy));
+          });
+          group.sort((a, b) => b.outer - a.outer);
+          const groupLen = group.reduce((s, m) => s + m.length, 0) || 1;
+          let accum = 0;
+          group.forEach((item) => {
+            const phase = accum / groupLen;
+            accum += item.length;
+            const start = phase * 0.82;
+            const end = Math.min(1, start + 0.18);
+            heroDrawItems.push({ element: item.element, length: item.length, start, end, done: false });
+          });
         });
       };
 
