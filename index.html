@@ -4698,17 +4698,17 @@
         paths.forEach((el) => {
           let length = 0;
           let cx = 0;
-          let area = 0;
+          let cy = 0;
           try {
             length = el.getTotalLength();
             const bb = el.getBBox();
             cx = bb.x + (bb.width / 2);
-            area = bb.width * bb.height;
+            cy = bb.y + (bb.height / 2);
           } catch (error) {
             length = 0;
           }
-          // ALLE paden vanaf 0 verbergen (ook niet-meetbare) -> geen enkel
-          // pad staat meteen zichtbaar (voorkomt de "ineens een hoop" flits).
+          // ALLE paden vanaf 0 verbergen (ook niet-meetbare) -> niets staat
+          // meteen zichtbaar; de tekening start volledig leeg.
           el.style.fill = HERO_INK;
           el.style.fillOpacity = "0";
           if (length && Number.isFinite(length)) {
@@ -4724,45 +4724,49 @@
           }
           if (cx < minX) { minX = cx; }
           if (cx > maxX) { maxX = cx; }
-          measured.push({ element: el, length, cx, area });
+          measured.push({ element: el, length, cx, cy });
         });
 
         // Splits in linker figuur (sax) en rechter figuur (piano) op x-positie.
         const midX = (minX + maxX) / 2;
         const groups = [
-          measured.filter((m) => m.cx < midX),
-          measured.filter((m) => m.cx >= midX)
+          measured.filter((m) => m.cx < midX && m.length > 0),
+          measured.filter((m) => m.cx >= midX && m.length > 0)
         ];
 
-        // FASE 1a (t 0 -> ~0.32): de UITERSTE lijnen (langste strokes = de omtrek)
-        //   -> teken puur de vorm van het manneke.
-        // FASE 1b (t ~0.3 -> 0.64): de rest van de lijnen tekenen.
-        // FASE 2 (t ~0.62 -> 1.0): inkleuren -> alle vlakken vullen samen solide in.
-        // Beide figuren (sax links / piano rechts) in lockstep.
+        // FASE 1 (t 0 -> ~0.58): tekenen van BUITEN naar BINNEN -> de strokes het
+        //   verst van het midden van elke figuur eerst (de buitencontour/vorm),
+        //   dan naar binnen. Beide figuren in lockstep.
+        // FASE 2 (t ~0.58 -> 1.0): inkleuren -> alle vlakken vullen samen solide in.
         heroDrawItems = [];
         groups.forEach((group) => {
-          const items = group.filter((m) => m.length > 0);
-          items.sort((a, b) => b.length - a.length);
-          const n = items.length || 1;
-          const outlineCount = Math.max(1, Math.round(n * 0.12));
-          items.forEach((item, rank) => {
-            let strokeStart;
-            let strokeEnd;
-            if (rank < outlineCount) {
-              const ph = rank / outlineCount;
-              strokeStart = ph * 0.22;
-              strokeEnd = strokeStart + 0.1;
-            } else {
-              const ph = (rank - outlineCount) / ((n - outlineCount) || 1);
-              strokeStart = 0.3 + (ph * 0.3);
-              strokeEnd = Math.min(0.64, strokeStart + 0.12);
-            }
+          if (!group.length) {
+            return;
+          }
+          // Middelpunt van de figuur.
+          let sumX = 0;
+          let sumY = 0;
+          group.forEach((m) => { sumX += m.cx; sumY += m.cy; });
+          const fcx = sumX / group.length;
+          const fcy = sumY / group.length;
+          // Afstand tot het midden -> buitenste eerst.
+          group.forEach((m) => {
+            const dx = m.cx - fcx;
+            const dy = m.cy - fcy;
+            m.outer = Math.sqrt((dx * dx) + (dy * dy));
+          });
+          group.sort((a, b) => b.outer - a.outer);
+          const n = group.length || 1;
+          group.forEach((item, rank) => {
+            const phase = rank / n;
+            const strokeStart = phase * 0.46;
+            const strokeEnd = Math.min(0.58, strokeStart + 0.14);
             heroDrawItems.push({
               element: item.element,
               length: item.length,
               strokeStart,
               strokeEnd,
-              fillStart: 0.62,
+              fillStart: 0.58,
               fillEnd: 1.0,
               done: false
             });
