@@ -4608,8 +4608,8 @@
 
       const heroClamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-      // Pure stroke-art pen-truc: elke lijn wordt met stroke-dashoffset getekend
-      // en blijft staan. Geen fill, geen swap -> één doorlopende tekenbeweging.
+      // Pen-truc op de gevulde vormen: de contour (stroke-dashoffset) tekent en
+      // de inkt vult in DEZELFDE kleur mee aan -> geen swap, geen pop.
       const updateHeroDrawing = (progress) => {
         const p = heroClamp(progress, 0, 1);
         heroDrawItems.forEach((item) => {
@@ -4620,27 +4620,33 @@
           if (lp <= 0) {
             return;
           }
-          // Zachte ease (smoothstep) -> vloeiende pen-beweging, geen schokken.
+          // Smoothstep -> vloeiende pen-beweging.
           const eased = lp * lp * (3 - (2 * lp));
-          item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
+          if (item.length > 0) {
+            item.element.style.strokeDashoffset = `${item.length * (1 - eased)}`;
+          }
+          // Inkt vult mee aan, net achter de pen (zelfde kleur, geen omklap).
+          const fillP = heroClamp((lp - 0.4) / 0.6, 0, 1);
+          item.element.style.fillOpacity = `${fillP * fillP}`;
           if (lp >= 1) {
-            item.element.style.strokeDashoffset = "0";
+            if (item.length > 0) {
+              item.element.style.strokeDashoffset = "0";
+            }
+            item.element.style.fillOpacity = "1";
             item.done = true;
           }
         });
       };
-
-      // Zachte start/eind (easeInOutSine) zodat het rustig opbouwt, niet ineens.
-      const heroEase = (t) => 0.5 * (1 - Math.cos(Math.PI * heroClamp(t, 0, 1)));
 
       const runHeroAnimation = (timestamp) => {
         if (!heroAnimStart) {
           heroAnimStart = timestamp;
         }
         const elapsed = timestamp - heroAnimStart;
-        const linear = heroClamp(elapsed / HERO_DURATION, 0, 1);
-        updateHeroDrawing(heroEase(linear));
-        if (linear < 1) {
+        // Lineair -> gestage tekensnelheid, geen trage start + plotse middenburst.
+        const progress = heroClamp(elapsed / HERO_DURATION, 0, 1);
+        updateHeroDrawing(progress);
+        if (progress < 1) {
           window.requestAnimationFrame(runHeroAnimation);
         }
       };
@@ -4687,18 +4693,21 @@
           } catch (error) {
             length = 0;
           }
-          if (!length || !Number.isFinite(length)) {
-            return;
+          // ALLE paden vanaf 0 verbergen (ook niet-meetbare) -> geen enkel
+          // pad staat meteen zichtbaar (voorkomt de "ineens een hoop" flits).
+          el.style.fill = HERO_INK;
+          el.style.fillOpacity = "0";
+          if (length && Number.isFinite(length)) {
+            el.style.stroke = HERO_INK;
+            el.style.strokeWidth = "1.1";
+            el.style.strokeLinecap = "round";
+            el.style.strokeLinejoin = "round";
+            el.style.vectorEffect = "non-scaling-stroke";
+            el.style.strokeDasharray = `${length}`;
+            el.style.strokeDashoffset = `${length}`;
+          } else {
+            length = 0;
           }
-          // Stroke-art: dezelfde paden, maar als dunne lijn getekend (geen fill).
-          el.style.fill = "none";
-          el.style.stroke = HERO_INK;
-          el.style.strokeWidth = "1.4";
-          el.style.strokeLinecap = "round";
-          el.style.strokeLinejoin = "round";
-          el.style.vectorEffect = "non-scaling-stroke";
-          el.style.strokeDasharray = `${length}`;
-          el.style.strokeDashoffset = `${length}`;
           // De <g> spiegelt Y (scale -0.1): grotere lokale Y = hoger in beeld.
           const orderKey = bbox ? -(bbox.y + (bbox.height / 2)) : 0;
           measured.push({ element: el, length, orderKey });
