@@ -4949,12 +4949,13 @@
           el.classList.add("danced"); // SVG @media shows final art; dance disabled by media query
           return;
         }
-        // Two frames guarantee the blank mask paints before the draw starts,
-        // then the existing jiggle/dance begins exactly when the draw ends (1.2s).
+        // Two frames guarantee the blank mask paints before the draw starts.
+        // The note dances from the start (resting pose == dance start pose, so
+        // no snap) — it jiggles while it draws itself in.
         window.requestAnimationFrame(() => {
           window.requestAnimationFrame(() => {
             svg.classList.add("go");
-            window.setTimeout(() => el.classList.add("danced"), 1200);
+            el.classList.add("danced");
           });
         });
       };
