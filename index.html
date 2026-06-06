@@ -925,9 +925,9 @@
       transform-origin: center;
     }
 
-    .quote-inline-asset.is-note img {
-      animation: quoteNoteDance 2.8s ease-in-out infinite;
-      transform-origin: center bottom;
+    .quote-inline-asset.is-note .note-draw {
+      width: 1.02em;
+      height: 1.02em;
     }
 
     .reveal-copy,
@@ -1128,16 +1128,14 @@
       z-index: 3;
     }
 
-    .feature-notes img.note-a,
-    .feature-notes img.note-b {
+    .feature-notes .note-a,
+    .feature-notes .note-b {
       position: absolute;
-      object-fit: contain;
       pointer-events: none;
-      animation: noteJiggle 3.8s ease-in-out infinite;
       filter: drop-shadow(0 10px 14px rgba(76, 106, 87, 0.12));
     }
 
-    .feature-notes img.note-a {
+    .feature-notes .note-a {
       width: 82px;
       height: 82px;
       left: 1%;
@@ -1146,7 +1144,7 @@
       animation-delay: 0s;
     }
 
-    .feature-notes img.note-b {
+    .feature-notes .note-b {
       width: 66px;
       height: 66px;
       left: 12%;
@@ -1420,15 +1418,12 @@
       pointer-events: none;
     }
 
-    .events-notes img {
+    .events-notes .note-draw {
       position: absolute;
-      object-fit: contain;
       filter: drop-shadow(0 8px 10px rgba(76, 106, 87, 0.08));
-      transform-origin: center;
-      animation: noteJiggle 3.8s ease-in-out infinite;
     }
 
-    .events-notes img:first-child {
+    .events-notes .note-draw:first-child {
       width: 46px;
       height: 46px;
       left: 38px;
@@ -1436,7 +1431,7 @@
       animation-delay: 0s;
     }
 
-    .events-notes img:last-child {
+    .events-notes .note-draw:last-child {
       width: 60px;
       height: 60px;
       left: 2px;
@@ -1773,7 +1768,6 @@
       position: absolute;
       opacity: 1;
       transform-origin: center;
-      animation: noteJiggle 3.8s ease-in-out infinite;
       filter: drop-shadow(0 8px 10px rgba(76, 106, 87, 0.1));
     }
 
@@ -1953,6 +1947,21 @@
       55% { transform: translate3d(4px, -9px, 0) rotate(8deg) scale(1.04); }
       74% { transform: translate3d(1px, -4px, 0) rotate(1deg) scale(1.01); }
       100% { transform: translate3d(0, 0, 0) rotate(-10deg) scale(1); }
+    }
+
+    /* ── Self-drawing music notes: draw in (1.2s) on view, then dance ── */
+    .note-draw { display: block; }
+    .note-draw svg { width: 100%; height: 100%; display: block; overflow: visible; }
+    /* Resting pose during the draw = each dance's start pose, so there's no snap
+       when the jiggle/dance begins right after the note finishes drawing. */
+    .note-draw.note-jiggle { transform: rotate(-10deg); transform-origin: center; }
+    .note-draw.note-quotedance { transform: rotate(-8deg); transform-origin: center bottom; }
+    /* The dance only starts once JS confirms the note has drawn itself (.danced). */
+    .note-draw.note-jiggle.danced { animation: noteJiggle 3.8s ease-in-out infinite; }
+    .note-draw.note-quotedance.danced { animation: quoteNoteDance 2.8s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      .note-draw.note-jiggle, .note-draw.note-quotedance { transform: none; }
+      .note-draw.danced { animation: none !important; }
     }
 
     @media (max-width: 1120px) {
@@ -2604,12 +2613,12 @@
         right: 8%;
       }
 
-      .feature-notes img.note-a {
+      .feature-notes .note-a {
         right: 18%;
         left: auto;
       }
 
-      .feature-notes img.note-b {
+      .feature-notes .note-b {
         right: 6%;
         left: auto;
       }
@@ -2663,13 +2672,13 @@
         display: none;
       }
 
-      .feature-notes img.note-a {
+      .feature-notes .note-a {
         left: 38%;
         top: 20%;
         right: auto;
       }
 
-      .feature-notes img.note-b {
+      .feature-notes .note-b {
         left: 50%;
         top: 10%;
         right: auto;
@@ -3827,8 +3836,8 @@
       </div>
 
       <div class="notes" aria-hidden="true">
-        <img class="note one" src="./note%20relovtion.svg" alt="" data-node-id="127:1548">
-        <img class="note two" src="./note%20relovtion.svg" alt="" data-node-id="127:1666">
+        <span class="note one note-draw note-jiggle" aria-hidden="true"></span>
+        <span class="note two note-draw note-jiggle" aria-hidden="true"></span>
       </div>
 
       <div class="player-wrap">
@@ -3953,7 +3962,7 @@
           <span class="quote-word" style="animation-delay: 0.7s;">niveau</span>
           <span class="quote-word" style="animation-delay: 0.76s;">tilt.</span>
           <span class="quote-inline-asset is-note" style="animation-delay: 0.82s;" aria-hidden="true">
-            <img src="./note%20relovtion.svg" alt="">
+            <span class="note-draw note-quotedance"></span>
           </span>
         </span>
       </h2>
@@ -4006,8 +4015,8 @@
         <div class="edge-fade-top" aria-hidden="true"></div>
         <div class="edge-fade-bottom" aria-hidden="true"></div>
         <div class="feature-notes" aria-hidden="true">
-          <img class="note-a" src="./note%20relovtion.svg" alt="">
-          <img class="note-b" src="./note%20relovtion.svg" alt="">
+          <span class="note-a note-draw note-jiggle" aria-hidden="true"></span>
+          <span class="note-b note-draw note-jiggle" aria-hidden="true"></span>
         </div>
       </div>
     </div>
@@ -4095,8 +4104,8 @@
 
       <div class="events-editorial">
         <div class="events-notes" aria-hidden="true">
-          <img src="./note%20relovtion.svg" alt="">
-          <img src="./note%20relovtion.svg" alt="">
+          <span class="note-draw note-jiggle" aria-hidden="true"></span>
+          <span class="note-draw note-jiggle" aria-hidden="true"></span>
         </div>
 
         <article class="event-row event-row--kbc">
@@ -4904,6 +4913,62 @@
       }, { threshold: 0.7 });
 
       featureObserver.observe(featureVisual);
+    }
+
+    // --- Self-drawing music notes: draw in (1.2s) on view, then start the dance ---
+    const noteEls = document.querySelectorAll(".note-draw");
+    if (noteEls.length) {
+      const noteReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let noteMarkup = null;
+      let noteUid = 0;
+      const loadNote = () => (noteMarkup ||= fetch("./note-draw.svg").then((r) => r.text()));
+
+      const drawNote = async (el) => {
+        const raw = await loadNote();
+        // Unique ids per instance: every copy ships id="note-artwork"/"note-reveal",
+        // and <use href="#note-artwork"> resolves to the FIRST match in the document,
+        // so without this all notes would share the first note's mask/art.
+        const uid = ++noteUid;
+        const markup = raw
+          .replaceAll('id="note-artwork"', `id="note-artwork-${uid}"`)
+          .replaceAll('href="#note-artwork"', `href="#note-artwork-${uid}"`)
+          .replaceAll("url(#note-reveal)", `url(#note-reveal-${uid})`)
+          .replaceAll('id="note-reveal"', `id="note-reveal-${uid}"`)
+          .replaceAll('id="note-band"', `id="note-band-${uid}"`);
+        const svg = new DOMParser().parseFromString(markup, "image/svg+xml").querySelector("svg");
+        if (!svg) {
+          return;
+        }
+        svg.removeAttribute("width");
+        svg.removeAttribute("height");
+        svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        svg.setAttribute("aria-hidden", "true");
+        el.appendChild(svg);
+
+        if (noteReduced.matches) {
+          el.classList.add("danced"); // SVG @media shows final art; dance disabled by media query
+          return;
+        }
+        // Two frames guarantee the blank mask paints before the draw starts,
+        // then the existing jiggle/dance begins exactly when the draw ends (1.2s).
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            svg.classList.add("go");
+            window.setTimeout(() => el.classList.add("danced"), 1200);
+          });
+        });
+      };
+
+      const noteObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            observer.unobserve(entry.target);
+            drawNote(entry.target).catch(() => {});
+          }
+        });
+      }, { threshold: 0.5 });
+
+      noteEls.forEach((el) => noteObserver.observe(el));
     }
   </script>
 
