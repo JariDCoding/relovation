@@ -1882,29 +1882,6 @@
       opacity: 1;
     }
 
-    /* ── Self-drawing play triangle inside the play buttons ── */
-    .play-draw { position: relative; }
-    .play-draw svg {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(calc(-50% + 2px), -50%); /* optical-centre a right-pointing triangle */
-      display: block;
-      overflow: visible;
-      pointer-events: none;
-    }
-    /* Hero: drop the CSS-border triangle; drawn triangle is cream on the green circle */
-    .player-icon.play-draw { border: 0; margin: 0; }
-    .player-icon.play-draw svg { width: 50px; height: 50px; }
-    /* Promo: drop the CSS-border triangle; drawn triangle is green on the cream circle */
-    .about-promo-icon.play-draw::before { content: none; }
-    .about-promo-icon.play-draw svg { width: 42px; height: 42px; }
-    /* When playing, hide the triangle so the pause bars show (hero hides via .player-icon opacity) */
-    .about-promo-button.is-playing .about-promo-icon.play-draw svg {
-      opacity: 0;
-      transition: opacity 140ms ease;
-    }
-
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(-360deg); }
@@ -3862,7 +3839,7 @@
         </svg>
 
         <button class="player-button" type="button" aria-label="Speel fragment af" data-node-id="99:90">
-          <span class="player-icon play-draw" data-src="./play-hero.svg" aria-hidden="true" data-node-id="99:98"></span>
+          <span class="player-icon" aria-hidden="true" data-node-id="99:98"></span>
         </button>
       </div>
     </section>
@@ -3874,7 +3851,7 @@
         <video class="about-promo-video" playsinline preload="none" aria-label="Relovation live moment video"></video>
         <div class="about-promo-inner">
           <button class="about-promo-button" type="button" aria-label="Ervaar een live moment" data-node-id="100:23">
-            <span class="about-promo-icon play-draw" data-src="./play-promo.svg" aria-hidden="true" data-node-id="100:24"></span>
+            <span class="about-promo-icon" aria-hidden="true" data-node-id="100:24"></span>
           </button>
           <h2 class="about-promo-title" data-node-id="100:28">Ervaar een live moment</h2>
         </div>
@@ -4979,43 +4956,6 @@
       }, { threshold: 0.5 });
 
       noteEls.forEach((el) => noteObserver.observe(el));
-    }
-
-    // --- Self-drawing play triangles inside the play buttons (draw in on view) ---
-    const playEls = document.querySelectorAll(".play-draw[data-src]");
-    if (playEls.length) {
-      const playReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-      const drawPlay = async (el) => {
-        const src = el.getAttribute("data-src");
-        const markup = await (await fetch(src)).text();
-        const svg = new DOMParser().parseFromString(markup, "image/svg+xml").querySelector("svg");
-        if (!svg) {
-          return;
-        }
-        svg.removeAttribute("width");
-        svg.removeAttribute("height");
-        svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-        svg.setAttribute("aria-hidden", "true");
-        el.appendChild(svg);
-        if (playReduced.matches) {
-          return; // SVG @media shows the final triangle without animating
-        }
-        window.requestAnimationFrame(() => {
-          window.requestAnimationFrame(() => svg.classList.add("go"));
-        });
-      };
-
-      const playObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            observer.unobserve(entry.target);
-            drawPlay(entry.target).catch(() => {});
-          }
-        });
-      }, { threshold: 0.5 });
-
-      playEls.forEach((el) => playObserver.observe(el));
     }
   </script>
 

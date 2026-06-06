@@ -1,6 +1,0 @@
-<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><style>
-.tri{fill:none;stroke:#4c6a57;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
-.go .tri{animation:triDraw 0.8s ease forwards}
-@keyframes triDraw{to{stroke-dashoffset:0}}
-@media (prefers-reduced-motion:reduce){.tri{stroke-dashoffset:0}}
-</style><path class="tri" pathLength="1" d="M34 26 L34 74 L74 50 Z"/></svg>
