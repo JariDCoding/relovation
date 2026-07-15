@@ -26,8 +26,8 @@
       --content-gap: clamp(28px, 2.6vw, 42px);
       --motion-duration: 1s;
       --motion-ease: cubic-bezier(0.18, 0.88, 0.18, 1);
-      --button-height: 51px;
-      --button-width: 187px;
+      --button-height: 52px;
+      --button-width: 188px;
       --hero-height: clamp(620px, 47vw, 900px);
     }
 
@@ -315,10 +315,11 @@
 
     .service-description {
       margin: 0;
-      max-width: 44ch;
+      max-width: 54ch;
       color: var(--ink-soft);
       font-size: clamp(18px, 1.18vw, 26px);
-      line-height: 1.42;
+      line-height: 1.5;
+      text-wrap: pretty;
     }
 
     .service-points {
@@ -328,7 +329,7 @@
       padding: 0;
       list-style: none;
       width: 100%;
-      max-width: 44ch;
+      max-width: 54ch;
     }
 
     .service-points li {
@@ -412,12 +413,40 @@
       color: var(--ink);
     }
 
-    .line-item-kicker,
     .line-item-copy {
       margin: 0;
       color: var(--ink-soft);
       font-size: 16px;
       line-height: 1.6;
+      text-wrap: pretty;
+    }
+
+    /* Museum-label: de bezetting is metadata, geen body. Vault §6/§8. */
+    .line-item-kicker {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(76, 106, 87, 0.62);
+    }
+
+    /* Side-note binnen een item (vault §8), losgemaakt van de lopende zin. */
+    .line-note {
+      display: block;
+      margin-top: 8px;
+      color: rgba(76, 106, 87, 0.74);
+    }
+
+    /* Afsluitende noot onder de lijst — idioom van .vision-note-text (over.html). */
+    .line-list-note {
+      margin: 32px 0 0;
+      max-width: 52ch;
+      color: rgba(76, 106, 87, 0.74);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.5;
     }
 
     .services-cta-section {
@@ -433,11 +462,12 @@
       padding: 0 clamp(20px, 8vw, 120px);
     }
 
+    /* Geen max-width: regels worden handmatig gebroken via .reveal-line,
+       zoals op index/over. CTA-schaal volgt .cta-title (over.html). */
     .services-cta-title {
       margin: 0;
-      max-width: 14ch;
       font-family: "EB Garamond", serif;
-      font-size: clamp(64px, 6vw, 110px);
+      font-size: clamp(60px, 5.6vw, 84px);
       line-height: 1.08;
       font-weight: 400;
       letter-spacing: -0.03em;
@@ -448,12 +478,20 @@
       font-style: italic;
     }
 
+    /* Regellengte volgt vault §1 (50-66 tekens) i.p.v. 33ch; balance voorkomt weduwe. */
     .services-cta-copy {
       margin: 0;
-      max-width: 33ch;
+      max-width: min(620px, 100%);
       color: var(--ink-soft);
       font-size: clamp(18px, 1.24vw, 26px);
       line-height: 1.5;
+      text-wrap: balance;
+    }
+
+    /* Panel is gecentreerd — dan ook de gebroken kopregels centreren
+       (zelfde ingreep als .hero-copy .reveal-title). */
+    .services-cta-panel .reveal-title {
+      align-items: center;
     }
 
     .services-cta-actions {
@@ -726,7 +764,7 @@
       }
 
       .services-cta-actions .button {
-        height: 51px;
+        height: var(--button-height);
         font-size: 13px;
       }
     }
@@ -929,7 +967,7 @@
             <article class="line-item reveal-copy" style="transition-delay: 0.06s;">
               <h3 class="line-item-title">TRIO</h3>
               <p class="line-item-kicker">Zang/sax, gitaar &amp; contrabas</p>
-              <p class="line-item-copy">Een rijkere livebezetting met extra warmte en karakter. Ideaal voor events waar de muziek meer aanwezigheid en diepgang mag hebben.<br><em>De trioformatie is momenteel in opbouw — neem contact op voor beschikbaarheid.</em></p>
+              <p class="line-item-copy">Een rijkere livebezetting met extra warmte en karakter. Ideaal voor events waar de muziek meer aanwezigheid en diepgang mag hebben.<em class="line-note">De trioformatie is momenteel in opbouw — neem contact op voor beschikbaarheid.</em></p>
             </article>
 
             <article class="line-item reveal-copy" style="transition-delay: 0.12s;">
@@ -939,7 +977,7 @@
             </article>
           </div>
 
-          <p class="line-item-copy reveal-copy" style="margin-top: 26px;"><em>Niet zeker welke bezetting past bij uw event? Wij adviseren u graag op basis van uw locatie, publiek en programma.</em></p>
+          <p class="line-list-note reveal-copy"><em>Niet zeker welke bezetting past bij uw event? Wij adviseren u graag op basis van uw locatie, publiek en programma.</em></p>
         </div>
       </section>
 
@@ -950,6 +988,8 @@
               <span class="reveal-line">
                 <span class="reveal-word" style="animation-delay: 0.04s;">Bespreek</span>
                 <span class="reveal-word" style="animation-delay: 0.1s;">uw</span>
+              </span>
+              <span class="reveal-line">
                 <span class="reveal-word" style="animation-delay: 0.16s;"><em>event</em></span>
                 <span class="reveal-word" style="animation-delay: 0.22s;">met</span>
                 <span class="reveal-word" style="animation-delay: 0.28s;">ons.</span>

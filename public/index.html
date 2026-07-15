@@ -150,25 +150,42 @@
       display: inline-block;
     }
 
-    /* Hoofdtitel uit de copydeck. Het wordmark blijft de visuele H1; deze regel
-       draagt de belofte, direct onder de naam. */
-    .hero-lead {
-      width: 100%;
-      max-width: min(100%, 820px);
-      margin: calc(-2px * var(--hero-scale)) 0 0;
-      font-family: "EB Garamond", serif;
-      font-size: clamp(26px, 2.3vw, 38px);
-      line-height: 1.25;
+    /* Hero draagt nu de belofte i.p.v. het wordmark (copydeck: HOOFDTITEL).
+       De merknaam staat al in de nav en de footer.
+       Design system: Label/Eyebrow — DM Sans Medium 16, tracked. */
+    .hero-eyebrow {
+      margin: 0 0 clamp(14px, 1.2vw, 20px);
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(12px, 0.9vw, 14px);
       font-weight: 500;
-      letter-spacing: -0.01em;
-      color: var(--ink);
-      text-wrap: balance;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
     }
 
-    /* De subtitle had een negatieve marge om strak onder het wordmark te hangen.
-       Met de leadregel ertussen moet die pull juist weg. */
-    .hero-lead + .subtitle {
-      margin-top: calc(14px * var(--hero-scale));
+    /* Design system: Heading/H1 — EB Garamond Medium, line-height 150% (huisregel).
+       Eigen maat i.p.v. var(--title-size): dat token voedt ook de subtitle en de
+       about-heading, en een zin heeft een andere maat nodig dan één woord. */
+    /* .title.title--promise i.p.v. .title--promise: de breakpoint-blokken verderop
+       zetten .title opnieuw (gelijke specificiteit, later in de sheet = die wonnen). */
+    .title.title--promise {
+      font-size: clamp(30px, 4.4vw, 72px);
+      max-width: 100%;
+      /* Bewuste afwijking van de 150%-huisregel uit het design system: die geldt
+         voor koppen van één of twee woorden. Een kop van vier regels valt bij
+         150% uit elkaar — zeker op mobiel. */
+      line-height: 1.24;
+    }
+
+    /* Het wordmark animeerde per LETTER, dus stond de gap op 0. Deze kop
+       animeert per WOORD en heeft dus een woordspatie nodig. Specificiteit
+       moet .title.reveal-title .reveal-line (0,3,0) overtreffen. */
+    .title.title--promise .reveal-line {
+      gap: 0.26em;
+    }
+
+    .title--promise + .subtitle {
+      margin-top: clamp(10px, 1vw, 18px);
     }
 
     .subtitle {
@@ -3826,21 +3843,20 @@
   <main class="hero">
     <section class="hero-inner">
       <div class="content">
-        <h1 class="title reveal-title" aria-label="Relovation">
+        <p class="hero-eyebrow reveal-copy">Live muziek</p>
+        <h1 class="title title--promise reveal-title" aria-label="Muziek die u ziet, niet alleen hoort.">
           <span class="reveal-line" aria-hidden="true">
-            <span class="reveal-word" style="animation-delay: 0.04s;">R</span>
-            <span class="reveal-word" style="animation-delay: 0.08s;">e</span>
-            <span class="reveal-word" style="animation-delay: 0.12s;">l</span>
-            <span class="reveal-word" style="animation-delay: 0.16s;">o</span>
-            <span class="reveal-word" style="animation-delay: 0.2s;">v</span>
-            <span class="reveal-word" style="animation-delay: 0.24s;">a</span>
-            <span class="reveal-word" style="animation-delay: 0.28s;">t</span>
-            <span class="reveal-word" style="animation-delay: 0.32s;">i</span>
-            <span class="reveal-word" style="animation-delay: 0.36s;">o</span>
-            <span class="reveal-word" style="animation-delay: 0.4s;">n</span>
+            <span class="reveal-word" style="animation-delay: 0.04s;">Muziek</span>
+            <span class="reveal-word" style="animation-delay: 0.1s;">die</span>
+            <span class="reveal-word" style="animation-delay: 0.16s;">u</span>
+            <span class="reveal-word" style="animation-delay: 0.22s;">ziet,</span>
+          </span>
+          <span class="reveal-line" aria-hidden="true">
+            <span class="reveal-word" style="animation-delay: 0.28s;">niet</span>
+            <span class="reveal-word" style="animation-delay: 0.34s;">alleen</span>
+            <span class="reveal-word reveal-word-italic" style="animation-delay: 0.4s;"><em>hoort.</em></span>
           </span>
         </h1>
-        <p class="hero-lead reveal-copy">Muziek die u ziet, niet alleen hoort.</p>
         <p class="subtitle reveal-copy">Live muziek voor trouwfeesten, bedrijfsevents en recepties — volledig verzorgd, helemaal op maat.</p>
 
         <div class="actions reveal-actions">
