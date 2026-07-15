@@ -455,6 +455,55 @@
       transform: translateY(-1px);
     }
 
+    /* Honeypot: uit beeld, maar niet display:none - sommige bots slaan
+       verborgen velden dan over. Ook weg voor screenreaders. */
+    .form-hp {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .field-input--error,
+    .field-textarea--error {
+      border-color: rgba(168, 74, 58, 0.85);
+      background: rgba(168, 74, 58, 0.05);
+    }
+
+    .field-error {
+      margin: 8px 0 0 24px;
+      color: rgba(168, 74, 58, 0.95);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .form-status {
+      margin: 18px 0 0;
+      padding: 16px 24px;
+      border-radius: 22px;
+      font-size: 15px;
+      line-height: 1.5;
+      max-width: 520px;
+    }
+
+    .form-status--ok {
+      border: 1.25px solid rgba(76, 106, 87, 0.5);
+      background: rgba(244, 237, 207, 0.5);
+      color: var(--ink-deep);
+    }
+
+    .form-status--error {
+      border: 1.25px solid rgba(168, 74, 58, 0.5);
+      background: rgba(168, 74, 58, 0.06);
+      color: rgba(120, 50, 38, 1);
+    }
+
+    .contact-form[data-sending] .button-primary {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
     .field-select {
       appearance: none;
       background-image:
@@ -1116,7 +1165,13 @@
             </div>
           </div>
 
-          <form class="contact-form" action="#" method="post" novalidate>
+          <form class="contact-form" action="/api/contact" method="post" novalidate>
+            <!-- Honeypot: onzichtbaar voor mensen, bots vullen 'm wel in. -->
+            <div class="form-hp" aria-hidden="true">
+              <label for="website">Laat dit veld leeg</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
             <div class="form-grid">
               <div class="form-field reveal-copy">
                 <label class="sr-only" for="first-name">Voornaam</label>
@@ -1158,6 +1213,7 @@
 
             <div class="form-actions reveal-actions" style="transition-delay: 0.36s;">
               <button class="button button-primary" type="submit">Verstuur</button>
+              <p class="form-status" role="status" aria-live="polite" hidden></p>
             </div>
           </form>
         </div>
@@ -1246,5 +1302,6 @@
 </footer>
   <script src="./nav.js"></script>
   <script src="./loader.js"></script>
+  <script src="./contact-form.js"></script>
 </body>
 </html>

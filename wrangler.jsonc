@@ -21,5 +21,19 @@
     "not_found_handling": "none"
   },
 
+  // Bestemming en afzender van het contactformulier. Bewust vars i.p.v. code:
+  // als relovation.be live gaat, wijzig je deze twee regels en klaar.
+  //
+  // Nu: Resend's testafzender (werkt zonder eigen domein) naar Jari's inbox.
+  // Later: "formulier@relovation.be" -> mailbox van Relovation.
+  "vars": {
+    "CONTACT_FROM": "Relovation <onboarding@resend.dev>",
+    "CONTACT_TO": "contact@jdcreations.co"
+  },
+
+  // RESEND_API_KEY is een secret, geen var. Zetten met:
+  //   npx wrangler secret put RESEND_API_KEY
+  // Lokaal staat hij in .dev.vars (gitignored).
+
   "observability": { "enabled": true }
 }
