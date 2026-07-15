@@ -14,6 +14,11 @@
       --ink: #4c6a57;
       --ink-soft: #4f5f49;
       --section-ink: #f4edcf;
+      /* Design system (Cream mode) — zie Figma "◆ Relovation Design System".
+         --gold is bg/accent: DECORATIEF, nooit als tekstkleur (2.61:1 op cream).
+         --ink-muted is text/muted: gekozen om WCAG AA te halen (4.57:1). */
+      --gold: #af8f48;
+      --ink-muted: #55715e;
       --line: rgba(76, 106, 87, 0.28);
       --shadow: rgba(76, 106, 87, 0.12);
       --phi: 1.618;
@@ -648,74 +653,62 @@
       text-align: center;
     }
 
+    /* -- Gelegenheden: staggered arch ------------------------------------
+       Kolom = cijfer -> gouden haarlijn -> boog met foto -> kop -> tekst -> CTA.
+       De bogen zakken trapsgewijs (--arch-offset): hetzelfde ritme als de
+       overlappende foto's in de hero. Kleuren volgen het design system
+       (Cream mode): tekst groen, goud enkel als decoratieve haarlijn. */
     .arch-row {
+      --arch-w: clamp(248px, 23.5vw, 340px);
       position: relative;
       display: flex;
-      align-items: flex-end;
+      align-items: flex-start;
       justify-content: center;
-      gap: clamp(30px, 4.4vw, 84px);
+      gap: clamp(28px, 3.2vw, 56px);
       margin-bottom: 0;
-    }
-
-    /* Editorial-apparatus: parenthetische index (vault §8).
-       Klein, tracked, gedempt - het contrast met de serif-titel is het signaal. */
-    .arch-index {
-      font-family: "DM Sans", sans-serif;
-      font-size: clamp(11px, 0.8vw, 13px);
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      color: rgba(76, 106, 87, 0.5);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* Hairline onder de titel (vault §6: 1px, ink 12-18%). */
-    .arch-rule {
-      width: 34px;
-      height: 1px;
-      background: rgba(76, 106, 87, 0.32);
-      transform-origin: 50% 50%;
-    }
-
-    .arch-hint {
-      display: none;
     }
 
     .arch {
       --arch-stagger: 0s;
-      width: 344px;
-      height: 520px;
-      border: 1.5px solid rgba(171, 157, 108, 0.72);
-      border-bottom: 0;
-      border-radius: 180px 180px 0 0;
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 55%);
+      --arch-offset: 0px;
+      width: var(--arch-w);
+      margin-top: var(--arch-offset);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      /* flex-start i.p.v. space-between: bij space-between bepaalt de lengte
-         van de bodytekst waar de titel landt, dus lijnen de titels van de drie
-         bogen niet uit. Nu staat de kop op een vaste hoogte en wordt de CTA
-         met margin-top:auto naar de voet geduwd. */
-      justify-content: flex-start;
-      padding: clamp(46px, 3.4vw, 60px) clamp(26px, 2.6vw, 38px) clamp(34px, 2.8vw, 46px);
-      text-align: center;
+      align-items: flex-start;
+      text-align: left;
+      gap: clamp(13px, 1vw, 17px);
       position: relative;
-      overflow: hidden;
       opacity: 0;
-      transform: translate3d(0, 24px, 0) scale(0.98);
-      transform-origin: 50% 88%;
+      transform: translate3d(0, 26px, 0);
       filter: blur(0.5px);
-      will-change: transform, opacity, clip-path;
-      clip-path: inset(14% 0 0 0 round 180px 180px 0 0);
+      will-change: transform, opacity;
       transition:
-        opacity 1.02s cubic-bezier(0.2, 0.82, 0.2, 1) var(--arch-stagger),
-        transform 1.02s cubic-bezier(0.2, 0.82, 0.2, 1) var(--arch-stagger),
-        clip-path 1.08s cubic-bezier(0.2, 0.82, 0.2, 1) var(--arch-stagger),
-        filter 1.02s cubic-bezier(0.2, 0.82, 0.2, 1) var(--arch-stagger);
+        opacity 1.02s var(--motion-ease) var(--arch-stagger),
+        transform 1.02s var(--motion-ease) var(--arch-stagger),
+        filter 1.02s var(--motion-ease) var(--arch-stagger);
     }
 
-    .arch.is-tall {
-      width: 368px;
-      height: 567px;
+    /* Editorial-apparatus: het oversized Garamond-cijfer draagt de compositie. */
+    .arch-index {
+      font-family: "EB Garamond", serif;
+      font-size: clamp(44px, 3.9vw, 68px);
+      font-weight: 500;
+      line-height: 1;
+      color: var(--ink-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Goud = enkel decoratief (design system: goud op cream = 2.61:1). */
+    .arch-rule {
+      width: 56px;
+      height: 2px;
+      background: var(--gold);
+      transform-origin: 0 50%;
+    }
+
+    .arch-hint {
+      display: none;
     }
 
     .quote-title {
@@ -743,47 +736,47 @@
     .arch-copy {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      /* vault §7: label->heading 16-40px, heading->body 24-64px.
-         Was --content-gap (38-44px) tussen alles - te los, geen ritme. */
-      gap: clamp(15px, 1.3vw, 21px);
+      align-items: flex-start;
+      /* vault §7: label->heading 16-40px, heading->body 24-64px. */
+      gap: clamp(9px, 0.8vw, 13px);
       width: 100%;
-      /* Vaste afstand onder het indexnummer -> koppen lijnen uit over de drie
-         bogen, ook al verschilt de tekstlengte. */
-      padding-top: clamp(46px, 4.6vw, 74px);
+      padding-top: clamp(4px, 0.4vw, 8px);
     }
 
-    .arch::before,
-    .arch::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      transition:
-        opacity 1s cubic-bezier(0.2, 0.82, 0.2, 1) var(--arch-stagger),
-        transform 1.08s cubic-bezier(0.2, 0.82, 0.2, 1) var(--arch-stagger),
-        clip-path 1.08s cubic-bezier(0.2, 0.82, 0.2, 1) var(--arch-stagger);
+    /* De boog zelf. Top-radii = halve breedte (50% horizontaal / 40.5% van de
+       hoogte bij aspect-ratio 340/420) = zuivere halve cirkel. Onderaan
+       radius/md (20px) uit het design system. */
+    .arch-figure {
+      margin: 0;
+      width: 100%;
+      aspect-ratio: 340 / 420;
+      border-radius: 50% 50% 20px 20px / 40.5% 40.5% 20px 20px;
+      overflow: hidden;
+      position: relative;
+      background: var(--bg-deep);
+      /* Arch/Inset effect-style uit het design system. */
+      box-shadow: inset 2px 6px 4px rgba(0, 0, 0, 0.25);
+      clip-path: inset(14% 0 0 0);
+      will-change: clip-path;
+      transition: clip-path 1.08s var(--motion-ease) var(--arch-stagger);
     }
 
-    .arch::before {
-      inset: -1px;
-      border: 1.5px solid rgba(171, 157, 108, 0.92);
-      border-bottom: 0;
-      opacity: 0.68;
-      clip-path: inset(100% 0 0 0 round 180px 180px 0 0);
+    .arch-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.05);
+      transition: transform 1.2s var(--motion-ease);
     }
 
-    .arch::after {
-      background:
-        linear-gradient(180deg, rgba(244, 237, 207, 0.2) 0%, rgba(244, 237, 207, 0.08) 26%, rgba(244, 237, 207, 0) 52%),
-        linear-gradient(180deg, rgba(244, 237, 207, 0.9) 0%, rgba(244, 237, 207, 0.45) 24%, rgba(244, 237, 207, 0) 48%);
-      opacity: 0.92;
-      transform: translateY(0);
-      clip-path: inset(0 0 0 0 round 180px 180px 0 0);
+    .arch:hover .arch-img,
+    .arch:focus-within .arch-img {
+      transform: scale(1);
     }
 
     .arch-index,
+    .arch-rule,
     .arch-copy > *,
     .arch-link {
       opacity: 0;
@@ -791,50 +784,42 @@
       filter: blur(0.5px);
       will-change: transform, opacity;
       transition:
-        opacity 0.72s cubic-bezier(0.2, 0.82, 0.2, 1),
-        transform 0.72s cubic-bezier(0.2, 0.82, 0.2, 1),
-        filter 0.72s cubic-bezier(0.2, 0.82, 0.2, 1);
+        opacity 0.72s var(--motion-ease),
+        transform 0.72s var(--motion-ease),
+        filter 0.72s var(--motion-ease);
     }
 
-    /* Stagger binnen de kaart: index -> titel -> hairline -> tekst -> CTA.
+    /* Stagger binnen de kolom: cijfer -> hairline -> kop -> tekst -> CTA.
        ~100ms per stap (vault §11: 60-120ms). */
     .arch-index {
-      transition-delay: calc(var(--arch-stagger) + 0.14s);
+      transition-delay: calc(var(--arch-stagger) + 0.06s);
     }
 
     .arch-rule {
-      transition-delay: calc(var(--arch-stagger) + 0.3s);
+      transition-delay: calc(var(--arch-stagger) + 0.16s);
       transform: translate3d(0, 14px, 0) scaleX(0.3);
     }
 
     .arch-title {
-      transition-delay: calc(var(--arch-stagger) + 0.22s);
+      transition-delay: calc(var(--arch-stagger) + 0.3s);
     }
 
     .arch-text {
-      transition-delay: calc(var(--arch-stagger) + 0.34s);
+      transition-delay: calc(var(--arch-stagger) + 0.4s);
     }
 
     .arch-link {
-      transition-delay: calc(var(--arch-stagger) + 0.46s);
+      transition-delay: calc(var(--arch-stagger) + 0.5s);
     }
 
     .arch.is-visible {
       opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1);
-      clip-path: inset(0 0 0 0 round 180px 180px 0 0);
+      transform: translate3d(0, 0, 0);
       filter: blur(0);
     }
 
-    .arch.is-visible::before {
-      opacity: 1;
-      clip-path: inset(0 0 0 0 round 180px 180px 0 0);
-    }
-
-    .arch.is-visible::after {
-      opacity: 0;
-      transform: translateY(12%);
-      clip-path: inset(100% 0 0 0 round 180px 180px 0 0);
+    .arch.is-visible .arch-figure {
+      clip-path: inset(0 0 0 0);
     }
 
     .arch.is-visible .arch-index,
@@ -849,31 +834,31 @@
        laatste. Anders wist translate3d(0,0,0) de scaleX en tekent de
        hairline zich niet. */
     .arch.is-visible .arch-rule {
+      opacity: 1;
       transform: translate3d(0, 0, 0) scaleX(1);
+      filter: blur(0);
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .arch {
-        opacity: 1;
-        transform: none;
-        filter: none;
-        clip-path: none;
-        transition: none;
-      }
-
-      .arch::before,
-      .arch::after,
+      .arch,
+      .arch-index,
+      .arch-rule,
       .arch-copy > *,
       .arch-link {
         opacity: 1;
         transform: none;
         filter: none;
+        transition: none;
+      }
+
+      .arch-figure {
         clip-path: none;
         transition: none;
       }
 
-      .arch::after {
-        opacity: 0;
+      .arch-img {
+        transform: none;
+        transition: none;
       }
     }
 
@@ -897,8 +882,10 @@
       font-size: clamp(16px, 1.1vw, 17.5px);
       line-height: 1.7;
       font-weight: 400;
-      color: rgba(76, 106, 87, 0.78);
-      max-width: 27ch;
+      /* text/secondary uit het design system: 5.83:1 op cream. De vorige
+         rgba(...,0.78) haalde WCAG AA niet op body-grootte. */
+      color: var(--ink-soft);
+      max-width: 30ch;
       text-wrap: pretty;
     }
 
@@ -2085,19 +2072,9 @@
       }
 
       .arch-row {
+        --arch-w: min(31vw, 280px);
         gap: 26px;
         margin-bottom: 0;
-      }
-
-      .arch,
-      .arch.is-tall {
-        width: min(31vw, 280px);
-        height: min(42vw, 420px);
-        padding: 34px 22px 32px;
-      }
-
-      .arch-copy {
-        gap: 28px;
       }
 
       .arch-title {
@@ -2342,9 +2319,14 @@
          aan de rand meekijkt - dat 'peek' is de uitnodiging om te swipen.
          padding-bottom vangt de 24px translate van de reveal op, anders
          maakt de scroll-container een verticale scrollbar. */
+      /* Mobiel: carousel i.p.v. gestapelde kolom. Full-bleed (de rij breekt uit
+         de sectie-marge) zodat de volgende boog aan de rand meekijkt - dat
+         'peek' is de uitnodiging om te swipen. Geen trapsgewijze offset hier:
+         in een carousel starten de kaarten gelijk. */
       .arch-row {
+        --arch-w: min(76vw, 330px);
         flex-direction: row;
-        align-items: flex-end;
+        align-items: flex-start;
         justify-content: flex-start;
         gap: 14px;
         width: 100vw;
@@ -2363,14 +2345,9 @@
         display: none;
       }
 
-      .arch,
-      .arch.is-tall {
+      .arch {
         flex: 0 0 auto;
-        width: min(76vw, 330px);
-        height: auto;
-        aspect-ratio: 344 / 520;
-        margin: 0;
-        padding: 42px 26px 34px;
+        margin-top: 0;
         scroll-snap-align: center;
       }
 
@@ -2383,12 +2360,8 @@
         font-weight: 500;
         letter-spacing: 0.18em;
         text-transform: uppercase;
-        color: rgba(76, 106, 87, 0.42);
+        color: var(--ink-muted);
         text-align: center;
-      }
-
-      .arch-copy {
-        gap: 28px;
       }
 
       .arch-title {
@@ -3361,24 +3334,8 @@
       }
 
       .arch-row {
+        --arch-w: min(27.5vw, 212px);
         gap: 18px;
-      }
-
-      .arch,
-      .arch.is-tall {
-        width: min(27.5vw, 212px);
-        height: min(40vw, 344px);
-        padding: 28px 18px 26px;
-      }
-
-      .arch.is-tall {
-        width: min(29vw, 228px);
-        height: min(43vw, 372px);
-      }
-
-      .arch-copy {
-        gap: 22px;
-        padding-top: 42px;
       }
 
 
@@ -3464,19 +3421,8 @@
       }
 
       .arch-row {
+        --arch-w: min(28vw, 224px);
         gap: 18px;
-      }
-
-      .arch,
-      .arch.is-tall {
-        width: min(28vw, 224px);
-        height: min(40vw, 350px);
-        padding: 30px 19px 28px;
-      }
-
-      .arch.is-tall {
-        width: min(30vw, 238px);
-        height: min(43vw, 380px);
       }
 
 
@@ -3526,24 +3472,8 @@
       }
 
       .arch-row {
+        --arch-w: min(28vw, 236px);
         gap: 20px;
-      }
-
-      .arch,
-      .arch.is-tall {
-        width: min(28vw, 236px);
-        height: min(39vw, 360px);
-        padding: 30px 19px 28px;
-      }
-
-      .arch.is-tall {
-        width: min(30vw, 254px);
-        height: min(43vw, 396px);
-      }
-
-      .arch-copy {
-        gap: 24px;
-        padding-top: 44px;
       }
 
 
@@ -3648,19 +3578,8 @@
       }
 
       .arch-row {
+        --arch-w: min(26.5vw, 250px);
         gap: 22px;
-      }
-
-      .arch,
-      .arch.is-tall {
-        width: min(26.5vw, 250px);
-        height: min(38vw, 390px);
-        padding: 30px 20px 28px;
-      }
-
-      .arch.is-tall {
-        width: min(28vw, 268px);
-        height: min(42vw, 424px);
       }
 
 
@@ -3855,8 +3774,8 @@
 
     <!-- Actions -->
     <div class="r-nav__actions">
-      <a class="r-nav__cta" href="./contact.html">
-        Ontvang offerte <span class="r-nav__cta-arrow" aria-hidden="true">→</span>
+      <a class="r-nav__cta" href="./aanvraag.html">
+        Vertel ons over uw event <span class="r-nav__cta-arrow" aria-hidden="true">→</span>
       </a>
       <button class="r-nav__burger" id="r-nav-burger"
         aria-expanded="false" aria-controls="r-nav-overlay"
@@ -3878,7 +3797,7 @@
     </ol>
   </nav>
   <div class="r-nav__ovl-bottom">
-    <a class="r-nav__cta-ovl" href="./contact.html">Ontvang offerte</a>
+    <a class="r-nav__cta-ovl" href="./aanvraag.html">Vertel ons over uw event</a>
     <p class="r-nav__ovl-contact"><a href="mailto:info@relovation.be">info@relovation.be</a></p>
   </div>
 </div>
@@ -3993,29 +3912,38 @@
     </div>
 
     <div class="arch-row" role="group" aria-label="Gelegenheden">
-      <article class="arch" style="--arch-stagger: 0s;">
-        <span class="arch-index" aria-hidden="true">(01)</span>
+      <article class="arch" style="--arch-stagger: 0s; --arch-offset: 0px;">
+        <span class="arch-index" aria-hidden="true">01</span>
+        <span class="arch-rule" aria-hidden="true"></span>
+        <figure class="arch-figure">
+          <img class="arch-img" src="./assets/gelegenheden/trouwfeesten.webp" alt="Live muzikant speelt tijdens een trouwfeest" width="382" height="472" loading="lazy" decoding="async">
+        </figure>
         <div class="arch-copy">
           <h3 class="arch-title">Trouwfeesten</h3>
-          <span class="arch-rule" aria-hidden="true"></span>
           <p class="arch-text">Een muzikale invulling met zachtheid en elegantie voor ceremonies, recepties en het begin van een feestavond.</p>
         </div>
         <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
-      <article class="arch" style="--arch-stagger: 0.09s;">
-        <span class="arch-index" aria-hidden="true">(02)</span>
+      <article class="arch" style="--arch-stagger: 0.09s; --arch-offset: clamp(32px, 5.5vw, 80px);">
+        <span class="arch-index" aria-hidden="true">02</span>
+        <span class="arch-rule" aria-hidden="true"></span>
+        <figure class="arch-figure">
+          <img class="arch-img" src="./assets/gelegenheden/bedrijfsevents.webp" alt="Pianist speelt live op een bedrijfsevent" width="524" height="648" loading="lazy" decoding="async">
+        </figure>
         <div class="arch-copy">
           <h3 class="arch-title">Bedrijfsevents</h3>
-          <span class="arch-rule" aria-hidden="true"></span>
           <p class="arch-text">Live muziek die uw ontvangst, walking dinner of private gathering een elegante en professionele sfeer geeft.</p>
         </div>
         <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
-      <article class="arch" style="--arch-stagger: 0.18s;">
-        <span class="arch-index" aria-hidden="true">(03)</span>
+      <article class="arch" style="--arch-stagger: 0.18s; --arch-offset: clamp(64px, 11vw, 160px);">
+        <span class="arch-index" aria-hidden="true">03</span>
+        <span class="arch-rule" aria-hidden="true"></span>
+        <figure class="arch-figure">
+          <img class="arch-img" src="./assets/gelegenheden/recepties.webp" alt="Gasten op een receptie met live jazz" width="760" height="940" loading="lazy" decoding="async">
+        </figure>
         <div class="arch-copy">
           <h3 class="arch-title">Recepties</h3>
-          <span class="arch-rule" aria-hidden="true"></span>
           <p class="arch-text">Voor openingen, private ontvangsten en culturele momenten waarin sfeer en gastvrijheid centraal staan.</p>
         </div>
         <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
