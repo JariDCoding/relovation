@@ -268,9 +268,12 @@
     .logo-mark--suspicious { -webkit-mask-image: url("./assets/logos/suspicious.png"); mask-image: url("./assets/logos/suspicious.png"); }
     .logo-mark--tlooks { -webkit-mask-image: url("./assets/logos/tlooks.png"); mask-image: url("./assets/logos/tlooks.png"); }
 
-    /* -50% = exact één groep. Van -50% naar 0 = beweging van links naar rechts. */
+    /* Schuift exact één groepsbreedte op; --group-w wordt door JS gemeten.
+       Van -1 groep naar 0 = beweging van links naar rechts.
+       NIET -50% gebruiken: dat klopt alleen als één groep breder is dan het
+       scherm. Is dat niet zo, dan valt er een gat aan het einde van de ronde. */
     @keyframes logos-scroll {
-      from { transform: translate3d(-50%, 0, 0); }
+      from { transform: translate3d(calc(-1 * var(--group-w, 50%)), 0, 0); }
       to { transform: translate3d(0, 0, 0); }
     }
 
@@ -4395,6 +4398,44 @@
         requestAnimationFrame(revealVisibleBlocks);
       }
     }
+
+    // ── Logo-marquee ──────────────────────────────────────────────────────
+    // De baan moet ALTIJD breder zijn dan het scherm + één groep, anders valt er
+    // een gat op het moment dat de loop terugspringt. Eén groep is smaller dan
+    // een desktopscherm, dus kloon tot het klopt en meet de schuifafstand exact.
+    (() => {
+      const track = document.querySelector(".logos-track");
+      if (!track) return;
+      const first = track.querySelector(".logos-group");
+      if (!first) return;
+
+      const SPEED = 46; // px per seconde — rustig, editorial
+
+      const layout = () => {
+        // terug naar één groep, daarna opnieuw opbouwen (voorkomt stapelen bij resize)
+        track.querySelectorAll(".logos-group").forEach((g, i) => { if (i > 0) g.remove(); });
+
+        const groupW = first.getBoundingClientRect().width;
+        if (!groupW) return;
+
+        const needed = window.innerWidth + groupW * 2;
+        while (track.getBoundingClientRect().width < needed) {
+          const clone = first.cloneNode(true);
+          clone.setAttribute("aria-hidden", "true");
+          track.appendChild(clone);
+        }
+
+        track.style.setProperty("--group-w", groupW + "px");
+        track.style.animationDuration = (groupW / SPEED).toFixed(2) + "s";
+      };
+
+      layout();
+      // fonts/maskafbeeldingen landen later en veranderen de breedte
+      window.addEventListener("load", layout);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+      let t;
+      window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(layout, 200); });
+    })();
 
     const archCards = document.querySelectorAll(".quote-section .arch");
 
