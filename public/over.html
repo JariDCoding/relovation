@@ -1028,20 +1028,10 @@
 
     .musicians-grid {
       display: grid;
-      justify-content: center;
-      justify-items: center;
-      gap: clamp(34px, 3vw, 48px);
-    }
-
-    .musicians-grid-top {
-      grid-template-columns: repeat(3, minmax(120px, 1fr));
-      column-gap: clamp(48px, 5vw, 92px);
-    }
-
-    .musicians-grid-bottom {
-      grid-template-columns: repeat(2, minmax(120px, 1fr));
-      column-gap: clamp(54px, 6vw, 116px);
-      margin-top: clamp(4px, 0.8vw, 10px);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      column-gap: clamp(24px, 2.6vw, 48px);
+      row-gap: clamp(44px, 4vw, 68px);
+      align-items: start;
     }
 
     .musician-card {
@@ -1053,16 +1043,8 @@
       z-index: 2;
     }
 
-    .musician-card--lower {
-      transform: translateY(clamp(24px, 2.6vw, 44px));
-    }
-
-    .musician-card--lower .musician-name {
-      color: var(--bg);
-    }
-
     .musician-frame {
-      width: clamp(120px, 9vw, 154px);
+      width: 100%;
       aspect-ratio: 154 / 210;
       border: 1px solid rgba(76, 106, 87, 0.18);
       border-radius: 999px 999px 0 0;
@@ -2741,7 +2723,7 @@
   </nav>
   <div class="r-nav__ovl-bottom">
     <a class="r-nav__cta-ovl" href="./aanvraag.html">Vertel ons over uw event</a>
-    <p class="r-nav__ovl-contact"><a href="mailto:info@relovation.be">info@relovation.be</a></p>
+    <p class="r-nav__ovl-contact"><a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a></p>
   </div>
 </div>
 
@@ -2749,16 +2731,16 @@
     <section class="page-section over-hero" id="top">
       <div class="section-shell hero-shell">
         <div class="hero-copy reveal-copy">
-          <p class="hero-eyebrow reveal-copy" aria-hidden="true">Live Jazz</p>
+          <p class="hero-eyebrow reveal-copy" aria-hidden="true">Live muziek</p>
           <h1 class="section-title hero-title reveal-title" aria-label="Over ons">
             <span class="reveal-line">
               <span class="reveal-word" style="animation-delay: 0.04s;">Over</span>
               <span class="reveal-word" style="animation-delay: 0.1s;">ons</span>
             </span>
           </h1>
-          <p class="lead">Relovation is een band opgestart door Robin Crauwels met jonge artiesten die zich vooral focusen op Jazz en live muziek aanbieden op verschillende soorten evenementen</p>
+          <p class="lead">Relovation ontstond vanuit een gedeelde passie voor muziek en de overtuiging dat live spelen altijd het verschil maakt.</p>
           <div class="hero-actions reveal-actions">
-            <a class="button button-primary" href="./aanvraag.html">Start aanvraag</a>
+            <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
           </div>
         </div>
 
@@ -2806,16 +2788,8 @@
               <span class="reveal-word" style="animation-delay: 0.1s;"><em>verhaal</em></span>
             </span>
           </h2>
-          <p>Wat begon als een gedeelde liefde voor tijdloze jazz, groeide uit tot een live concept waarin elegantie, spontaniteit en muzikaal vakmanschap moeiteloos samenvallen met de sfeer van het moment.</p>
-          <div class="story-line" aria-hidden="true">
-            <span>Text line</span>
-            <span>-</span>
-            <span>Text line</span>
-            <span>-</span>
-            <span>Text line</span>
-            <span>-</span>
-            <span>Text line</span>
-          </div>
+          <p>Robin startte op zijn achtste met de saxofoon en is er sindsdien nooit meer mee gestopt. In 2016 leerde hij Lorenzo kennen — een pianist die hem vanaf de eerste repetitie versteld deed staan. Na die eerste repetitie vroeg Robin hem om samen te spelen. Zo begon het.<br><br>Ze repeteerden, speelden hier en daar, en organiseerden in 2018 voor het eerst een eigen concert. Het jaar nadien opnieuw. Relovation groeide van daaruit organisch — niet gepland, maar gedragen door de muziek en de mensen errond. Lorenzo is sindsdien een vaste waarde én een goede vriend. Hij was erbij van het eerste uur, en dat hoor je.</p>
+          <div class="story-line" aria-hidden="true"></div>
         </div>
       </div>
     </section>
@@ -2835,13 +2809,14 @@
             </span>
           </h2>
           <p class="vision-body">
-            <span class="vision-body-line">Lorem ipsum Lorem ipsum Lorem ipsum</span>
-            <span class="vision-body-line">Lorem ipsum Lorem ipsum Lorem ipsum</span>
-            <span class="vision-body-line">Lorem ipsum Lorem ipsum Lorem ipsum</span>
-            <span class="vision-body-line">Lorem ipsum Lorem ipsum</span>
+            <span class="vision-body-line">Live muziek verandert een moment. Ze maakt een ontvangst warmer,</span>
+            <span class="vision-body-line">een diner intiemer, een feest onvergetelijk. Daarom benaderen we</span>
+            <span class="vision-body-line">elk event met dezelfde drie dingen voorop: passie voor de muziek,</span>
+            <span class="vision-body-line">plezier in het spelen, en de professionaliteit om alles foutloos te laten verlopen.</span>
+            <span class="vision-body-line"><em>Dat is waar Relovation voor staat — en wat u hoort zodra we beginnen.</em></span>
           </p>
           <div class="vision-cta reveal-actions">
-            <a class="button button-primary" href="./aanvraag.html">Ontvang offerte</a>
+            <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
           </div>
         </div>
 
@@ -2893,19 +2868,19 @@
             <article class="presence-item presence-col" style="--presence-delay: 0.04s;">
               <p class="presence-number">01</p>
               <h3 class="presence-item-title presence-item-title--nowrap">Subtiel aanwezig</h3>
-              <p>Nooit te veel, altijd precies genoeg</p>
+              <p>Nooit te veel, altijd precies genoeg.</p>
             </article>
 
             <article class="presence-item presence-col" style="--presence-delay: 0.14s;">
               <p class="presence-number">02</p>
               <h3 class="presence-item-title">In dienst van het moment</h3>
-              <p>We volgen de ruimte, het ritme en het publiek</p>
+              <p>We volgen de ruimte, het ritme en het publiek.</p>
             </article>
 
             <article class="presence-item presence-col" style="--presence-delay: 0.24s;">
               <p class="presence-number">03</p>
               <h3 class="presence-item-title presence-item-title--nowrap">Warm en elegant</h3>
-              <p>Jazz die klasse toevoegt zonder afstandelijk te worden</p>
+              <p>Tijdloze muziek die klasse toevoegt zonder afstandelijk te worden.</p>
             </article>
           </div>
         </div>
@@ -2928,19 +2903,19 @@
           <article class="musician-card reveal-copy">
             <div class="musician-frame reveal-visual" aria-hidden="true"></div>
             <p class="musician-name">Robin Crauwels</p>
-            <p class="musician-role">Saxofonist/zanger</p>
+            <p class="musician-role">Saxofoon &amp; zang</p>
           </article>
 
           <article class="musician-card reveal-copy" style="transition-delay: 0.08s;">
             <div class="musician-frame reveal-visual" aria-hidden="true"></div>
             <p class="musician-name">Lorenzo Nsumbi</p>
-            <p class="musician-role">Pianist</p>
+            <p class="musician-role">Piano</p>
           </article>
 
           <article class="musician-card reveal-copy" style="transition-delay: 0.16s;">
             <div class="musician-frame reveal-visual" aria-hidden="true"></div>
             <p class="musician-name">Joppe Van Noten</p>
-            <p class="musician-role">Drummer</p>
+            <p class="musician-role">Drums</p>
           </article>
         </div>
 
@@ -2948,7 +2923,7 @@
           <article class="musician-card musician-card--lower reveal-copy" style="transition-delay: 0.24s;">
             <div class="musician-frame reveal-visual" aria-hidden="true"></div>
             <p class="musician-name">Tim Pensaert</p>
-            <p class="musician-role">Bassist</p>
+            <p class="musician-role">Bas</p>
           </article>
 
           <article class="musician-card musician-card--lower reveal-copy" style="transition-delay: 0.32s;">
@@ -2962,19 +2937,19 @@
 
     <section class="page-section cta-banner" id="contact">
       <div class="section-shell cta-shell">
-        <h2 class="section-title cta-title reveal-title" aria-label="Boek Relovation voor jouw event">
+        <h2 class="section-title cta-title reveal-title" aria-label="Boek Relovation voor uw event.">
           <span class="reveal-line">
             <span class="reveal-word" style="animation-delay: 0.04s;">Boek</span>
             <span class="reveal-word" style="animation-delay: 0.1s;"><em>Relovation</em></span>
           </span>
           <span class="reveal-line">
-            <span class="reveal-word" style="animation-delay: 0.16s;">voor jouw event</span>
+            <span class="reveal-word" style="animation-delay: 0.16s;">voor uw event.</span>
           </span>
         </h2>
-        <p class="cta-copy reveal-copy">Vertel ons welk moment je wil neerzetten en we werken een muzikale invulling uit die elegant aansluit bij de sfeer, de ruimte en het ritme van je event.</p>
+        <p class="cta-copy reveal-copy">Vertel ons welk moment u wil neerzetten en we werken een muzikale invulling uit die aansluit bij de sfeer, de ruimte en het ritme van uw event.</p>
         <div class="cta-actions reveal-actions">
-          <a class="button button-primary" href="./aanvraag.html">Ontvang offerte</a>
-          <a class="button" href="mailto:hello@relovation.be">Contacteer ons</a>
+          <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
+          <a class="button" href="mailto:relovation@robinmusic.be">Vraag uw voorstel aan</a>
         </div>
       </div>
     </section>
@@ -3204,7 +3179,7 @@
       <a href="./contact.html">Contact</a>
     </nav>
     <div class="r-footer__contact">
-      <a href="mailto:info@relovation.be">info@relovation.be</a>
+      <a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a>
     </div>
   </div>
   <div class="r-footer__bottom">

@@ -150,6 +150,27 @@
       display: inline-block;
     }
 
+    /* Hoofdtitel uit de copydeck. Het wordmark blijft de visuele H1; deze regel
+       draagt de belofte, direct onder de naam. */
+    .hero-lead {
+      width: 100%;
+      max-width: min(100%, 820px);
+      margin: calc(-2px * var(--hero-scale)) 0 0;
+      font-family: "EB Garamond", serif;
+      font-size: clamp(26px, 2.3vw, 38px);
+      line-height: 1.25;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+
+    /* De subtitle had een negatieve marge om strak onder het wordmark te hangen.
+       Met de leadregel ertussen moet die pull juist weg. */
+    .hero-lead + .subtitle {
+      margin-top: calc(14px * var(--hero-scale));
+    }
+
     .subtitle {
       width: 100%;
       max-width: min(100%, 820px);
@@ -3798,7 +3819,7 @@
   </nav>
   <div class="r-nav__ovl-bottom">
     <a class="r-nav__cta-ovl" href="./aanvraag.html">Vertel ons over uw event</a>
-    <p class="r-nav__ovl-contact"><a href="mailto:info@relovation.be">info@relovation.be</a></p>
+    <p class="r-nav__ovl-contact"><a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a></p>
   </div>
 </div>
 
@@ -3819,11 +3840,12 @@
             <span class="reveal-word" style="animation-delay: 0.4s;">n</span>
           </span>
         </h1>
-        <p class="subtitle reveal-copy">Live muziek voor trouwfeesten,<br>corporate events en stijlvolle recepties</p>
+        <p class="hero-lead reveal-copy">Muziek die u ziet, niet alleen hoort.</p>
+        <p class="subtitle reveal-copy">Live muziek voor trouwfeesten, bedrijfsevents en recepties — volledig verzorgd, helemaal op maat.</p>
 
         <div class="actions reveal-actions">
-          <a class="button button-primary" href="./aanvraag.html">Ontvang offerte</a>
-          <a class="button" href="#contact">Contacteer ons</a>
+          <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
+          <a class="button" href="mailto:relovation@robinmusic.be">Vraag uw voorstel aan</a>
         </div>
       </div>
 
@@ -3887,13 +3909,16 @@
             </span>
           </h2>
             <p class="about-text" data-node-id="99:36">
-              <span class="about-text-line">Met stijlvolle live jazz en een verfijnde presence</span>
-              <span class="about-text-line">creeert Relovation een elegante sfeer die elk</span>
-              <span class="about-text-line">moment karakter en klasse geeft.</span>
+              <span class="about-text-line">Relovation is een flexibel live muziekconcept voor stijlvolle</span>
+              <span class="about-text-line">events. Geen vaste formule, maar een muzikale invulling die</span>
+              <span class="about-text-line">meebeweegt met de sfeer van het moment — afgestemd op uw</span>
+              <span class="about-text-line">publiek, locatie en programma.</span>
+              <span class="about-text-line">Wij nemen de volledige muzikale omkadering op ons en denken</span>
+              <span class="about-text-line">actief met u mee over wat werkt voor uw specifieke moment.</span>
             </p>
 
             <div class="about-actions">
-              <a class="button button-light" href="#over-ons" data-node-id="100:30">Over ons</a>
+              <a class="button button-light" href="./over.html" data-node-id="100:30">Meer over ons →</a>
             </div>
           </div>
         </div>
@@ -3920,7 +3945,7 @@
         </figure>
         <div class="arch-copy">
           <h3 class="arch-title">Trouwfeesten</h3>
-          <p class="arch-text">Een muzikale invulling met zachtheid en elegantie voor ceremonies, recepties en het begin van een feestavond.</p>
+          <p class="arch-text">Van de ceremonie en de welkomstdrink tot het begin van de avond. Wij verzorgen de muzikale rode draad door uw trouwdag — afgestemd op elk moment en elke sfeer.</p>
         </div>
         <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
@@ -3932,7 +3957,7 @@
         </figure>
         <div class="arch-copy">
           <h3 class="arch-title">Bedrijfsevents</h3>
-          <p class="arch-text">Live muziek die uw ontvangst, walking dinner of private gathering een elegante en professionele sfeer geeft.</p>
+          <p class="arch-text">Een stijlvolle, professionele muzikale invulling voor recepties, netwerkmomenten en bedrijfsfeesten. Muziek die uw gasten op hun gemak stelt en meteen de juiste toon zet.</p>
         </div>
         <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
@@ -3943,8 +3968,8 @@
           <img class="arch-img" src="./assets/gelegenheden/recepties.webp" alt="Gasten op een receptie met live jazz" width="760" height="940" loading="lazy" decoding="async">
         </figure>
         <div class="arch-copy">
-          <h3 class="arch-title">Recepties</h3>
-          <p class="arch-text">Voor openingen, private ontvangsten en culturele momenten waarin sfeer en gastvrijheid centraal staan.</p>
+          <h3 class="arch-title">Privéfeesten &amp; openingen</h3>
+          <p class="arch-text">Warme live muziek die gesprekken draagt zonder te overstemmen. Ideaal voor openingen, ontvangsten en stijlvolle avonden waar sfeer centraal staat.</p>
         </div>
         <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
@@ -3995,7 +4020,7 @@
           <span class="feature-check" aria-hidden="true"></span>
           <div>
             <h3>Professionele muzikanten</h3>
-            <p>Hoog niveau en ervaring op elk type event.</p>
+            <p>Ervaren, conservatoriumgeschoolde muzikanten die op elk type event het juiste niveau én de juiste rust brengen.</p>
           </div>
         </article>
 
@@ -4003,21 +4028,29 @@
           <span class="feature-check" aria-hidden="true"></span>
           <div>
             <h3>Volledig afgestemd</h3>
-            <p>Muziek aangepast aan sfeer en moment.</p>
+            <p>Repertoire, bezetting en volume aangepast aan uw sfeer, locatie en programma. U hoeft niets te regelen.</p>
           </div>
         </article>
 
         <article class="feature-item">
           <span class="feature-check" aria-hidden="true"></span>
           <div>
-            <h3>Eigen muziekinstallatie</h3>
-            <p>Eigen geluidsinstallatie voor tot ±250 gasten.</p>
+            <h3>Eigen geluidsinstallatie</h3>
+            <p>Professionele installatie voor events tot ±250 gasten — inbegrepen, zonder extra gedoe.</p>
+          </div>
+        </article>
+
+        <article class="feature-item">
+          <span class="feature-check" aria-hidden="true"></span>
+          <div>
+            <h3>Zorgeloos geregeld</h3>
+            <p>Heldere afspraken, stipt aanwezig en professioneel ter plaatse. Vanuit ervaring adviseren we over bezetting, repertoire en timing — zodat de muziek altijd klopt met uw moment.</p>
           </div>
         </article>
 
         <div class="feature-actions">
-          <a class="button button-primary" href="./aanvraag.html">Ontvang offerte</a>
-          <a class="button" href="#events">Contacteer ons</a>
+          <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
+          <a class="button" href="mailto:relovation@robinmusic.be">Vraag uw voorstel aan</a>
         </div>
       </div>
 
@@ -4034,46 +4067,6 @@
     </div>
   </section>
 
-  <section class="cards-section">
-    <div class="cards-shell">
-      <h2 class="cards-title reveal-title"><span class="reveal-line"><span class="reveal-word" style="animation-delay: 0.04s;">Onze</span><span class="reveal-word reveal-word-italic" style="animation-delay: 0.1s;"><em>reviews</em></span></span></h2>
-      <div class="cards-grid">
-        <article class="info-card reveal-visual">
-          <div class="info-card-header">
-            <div class="icon" aria-hidden="true"></div>
-            <div>
-              <h3>Peter Peters</h3>
-              <span class="info-card-role">CEO Canon</span>
-            </div>
-          </div>
-          <p><span class="quote-mark">“</span>Relovation kwam bij ons jaarlijks corporate event optreden met 4 personen, ze waren zeer professioneel en ik ben er zeer tevreden over zeker blij met het optreden.<span class="quote-mark">”</span></p>
-        </article>
-
-        <article class="info-card reveal-visual">
-          <div class="info-card-header">
-            <div class="icon" aria-hidden="true"></div>
-            <div>
-              <h3>Peter Peters</h3>
-              <span class="info-card-role">CEO Canon</span>
-            </div>
-          </div>
-          <p><span class="quote-mark">“</span>Relovation kwam bij ons jaarlijks corporate event optreden met 4 personen, ze waren zeer professioneel en ik ben er zeer tevreden over zeker blij met het optreden.<span class="quote-mark">”</span></p>
-        </article>
-
-        <article class="info-card reveal-visual">
-          <div class="info-card-header">
-            <div class="icon" aria-hidden="true"></div>
-            <div>
-              <h3>Peter Peters</h3>
-              <span class="info-card-role">CEO Canon</span>
-            </div>
-          </div>
-          <p><span class="quote-mark">“</span>Relovation kwam bij ons jaarlijks corporate event optreden met 4 personen, ze waren zeer professioneel en ik ben er zeer tevreden over zeker blij met het optreden.<span class="quote-mark">”</span></p>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <section class="table-section">
     <div class="table-shell">
       <h2 class="section-heading reveal-title" aria-label="Beschikbare bezettingen">
@@ -4086,20 +4079,20 @@
       <div class="package-table">
         <div class="package-row" style="--package-stagger: 0s;">
           <div class="package-name">DUO</div>
-          <div class="package-desc">Meer dynamiek en samenspel voor trouwfeesten, networking events en stijlvolle avonden.</div>
-          <div class="package-desc">Duo-opstelling met een rijker klankbeeld, flexibel inzetbaar voor zowel achtergrond als focusmomenten.</div>
+          <div class="package-desc">Zang/sax &amp; piano — onze huidige hoofdformule.</div>
+          <div class="package-desc">Een warm, intiem klankbeeld voor ceremonies, recepties, diners en stijlvolle corporate events. Aanwezig zonder te overheersen.</div>
         </div>
 
         <div class="package-row" style="--package-stagger: 0.12s;">
           <div class="package-name">TRIO</div>
-          <div class="package-desc">Een vollere live-ervaring voor corporate events, diners en premium feestconcepten.</div>
-          <div class="package-desc">Trio-formaat met extra ritme en presence dat elk event onmiddellijk meer karakter en klasse geeft.</div>
+          <div class="package-desc">Zang/sax, gitaar &amp; contrabas — momenteel in opbouw.</div>
+          <div class="package-desc">Een rijkere livebezetting met extra warmte en karakter, voor events waar de muziek meer aanwezigheid en diepgang mag hebben.</div>
         </div>
 
         <div class="package-row" style="--package-stagger: 0.24s;">
           <div class="package-name">FULL BAND</div>
-          <div class="package-desc">De volledige Relovation-bezetting voor grotere evenementen, recepties en feesten waar muziek centraal staat.</div>
-          <div class="package-desc">Een rijke live presence met meerdere muzikanten, afgestemd op uw locatie en evenementformat.</div>
+          <div class="package-desc">De volledige bezetting.</div>
+          <div class="package-desc">Voor grotere ruimtes en feesten waar live muziek het karakter van de avond bepaalt.</div>
         </div>
       </div>
     </div>
@@ -4126,16 +4119,16 @@
           </div>
           <div class="event-copy">
             <h3>KBC Private banking</h3>
-            <p>lorem ipsum lorem ipsum lorem ipsum lorem ipsumlorem ipsum lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum</p>
-            <a class="event-link" href="#contact">Bespreek mijn event →</a>
+            <p>Live muziek tijdens een private banking-ontvangst — stijlvol en op de achtergrond, zodat gesprekken alle ruimte kregen.</p>
+            <a class="event-link" href="./aanvraag.html">Vertel ons over uw event →</a>
           </div>
         </article>
 
         <article class="event-row event-row--tomorrowland">
           <div class="event-copy">
             <h3>Tomorrowland</h3>
-            <p>lorem ipsum lorem ipsum lorem ipsum lorem ipsumlorem ipsum lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum</p>
-            <a class="event-link" href="#contact">Bespreek mijn event →</a>
+            <p>Live muziek op een van de bekendste eventlocaties van het land, afgestemd op het ritme van de dag.</p>
+            <a class="event-link" href="./aanvraag.html">Vertel ons over uw event →</a>
           </div>
           <div class="event-media event-media--tomorrowland">
             <img src="https://www.figma.com/api/mcp/asset/4792d18e-8359-42b1-bfb9-a2d988a2b86f" alt="Relovation live op event">
@@ -4148,8 +4141,8 @@
           </div>
           <div class="event-copy">
             <h3>Canon Benelux</h3>
-            <p>lorem ipsum lorem ipsum lorem ipsum lorem ipsumlorem ipsum lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum</p>
-            <a class="event-link" href="#contact">Bespreek mijn event →</a>
+            <p>Muzikale omkadering van een corporate event, van ontvangst tot avondprogramma.</p>
+            <a class="event-link" href="./aanvraag.html">Vertel ons over uw event →</a>
           </div>
         </article>
       </div>
@@ -4158,18 +4151,19 @@
 
   <section class="cta-banner" id="contact">
     <div class="cta-shell">
-      <h2 class="reveal-title">
-        <span class="reveal-line">
-          <span class="reveal-word" style="animation-delay: 0.04s;">Boek</span>
-          <span class="reveal-word" style="animation-delay: 0.1s;">nu</span>
-          <span class="reveal-word" style="animation-delay: 0.16s;">Relovation</span>
-          <span class="reveal-word" style="animation-delay: 0.22s;">in</span>
+      <h2 class="reveal-title" aria-label="Vertel ons over uw event.">
+        <span class="reveal-line" aria-hidden="true">
+          <span class="reveal-word" style="animation-delay: 0.04s;">Vertel</span>
+          <span class="reveal-word" style="animation-delay: 0.1s;">ons</span>
+          <span class="reveal-word" style="animation-delay: 0.16s;">over</span>
+          <span class="reveal-word" style="animation-delay: 0.22s;">uw</span>
+          <span class="reveal-word" style="animation-delay: 0.28s;">event.</span>
         </span>
       </h2>
-      <p class="reveal-copy">lorem ipsum lorem ipsum lorem ipsum lorem ipsumlorem ipsum lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum</p>
+      <p class="reveal-copy">Beantwoord enkele korte vragen over uw event en we bekijken persoonlijk welke muzikale formule het best past. U ontvangt snel een vrijblijvend voorstel op maat.</p>
       <div class="cta-actions reveal-actions">
-        <a class="button button-primary" href="./aanvraag.html">Ontvang offerte</a>
-        <a class="button" href="mailto:hello@relovation.be">Contacteer ons</a>
+        <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
+        <a class="button" href="mailto:relovation@robinmusic.be">Vraag uw voorstel aan</a>
       </div>
     </div>
   </section>
@@ -4999,7 +4993,7 @@
       <a href="./contact.html">Contact</a>
     </nav>
     <div class="r-footer__contact">
-      <a href="mailto:info@relovation.be">info@relovation.be</a>
+      <a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a>
     </div>
   </div>
   <div class="r-footer__bottom">
