@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./nav.css">
   <link rel="stylesheet" href="./loader.css">
   <style>
     /* Tokens uit het Figma-designsysteem (Cream mode) — PcanuLMtNgkoyLV2iYFNHL */
@@ -29,14 +28,9 @@
       --btn-primary-bg-hover: #567d5c;
       --btn-primary-label: #f4edcf;
 
-      /* Aliassen die de gedeelde nav.css/loader.css verwachten */
+      /* loader.css verwacht deze */
       --bg: var(--bg-page);
       --ink: var(--text-primary);
-      --ink-deep: #3f5645;
-      --line: rgba(76, 106, 87, 0.24);
-      --line-strong: rgba(76, 106, 87, 0.38);
-      --line-on-dark: rgba(244, 237, 207, 0.34);
-      --cream-on-dark: rgba(244, 237, 207, 0.96);
 
       --space-2xs: 4px;
       --space-xs: 8px;
@@ -54,20 +48,27 @@
       --error: #9a3412;
       --ease: cubic-bezier(0.18, 0.88, 0.18, 1);
 
-      /* Hoogte van de vaste nav; de flow vult exact de rest van het scherm. */
-      --nav-h: 76px;
+      --bar-h: 64px;
 
-      /* Maten van de keuzekaarten. Krimpen op korte schermen, zodat ook de
-         langste vraag (vraag 2, 7 opties) zonder scrollen past. */
+      /* Maten die krimpen naarmate de ruimte kleiner wordt. */
       --card-h: 56px;
       --card-pad-y: var(--space-md);
       --card-gap: var(--space-sm);
       --q-title: clamp(24px, 3.2vw, 40px);
+      --kal-cel: 44px;
     }
 
     * { box-sizing: border-box; }
 
-    html, body { margin: 0; min-height: 100%; overflow-x: hidden; }
+    /* De viewport staat vast: de pagina zelf scrollt nooit. Focus-modus —
+       geen menu, geen footer, geen weg naar beneden. Het vraaggebied heeft
+       een eigen overloop als vangnet, zodat inhoud nooit onbereikbaar wordt. */
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
 
     body {
       font-family: "DM Sans", sans-serif;
@@ -90,11 +91,56 @@
       border: 0;
     }
 
-    /* ══ De flow vult exact één scherm ══════════════════════
-       svh i.p.v. vh: op mobiel telt vh de adresbalk niet mee,
-       waardoor de knop onder de vouw zou belanden. */
+    /* ══ Balk: alleen merk en uitgang ═══════════════════════
+       Geen navigatie (MWW: elke link is een uitgang weg van de flow), maar
+       wél een weg terug — nooit iemand opsluiten. */
+    .focusbar {
+      flex: none;
+      height: var(--bar-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      width: var(--shell);
+      margin: 0 auto;
+    }
+
+    .focusbar__brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: "EB Garamond", serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .focusbar__note { width: 14px; flex: none; }
+    .focusbar__note img { width: 100%; }
+
+    .focusbar__uit {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 44px;
+      padding: 0 var(--space-sm);
+      margin-right: calc(var(--space-sm) * -1);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: var(--radius-pill);
+      transition: color 180ms var(--ease);
+    }
+
+    .focusbar__uit:hover { color: var(--text-primary); }
+    .focusbar__uit span { font-size: 18px; line-height: 1; }
+
+    /* ══ De flow vult exact één scherm ══════════════════════ */
+
     .flow {
-      min-height: calc(100svh - var(--nav-h));
+      height: 100svh;
       display: flex;
       flex-direction: column;
     }
@@ -105,15 +151,12 @@
       display: flex;
       flex-direction: column;
       flex: 1;
+      min-height: 0;
     }
 
     /* ══ Voortgang ═════════════════════════════════════════ */
 
-    .progress {
-      padding: var(--space-lg) 0 var(--space-md);
-      flex: none;
-    }
-
+    .progress { flex: none; padding: var(--space-xs) 0 var(--space-md); }
     .progress[hidden] { display: none; }
 
     .progress__meta {
@@ -142,8 +185,6 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Drie segmenten = de drie stappen uit de briefing. Het actieve segment
-       vult zich naarmate je door de vragen van die stap gaat. */
     .progress__track { display: flex; gap: 6px; }
 
     .progress__seg {
@@ -165,26 +206,35 @@
 
     .progress__seg.is-done .progress__fill { background: var(--bg-accent); }
 
-    /* ══ Het speelveld: één vraag, verticaal gecentreerd ════ */
-
+    /* ══ Het speelveld ═════════════════════════════════════
+       Het vangnet: past een vraag niet, dan scrollt dit blok — niet de
+       pagina. De voortgangsbalk blijft staan. */
     .stage {
       flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    /* min-height 100% zorgt dat de vraag gecentreerd staat als ze past, en
+       gewoon meegroeit als ze te hoog is. justify-content alleen zou de
+       bovenkant afknippen bij overloop. */
+    .stage__inner {
+      min-height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: var(--space-md) 0 var(--space-2xl);
-      min-height: 0;
+      padding: var(--space-sm) 0 var(--space-xl);
     }
 
     .screen { width: 100%; }
 
     .aanvraag-form[data-enhanced] .screen:not(.is-active) { display: none; }
-    .stage > .screen:not(.is-active) { display: none; }
+    .stage__inner > .screen:not(.is-active) { display: none; }
 
-    /* Zonder JS staan alle vragen onder elkaar; centreren slaat dan nergens op. */
+    /* Zonder JS staan alle vragen onder elkaar en mag de pagina wél scrollen. */
     .aanvraag-form:not([data-enhanced]) .screen { display: block; }
     .aanvraag-form:not([data-enhanced]) .screen + .screen { margin-top: var(--space-2xl); }
-    .aanvraag-form:not([data-enhanced]) { padding: var(--space-2xl) 0; }
 
     .screen.is-active { animation: screen-in 420ms var(--ease) both; }
     .screen.is-active[data-dir="terug"] { animation-name: screen-in-terug; }
@@ -206,7 +256,7 @@
       display: flex;
       align-items: center;
       gap: var(--space-xs);
-      margin-bottom: var(--space-sm);
+      margin-bottom: var(--space-xs);
       font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.1em;
@@ -214,11 +264,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .q__num::after {
-      content: "";
-      width: 18px; height: 1px;
-      background: var(--border-accent);
-    }
+    .q__num::after { content: ""; width: 18px; height: 1px; background: var(--border-accent); }
 
     .q__legend { display: contents; }
 
@@ -256,20 +302,13 @@
       margin-top: var(--space-lg);
     }
 
-    @media (max-width: 640px) {
-      .q__options { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 640px) { .q__options { grid-template-columns: 1fr; } }
 
     /* ══ Keuzekaart ════════════════════════════════════════ */
 
     .opt { position: relative; }
 
-    .opt input {
-      position: absolute;
-      opacity: 0;
-      width: 1px; height: 1px;
-      margin: 0;
-    }
+    .opt input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
 
     .opt__card {
       display: flex;
@@ -305,10 +344,7 @@
 
     .opt__card:hover { border-color: var(--text-primary); transform: translateY(-2px); }
 
-    .opt input:focus-visible + .opt__card {
-      outline: 2px solid var(--text-primary);
-      outline-offset: 3px;
-    }
+    .opt input:focus-visible + .opt__card { outline: 2px solid var(--text-primary); outline-offset: 3px; }
 
     .opt input:checked + .opt__card {
       border-color: var(--border-accent);
@@ -325,12 +361,126 @@
     .opt.is-blocked .opt__card { opacity: 0.42; cursor: not-allowed; }
     .opt.is-blocked .opt__card:hover { border-color: var(--border-subtle); transform: none; }
 
+    /* ══ Gebrande kalender ═════════════════════════════════
+       De native datumkiezer is systeem-UI (blauw/wit) die niets van de
+       huisstijl weet en zich niet laat stylen. Vandaar een eigen kalender.
+       Het native veld blijft als waardehouder en no-JS-terugval. */
+
+    .kal[hidden] { display: none; }
+
+    .kal {
+      margin-top: var(--space-md);
+      padding: var(--space-sm);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      max-width: 420px;
+    }
+
+    .kal__kop {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-xs);
+      margin-bottom: var(--space-xs);
+    }
+
+    .kal__maand {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-transform: capitalize;
+    }
+
+    .kal__nav {
+      display: grid;
+      place-items: center;
+      width: 40px; height: 40px;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 50%;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-size: 17px;
+      line-height: 1;
+      cursor: pointer;
+      transition: border-color 180ms var(--ease), background-color 180ms var(--ease);
+    }
+
+    .kal__nav:hover:not(:disabled) { border-color: var(--text-primary); background: var(--bg-surface); }
+    .kal__nav:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+    .kal__nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .kal__dagen,
+    .kal__grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+
+    .kal__dagen span {
+      padding: var(--space-2xs) 0;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .kal__dag {
+      display: grid;
+      place-items: center;
+      aspect-ratio: 1;
+      min-height: var(--kal-cel);
+      border: 0;
+      border-radius: 50%;
+      background: none;
+      color: var(--text-primary);
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease);
+    }
+
+    .kal__dag:hover:not(:disabled) { background: rgba(204, 167, 53, 0.22); }
+    .kal__dag:focus-visible { outline: 2px solid var(--text-primary); outline-offset: -2px; }
+
+    .kal__dag:disabled { opacity: 0.26; cursor: not-allowed; }
+
+    /* Vandaag: gouden ring. Gekozen: gevuld groen. */
+    .kal__dag.is-vandaag { box-shadow: inset 0 0 0 1.5px var(--border-accent); }
+
+    /* :hover staat er expliciet bij: `.kal__dag:hover:not(:disabled)` is
+       specifieker dan `.kal__dag.is-gekozen`, dus zonder dit kreeg de dag die
+       je net koos de hover-tint in plaats van het groen. */
+    .kal__dag.is-gekozen,
+    .kal__dag.is-gekozen:hover {
+      background: var(--bg-inverse);
+      color: var(--text-inverse);
+      font-weight: 600;
+    }
+
+    .kal__dag.is-gekozen.is-vandaag { box-shadow: inset 0 0 0 1.5px var(--bg-accent); }
+
+    .kal__leeg { visibility: hidden; }
+
+    .kal__uitkomst {
+      margin: var(--space-sm) 0 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      min-height: 20px;
+    }
+
+    .kal__uitkomst b { color: var(--text-primary); font-weight: 600; }
+
     /* ══ Tekstvelden ═══════════════════════════════════════ */
 
     .field { margin-top: var(--space-lg); }
+    .field[hidden] { display: none; }
 
-    /* Contactgegevens staan samen op één scherm; voor- en achternaam naast
-       elkaar, e-mail en telefoon over de volle breedte. */
     .veldgrid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -340,9 +490,7 @@
 
     .veldgrid > .veld--vol { grid-column: 1 / -1; }
 
-    @media (max-width: 560px) {
-      .veldgrid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 560px) { .veldgrid { grid-template-columns: 1fr; } }
 
     .veld__label {
       display: block;
@@ -415,8 +563,8 @@
       display: flex;
       align-items: flex-start;
       gap: var(--space-sm);
-      margin-top: var(--space-md);
-      padding: var(--space-sm) 0;
+      margin-top: var(--space-sm);
+      padding: var(--space-xs) 0;
       min-height: 44px;
       cursor: pointer;
       font-size: 16px;
@@ -449,7 +597,7 @@
     .conditional[hidden] { display: none; }
 
     .conditional {
-      margin-top: var(--space-lg);
+      margin-top: var(--space-md);
       padding-left: var(--space-lg);
       border-left: 2px solid var(--border-accent);
       animation: cond-in 260ms var(--ease) both;
@@ -477,7 +625,7 @@
       flex-wrap: wrap;
       align-items: center;
       gap: var(--space-sm) var(--space-md);
-      margin-top: var(--space-xl);
+      margin-top: var(--space-lg);
     }
 
     .aanvraag-form:not([data-enhanced]) .actions--nav { display: none; }
@@ -528,7 +676,6 @@
       transform: translateY(-2px);
     }
 
-    /* Terug is bewust rustig: het mag nooit met Volgende concurreren. */
     .btn--terug {
       min-height: 44px;
       padding: 0 var(--space-md);
@@ -543,10 +690,7 @@
 
     .actions__hint { font-size: 13px; color: var(--text-muted); }
 
-    /* "Druk op Enter" slaat nergens op zonder toetsenbord. */
-    @media (hover: none) {
-      .actions__hint { display: none; }
-    }
+    @media (hover: none) { .actions__hint { display: none; } }
 
     .aanvraag-form[data-sending] .btn { pointer-events: none; opacity: 0.7; }
 
@@ -561,41 +705,7 @@
 
     .form-status--error { background: rgba(154, 52, 18, 0.1); color: var(--error); }
 
-    .form-hp {
-      position: absolute;
-      left: -9999px;
-      width: 1px; height: 1px;
-      overflow: hidden;
-    }
-
-    /* ══ Openingsscherm ════════════════════════════════════ */
-
-    .intro__eyebrow {
-      margin: 0 0 var(--space-md);
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .intro__title {
-      margin: 0 0 var(--space-lg);
-      font-family: "EB Garamond", serif;
-      font-weight: 500;
-      font-size: clamp(38px, 6.4vw, 82px);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      color: var(--text-primary);
-    }
-
-    .intro__text {
-      margin: 0;
-      max-width: 52ch;
-      font-size: clamp(16px, 1.7vw, 21px);
-      line-height: 1.55;
-      color: var(--text-muted);
-    }
+    .form-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
     /* ══ Bevestiging ═══════════════════════════════════════ */
 
@@ -620,7 +730,7 @@
 
     /* Future-pacing: wat er ná het verzenden gebeurt. */
     .done__next {
-      margin: var(--space-xl) 0 0;
+      margin: var(--space-lg) 0 0;
       padding: 0;
       list-style: none;
       display: grid;
@@ -659,35 +769,33 @@
 
     .done__next span { font-size: 14px; line-height: 1.45; color: var(--text-muted); }
 
-    .done__actions { margin-top: var(--space-xl); }
+    .done__actions { margin-top: var(--space-lg); }
 
-    /* ══ Korte schermen: alles compacter, zodat ook de langste vraag
-       (vraag 2, 7 opties) zonder scrollen past. ═══════════ */
+    /* ══ Krimpen naarmate de ruimte kleiner wordt ══════════ */
 
-    /* Telefoons zetten de opties onder elkaar (1 kolom), waardoor de langste
-       vraag hoog wordt. Daar is compact de norm, niet de uitzondering. */
-    @media (max-width: 640px), (max-height: 780px) {
+    @media (max-width: 640px), (max-height: 800px) {
       :root {
         --card-h: 48px;
         --card-pad-y: var(--space-sm);
         --card-gap: var(--space-xs);
         --q-title: clamp(21px, 5.6vw, 30px);
+        --kal-cel: 40px;
       }
       .q__options { margin-top: var(--space-md); }
-      .actions { margin-top: var(--space-lg); }
+      .actions { margin-top: var(--space-md); }
       .field, .veldgrid { margin-top: var(--space-md); }
-      .progress { padding: var(--space-md) 0 var(--space-sm); }
-      .stage { padding: var(--space-sm) 0 var(--space-lg); }
+      .progress { padding: var(--space-2xs) 0 var(--space-sm); }
       .field-textarea { min-height: 88px; }
-      .q__num { margin-bottom: var(--space-xs); }
+      .check--privacy { margin-top: var(--space-md); padding: var(--space-md); }
     }
 
-    @media (max-height: 680px), (max-width: 360px) {
-      :root { --card-h: 44px; --card-gap: 6px; }
+    @media (max-height: 700px), (max-width: 360px) {
+      :root { --card-h: 44px; --card-gap: 6px; --kal-cel: 36px; }
       .q__hint { font-size: 14px; }
-      .check--privacy { padding: var(--space-md); font-size: 14px; }
+      .check--privacy { font-size: 14px; }
       .veld__label { margin-bottom: 4px; }
-      .actions { margin-top: var(--space-md); }
+      .kal__maand { font-size: 18px; }
+      .kal__nav { width: 36px; height: 36px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -702,8 +810,13 @@
       /* loader.js haalt de overlay weg; zonder JS blijft die anders eeuwig
          over de pagina liggen en is het formulier onbereikbaar. */
       .r-loader { display: none; }
-      /* Zonder JS is er geen stapsgewijze flow om voortgang van te tonen. */
+      /* Zonder JS is er geen stapsgewijze flow om voortgang van te tonen, en
+         moet de pagina wél kunnen scrollen — alle vragen staan onder elkaar. */
       .progress { display: none !important; }
+      html, body { overflow: auto !important; height: auto !important; }
+      .flow { height: auto !important; }
+      .stage { overflow: visible !important; }
+      .stage__inner { min-height: 0 !important; display: block !important; padding: var(--space-xl) 0 !important; }
     </style>
   </noscript>
 </head>
@@ -719,73 +832,35 @@
   </div>
 </div>
 
-<!-- ── Navigation ── -->
-<header class="r-nav" id="r-nav" aria-label="Hoofdnavigatie">
-  <div class="r-nav__inner">
-    <a class="r-nav__brand" href="./index.html" aria-label="Relovation — home">
-      <span class="r-nav__genre">Live jazz</span>
-      <span class="r-nav__wordmark">
-        <span class="r-nav__note"><img src="./note%20relovtion.svg" alt=""></span>
-        Relovation
-      </span>
+<section class="flow">
+  <!-- Focus-modus: geen navigatie, wel een weg terug. -->
+  <header class="focusbar">
+    <a class="focusbar__brand" href="./index.html" aria-label="Relovation — home">
+      <span class="focusbar__note"><img src="./note%20relovtion.svg" alt=""></span>
+      Relovation
     </a>
+    <a class="focusbar__uit" href="./index.html">Sluiten <span aria-hidden="true">×</span></a>
+  </header>
 
-    <nav aria-label="Primaire navigatie">
-      <ul class="r-nav__links">
-        <li><a href="./index.html">Home</a></li>
-        <li><a href="./diensten.html">Diensten</a></li>
-        <li><a href="./over.html">Over</a></li>
-        <li><a href="./contact.html">Contact</a></li>
-      </ul>
-    </nav>
+  <div class="flow__shell">
 
-    <div class="r-nav__actions">
-      <a class="r-nav__cta" href="./aanvraag.html" aria-current="page">
-        Vertel ons over uw event <span class="r-nav__cta-arrow" aria-hidden="true">→</span>
-      </a>
-      <button class="r-nav__burger" id="r-nav-burger"
-        aria-expanded="false" aria-controls="r-nav-overlay"
-        aria-label="Menu openen">
-        <span class="r-nav__burger-open" aria-hidden="true">Menu</span>
-        <span class="r-nav__burger-close" aria-hidden="true">×</span>
-      </button>
-    </div>
-  </div>
-</header>
+    <h1 class="sr-only">Vertel ons over uw event</h1>
 
-<div class="r-nav__overlay" id="r-nav-overlay" aria-hidden="true">
-  <nav aria-label="Mobiele navigatie">
-    <ol class="r-nav__ovl-list">
-      <li><a href="./index.html"><span class="r-nav__ovl-num">01</span><span class="r-nav__ovl-title">Home</span></a></li>
-      <li><a href="./diensten.html"><span class="r-nav__ovl-num">02</span><span class="r-nav__ovl-title">Diensten</span></a></li>
-      <li><a href="./over.html"><span class="r-nav__ovl-num">03</span><span class="r-nav__ovl-title">Over</span></a></li>
-      <li><a href="./contact.html"><span class="r-nav__ovl-num">04</span><span class="r-nav__ovl-title">Contact</span></a></li>
-    </ol>
-  </nav>
-  <div class="r-nav__ovl-bottom">
-    <a class="r-nav__cta-ovl" href="./aanvraag.html">Vertel ons over uw event</a>
-    <p class="r-nav__ovl-contact"><a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a></p>
-  </div>
-</div>
-
-<div class="page">
-  <section class="flow">
-    <div class="flow__shell">
-
-      <div class="progress" id="progress" hidden>
-        <div class="progress__meta">
-          <span class="progress__chapter" id="progress-chapter">Stap <b>1</b> van 3 · Event &amp; muziek</span>
-          <span class="progress__count" id="progress-count">Vraag 1 van 9</span>
-        </div>
-        <div class="progress__track" role="presentation">
-          <span class="progress__seg" data-seg="1"><span class="progress__fill"></span></span>
-          <span class="progress__seg" data-seg="2"><span class="progress__fill"></span></span>
-          <span class="progress__seg" data-seg="3"><span class="progress__fill"></span></span>
-        </div>
-        <p class="sr-only" role="status" aria-live="polite" id="progress-announce"></p>
+    <div class="progress" id="progress">
+      <div class="progress__meta">
+        <span class="progress__chapter" id="progress-chapter">Stap <b>1</b> van 3 · Event &amp; muziek</span>
+        <span class="progress__count" id="progress-count">Vraag 1 van 9</span>
       </div>
+      <div class="progress__track" role="presentation">
+        <span class="progress__seg" data-seg="1"><span class="progress__fill"></span></span>
+        <span class="progress__seg" data-seg="2"><span class="progress__fill"></span></span>
+        <span class="progress__seg" data-seg="3"><span class="progress__fill"></span></span>
+      </div>
+      <p class="sr-only" role="status" aria-live="polite" id="progress-announce"></p>
+    </div>
 
-      <div class="stage">
+    <div class="stage" id="stage">
+      <div class="stage__inner">
         <form class="aanvraag-form" id="aanvraag-form" action="/api/aanvraag" method="post" novalidate>
 
           <!-- Honeypot: onzichtbaar voor mensen, bots vullen 'm wel in. -->
@@ -794,25 +869,11 @@
             <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
           </div>
 
-          <!-- ══ Opening ══ -->
-          <section class="screen is-active" data-screen="intro" aria-labelledby="intro-title">
-            <p class="intro__eyebrow">Aanvraag</p>
-            <h1 class="intro__title" id="intro-title" tabindex="-1">Vertel ons over uw event</h1>
-            <p class="intro__text">
-              Beantwoord enkele korte vragen. Zo bekijken we persoonlijk welke muzikale
-              formule het best past bij uw moment.
-            </p>
-            <div class="actions actions--nav">
-              <button class="btn btn--primary" type="button" data-next>
-                Beginnen <span aria-hidden="true">→</span>
-              </button>
-              <span class="actions__hint">Duurt ongeveer 2 minuten</span>
-            </div>
-          </section>
+          <!-- ══ Stap 1 — Event & muziek ══
+               Geen tussenscherm: de bezoeker landt meteen op de makkelijkste
+               vraag. Dat is de eerste micro-ja (Cialdini, foot-in-the-door). -->
 
-          <!-- ══ Stap 1 — Event & muziek ══ -->
-
-          <section class="screen" data-screen="1" data-q="event_type" data-chapter="1" data-auto>
+          <section class="screen is-active" data-screen="1" data-q="event_type" data-chapter="1" data-auto>
             <fieldset class="q">
               <legend class="q__legend">
                 <span class="q__num">Vraag 1</span>
@@ -827,9 +888,8 @@
                 <label class="opt"><input type="radio" name="event_type" value="Ander event"><span class="opt__card">Ander event</span></label>
               </div>
             </fieldset>
-            <div class="actions actions--nav">
-              <button class="btn btn--terug" type="button" data-prev><span aria-hidden="true">←</span> Terug</button>
-            </div>
+            <!-- Geen Terug-knop: dit is het eerste scherm, er is niets om naar
+                 terug te gaan. Een knop die niets doet is pure verwarring. -->
           </section>
 
           <section class="screen" data-screen="2" data-q="moment" data-chapter="1" data-exclusive="Nog niet zeker, graag advies">
@@ -887,9 +947,24 @@
                 <span class="q__title">Wanneer gaat het event door?</span>
               </legend>
 
+              <!-- Waardehouder én terugval zonder JS. Het script verbergt dit
+                   veld en zet de gebrande kalender ervoor in de plaats. -->
               <div class="field" data-datum-veld>
                 <label class="sr-only" for="datum">Datum van het event</label>
                 <input class="field-input field-date" id="datum" name="datum" type="date">
+              </div>
+
+              <div class="kal" id="kalender" hidden>
+                <div class="kal__kop">
+                  <button class="kal__nav" type="button" data-kal-vorige aria-label="Vorige maand">‹</button>
+                  <p class="kal__maand" data-kal-maand aria-live="polite"></p>
+                  <button class="kal__nav" type="button" data-kal-volgende aria-label="Volgende maand">›</button>
+                </div>
+                <div class="kal__dagen" aria-hidden="true">
+                  <span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span>
+                </div>
+                <div class="kal__grid" data-kal-grid role="group" aria-label="Kies een datum"></div>
+                <p class="kal__uitkomst" data-kal-uitkomst role="status" aria-live="polite"></p>
               </div>
 
               <label class="check">
@@ -1066,34 +1141,11 @@
           </div>
         </div>
       </div>
-
     </div>
-  </section>
-</div>
 
-<footer class="r-footer">
-  <div class="r-footer__inner">
-    <a class="r-footer__brand" href="./index.html">
-      <span class="r-footer__brand-note"><img src="./note%20relovtion.svg" alt=""></span>
-      Relovation
-    </a>
-    <nav class="r-footer__nav" aria-label="Footer navigatie">
-      <a href="./index.html">Home</a>
-      <a href="./diensten.html">Diensten</a>
-      <a href="./over.html">Over</a>
-      <a href="./contact.html">Contact</a>
-    </nav>
-    <div class="r-footer__contact">
-      <a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a>
-    </div>
   </div>
-  <div class="r-footer__bottom">
-    <p class="r-footer__copy">&copy; 2025 Relovation &mdash; Alle rechten voorbehouden</p>
-    <p class="r-footer__copy">Made by <a href="https://www.jdcreations.co" target="_blank" rel="noopener noreferrer">JDCreations</a></p>
-  </div>
-</footer>
+</section>
 
-  <script src="./nav.js"></script>
   <script src="./loader.js"></script>
   <script src="./aanvraag-form.js"></script>
 </body>

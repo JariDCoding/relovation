@@ -41,9 +41,13 @@ async function kies(page: Page, naam: string, waarde: string) {
   await page.locator(`input[name="${naam}"][value="${waarde}"] + .opt__card`).click();
 }
 
-async function beginnen(page: Page) {
-  await page.getByRole("button", { name: /Beginnen/ }).click();
-  await expect(page.locator('.screen[data-screen="1"]')).toBeVisible();
+/**
+ * Kiest een datum in de gebrande kalender. Het native #datum-veld is met JS
+ * verborgen (het draagt alleen nog de waarde), dus daar rechtstreeks in vullen
+ * kan niet meer.
+ */
+async function kiesDatum(page: Page) {
+  await page.locator(".kal__dag:not(:disabled)").first().click();
 }
 
 async function volgende(page: Page) {
@@ -64,13 +68,11 @@ async function geenScroll(page: Page, waar: string) {
   return m;
 }
 
-test.describe("elke vraag past in één viewport", () => {
-  // De footer staat bewust onder de vouw; we meten de flow zelf.
+test.describe("vergrendelde viewport: de pagina scrollt nooit", () => {
   for (const vp of viewports) {
     test(`${vp.name} (${vp.width}x${vp.height})`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await open(page);
-      await beginnen(page);
 
       const meting: string[] = [];
 
@@ -78,23 +80,32 @@ test.describe("elke vraag past in één viewport", () => {
         const actief = page.locator(".screen.is-active");
         await expect(actief).toHaveAttribute("data-screen", String(n));
 
-        // De flow-sectie moet binnen het scherm blijven: dat is de belofte.
-        const hoogte = await page.locator(".flow").evaluate((el) => el.getBoundingClientRect().height);
-        const beschikbaar = vp.height - 76; // nav
-        meting.push(`  vraag ${n}: flow ${Math.round(hoogte)}px / ${beschikbaar}px beschikbaar`);
+        const m = await geenScroll(page, `${vp.name} vraag ${n}`);
+
+        // 1. De pagina zelf mag nooit scrollen — dat is de vergrendeling.
+        expect(
+          m.scrollH,
+          `${vp.name} vraag ${n}: de pagina is ${m.scrollH}px hoog in een venster van ${m.clientH}px — de vergrendeling lekt`
+        ).toBeLessThanOrEqual(m.clientH + 1);
+
+        // 2. Het vraaggebied mag zijn vangnet niet nodig hebben: op deze
+        //    schermen hoort alles gewoon te passen.
+        const stage = await page.locator("#stage").evaluate((el) => ({
+          scroll: el.scrollHeight,
+          client: el.clientHeight,
+        }));
+        meting.push(`  vraag ${n}: vraaggebied ${stage.scroll}px / ${stage.client}px`);
 
         expect(
-          hoogte,
-          `${vp.name} vraag ${n}: de flow is ${Math.round(hoogte)}px hoog, meer dan de ${beschikbaar}px die het scherm biedt — er moet gescrold worden`
-        ).toBeLessThanOrEqual(beschikbaar + 2);
-
-        await geenScroll(page, `${vp.name} vraag ${n}`);
+          stage.scroll,
+          `${vp.name} vraag ${n}: het vraaggebied is ${stage.scroll}px in ${stage.client}px — er moet gescrold worden`
+        ).toBeLessThanOrEqual(stage.client + 1);
 
         // Vullen en door.
         if (n === 1) await kies(page, "event_type", "Trouwfeest");
         else if (n === 2) { await kies(page, "moment", "Ceremonie"); await volgende(page); }
         else if (n === 3) { await kies(page, "sfeer", "Warm en intiem"); await volgende(page); }
-        else if (n === 4) { await page.locator("#datum").fill("2026-09-14"); await volgende(page); }
+        else if (n === 4) { await kiesDatum(page); await volgende(page); }
         else if (n === 5) { await page.locator("#locatie").fill("Antwerpen"); await volgende(page); }
         else if (n === 6) await kies(page, "gasten", "80 – 150");
         else if (n === 7) {
@@ -119,7 +130,6 @@ test.describe("iPhone SE (320x568) — scrollt, maar blijft bruikbaar", () => {
   test("geen horizontale scroll en alle tapdoelen halen 44px", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 568 });
     await open(page);
-    await beginnen(page);
 
     for (let n = 1; n <= 3; n++) {
       await geenScroll(page, `iphone-se vraag ${n}`);
@@ -143,11 +153,15 @@ test.describe("iPhone SE (320x568) — scrollt, maar blijft bruikbaar", () => {
     await expect(page.locator('.screen[data-screen="4"]')).toBeVisible();
   });
 
-  test("de knop is bereikbaar door te scrollen", async ({ page }) => {
+  test("de knop blijft bereikbaar via de interne overloop van het vraaggebied", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 568 });
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
+    await expect(page.locator('.screen[data-screen="2"]')).toBeVisible();
+
+    // De pagina blijft vergrendeld; het vraaggebied vangt de overloop op.
+    const m = await geenScroll(page, "iphone-se vangnet");
+    expect(m.scrollH, "de pagina mag ook hier niet scrollen").toBeLessThanOrEqual(m.clientH + 1);
 
     const knop = page.locator(".screen.is-active [data-next]");
     await knop.scrollIntoViewIfNeeded();
@@ -158,7 +172,6 @@ test.describe("iPhone SE (320x568) — scrollt, maar blijft bruikbaar", () => {
 test.describe("automatisch door bij enkele keuze", () => {
   test("vraag 1 springt vanzelf naar vraag 2", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
 
     // Even zichtbaar blijven, dan door — daar is de pauze voor.
@@ -168,7 +181,6 @@ test.describe("automatisch door bij enkele keuze", () => {
 
   test("vraag 2 en 3 springen NIET vanzelf door — daar mag je meerdere kiezen", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await expect(page.locator('.screen[data-screen="2"]')).toBeVisible();
 
@@ -184,9 +196,7 @@ test.describe("automatisch door bij enkele keuze", () => {
 test.describe("voortgang", () => {
   test("toont de juiste stap en telling per vraag", async ({ page }) => {
     await open(page);
-    await expect(page.locator("#progress"), "de opening is geen vraag").toBeHidden();
-
-    await beginnen(page);
+    await expect(page.locator("#progress"), "voortgang staat er meteen").toBeVisible();
     await expect(page.locator("#progress-chapter")).toContainText("Stap 1 van 3");
     await expect(page.locator("#progress-chapter")).toContainText("Event & muziek");
     await expect(page.locator("#progress-count")).toHaveText("Vraag 1 van 9");
@@ -209,7 +219,6 @@ test.describe("voortgang", () => {
 test.describe("validatie", () => {
   test("vraag 2 blokkeert bij geen keuze en zegt waarom", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await expect(page.locator('.screen[data-screen="2"]')).toBeVisible();
 
@@ -220,13 +229,12 @@ test.describe("validatie", () => {
 
   test("contactscherm meldt per veld wat er ontbreekt", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await kies(page, "moment", "Ceremonie");
     await volgende(page);
     await kies(page, "sfeer", "Warm en intiem");
     await volgende(page);
-    await page.locator("#datum").fill("2026-09-14");
+    await kiesDatum(page);
     await volgende(page);
     await page.locator("#locatie").fill("Antwerpen");
     await volgende(page);
@@ -242,13 +250,12 @@ test.describe("validatie", () => {
 
   test("fout verdwijnt zodra je het veld corrigeert", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await kies(page, "moment", "Ceremonie");
     await volgende(page);
     await kies(page, "sfeer", "Warm en intiem");
     await volgende(page);
-    await page.locator("#datum").fill("2026-09-14");
+    await kiesDatum(page);
     await volgende(page);
 
     await volgende(page); // locatie leeg
@@ -261,7 +268,6 @@ test.describe("validatie", () => {
 test.describe("conditionele logica uit de briefing", () => {
   test('vraag 2: "Nog niet zeker" is exclusief en werkt beide kanten op', async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
 
     const ceremonie = page.locator('input[name="moment"][value="Ceremonie"]');
@@ -277,7 +283,6 @@ test.describe("conditionele logica uit de briefing", () => {
 
   test("vraag 3: maximaal 2 keuzes, de rest dimt zichtbaar", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await kies(page, "moment", "Ceremonie");
     await volgende(page);
@@ -300,7 +305,6 @@ test.describe("conditionele logica uit de briefing", () => {
 
   test("vraag 4: datum-checkbox wisselt naar de periodekeuze", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await kies(page, "moment", "Ceremonie");
     await volgende(page);
@@ -308,11 +312,15 @@ test.describe("conditionele logica uit de briefing", () => {
     await volgende(page);
 
     await expect(page.locator("#periode-blok")).toBeHidden();
-    await page.locator("#datum").fill("2026-09-14");
-    await page.locator("#datum_flexibel").check();
+    await expect(page.locator("#kalender"), "de gebrande kalender staat er, niet de native kiezer").toBeVisible();
+    await expect(page.locator("#datum"), "het native veld is met JS alleen nog waardehouder").toBeHidden();
 
+    await kiesDatum(page);
+    await expect(page.locator("#datum")).not.toHaveValue("");
+
+    await page.locator("#datum_flexibel").check();
     await expect(page.locator("#periode-blok")).toBeVisible();
-    await expect(page.locator("#datum")).toBeHidden();
+    await expect(page.locator("#kalender"), "kalender verdwijnt als de datum niet vastligt").toBeHidden();
     await expect(page.locator("#datum"), "datum moet gewist worden bij flexibel").toHaveValue("");
 
     await volgende(page);
@@ -324,10 +332,107 @@ test.describe("conditionele logica uit de briefing", () => {
   });
 });
 
+test.describe("gebrande kalender", () => {
+  async function naarDatum(page: Page) {
+    await open(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await kies(page, "moment", "Ceremonie");
+    await volgende(page);
+    await kies(page, "sfeer", "Warm en intiem");
+    await volgende(page);
+    await expect(page.locator('.screen[data-screen="4"]')).toBeVisible();
+  }
+
+  test("de native systeemkiezer is vervangen door de eigen kalender", async ({ page }) => {
+    await naarDatum(page);
+    await expect(page.locator("#kalender")).toBeVisible();
+    await expect(
+      page.locator("#datum"),
+      "het native veld mag niet zichtbaar zijn: dat is de blauw/witte systeem-UI"
+    ).toBeHidden();
+    await expect(page.locator(".kal__dag").first()).toBeVisible();
+  });
+
+  test("data in het verleden zijn geblokkeerd en vandaag is gemarkeerd", async ({ page }) => {
+    await naarDatum(page);
+
+    // De eerste maand is de huidige: alles vóór vandaag moet uit staan.
+    const vandaag = new Date().getDate();
+    const uitgeschakeld = await page.locator(".kal__dag:disabled").count();
+    expect(uitgeschakeld, "alle dagen vóór vandaag horen uitgeschakeld te zijn").toBe(vandaag - 1);
+
+    await expect(page.locator(".kal__dag.is-vandaag")).toHaveCount(1);
+    await expect(
+      page.locator("[data-kal-vorige]"),
+      "je kunt niet terug naar een maand die al voorbij is"
+    ).toBeDisabled();
+  });
+
+  test("een dag kiezen markeert hem en toont de datum voluit", async ({ page }) => {
+    await naarDatum(page);
+    await expect(page.locator("[data-kal-uitkomst]")).toBeEmpty();
+
+    await kiesDatum(page);
+
+    await expect(page.locator(".kal__dag.is-gekozen")).toHaveCount(1);
+    await expect(page.locator("[data-kal-uitkomst]")).toContainText("Gekozen:");
+    // Nederlandse maandnaam, geen "July".
+    await expect(page.locator("[data-kal-maand]")).toHaveText(
+      /januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december/
+    );
+  });
+
+  test("de gekozen dag is groen, ook met de muis erop", async ({ page }) => {
+    await naarDatum(page);
+    const dag = page.locator(".kal__dag:not(:disabled)").nth(2);
+    await dag.click();
+    await dag.hover();
+
+    // `.kal__dag:hover:not(:disabled)` is specifieker dan `.kal__dag.is-gekozen`.
+    // Zonder expliciete hover-regel kreeg je keuze de tan hover-tint.
+    const kleur = await dag.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(kleur, "de gekozen dag hoort diepgroen te zijn, niet de hover-tint").toBe("rgb(76, 106, 87)");
+  });
+
+  test("bladeren naar een volgende maand werkt en houdt de keuze vast", async ({ page }) => {
+    await naarDatum(page);
+    await kiesDatum(page);
+    const maand = await page.locator("[data-kal-maand]").textContent();
+
+    await page.locator("[data-kal-volgende]").click();
+    await expect(page.locator("[data-kal-maand]")).not.toHaveText(maand!);
+    await expect(page.locator("[data-kal-vorige]"), "terug mag nu wel").toBeEnabled();
+
+    // In een andere maand staat de keuze niet gemarkeerd, maar ze is niet weg.
+    await expect(page.locator(".kal__dag.is-gekozen")).toHaveCount(0);
+    await page.locator("[data-kal-vorige]").click();
+    await expect(page.locator(".kal__dag.is-gekozen")).toHaveCount(1);
+  });
+
+  test("zonder datum mag je niet door", async ({ page }) => {
+    await naarDatum(page);
+    await volgende(page);
+    await expect(page.locator('.screen[data-screen="4"]')).toBeVisible();
+    await expect(page.locator("#kalender .field-error")).toBeVisible();
+  });
+});
+
 test.describe("terug en herstel", () => {
+  test("vraag 1 heeft geen Terug-knop — er is niets om naar terug te gaan", async ({ page }) => {
+    await open(page);
+    await expect(page.locator('.screen[data-screen="1"]')).toBeVisible();
+    await expect(
+      page.locator('.screen[data-screen="1"] [data-prev]'),
+      "een knop die niets doet is verwarring"
+    ).toHaveCount(0);
+
+    // Vanaf vraag 2 hoort hij er wél te staan.
+    await kies(page, "event_type", "Trouwfeest");
+    await expect(page.locator('.screen[data-screen="2"] [data-prev]')).toBeVisible();
+  });
+
   test("terug behoudt de antwoorden", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await expect(page.locator('.screen[data-screen="2"]')).toBeVisible();
 
@@ -338,13 +443,12 @@ test.describe("terug en herstel", () => {
 
   test("na een refresh sta je nog op dezelfde vraag met je antwoorden", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await kies(page, "moment", "Ceremonie");
     await volgende(page);
     await kies(page, "sfeer", "Warm en intiem");
     await volgende(page);
-    await page.locator("#datum").fill("2026-09-14");
+    await kiesDatum(page);
     await volgende(page);
     await page.locator("#locatie").fill("Antwerpen");
 
@@ -359,13 +463,12 @@ test.describe("terug en herstel", () => {
 test.describe("verzenden", () => {
   async function totHetEind(page: Page) {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await kies(page, "moment", "Ceremonie");
     await volgende(page);
     await kies(page, "sfeer", "Warm en intiem");
     await volgende(page);
-    await page.locator("#datum").fill("2026-09-14");
+    await kiesDatum(page);
     await volgende(page);
     await page.locator("#locatie").fill("Antwerpen");
     await volgende(page);
@@ -400,7 +503,6 @@ test.describe("verzenden", () => {
       event_type: "Trouwfeest",
       moment: "Ceremonie",
       sfeer: "Warm en intiem",
-      datum: "2026-09-14",
       locatie: "Antwerpen",
       gasten: "80 – 150",
       voornaam: "Jan",
@@ -409,17 +511,28 @@ test.describe("verzenden", () => {
       voorkeur_contact: "WhatsApp",
       privacy: "ja",
     });
+
+    // kiesDatum() pakt de eerste selecteerbare dag; dat is vandaag, want de
+    // kalender blokkeert alles ervoor. Geen vaste datum in de assertie: die
+    // zou over een jaar stilletjes iets anders betekenen.
+    const vandaag = new Date();
+    const iso =
+      vandaag.getFullYear() +
+      "-" +
+      String(vandaag.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(vandaag.getDate()).padStart(2, "0");
+    expect(payload.datum, "de kalender levert een lokale ISO-datum, niet UTC").toBe(iso);
   });
 
   test("privacy niet aangevinkt: knop blijft klikbaar en zegt wat er mist", async ({ page }) => {
     await open(page);
-    await beginnen(page);
     await kies(page, "event_type", "Trouwfeest");
     await kies(page, "moment", "Ceremonie");
     await volgende(page);
     await kies(page, "sfeer", "Warm en intiem");
     await volgende(page);
-    await page.locator("#datum").fill("2026-09-14");
+    await kiesDatum(page);
     await volgende(page);
     await page.locator("#locatie").fill("Antwerpen");
     await volgende(page);
@@ -469,6 +582,11 @@ test.describe("zonder JavaScript", () => {
     await expect(page.getByRole("button", { name: "Vraag uw voorstel aan" })).toBeVisible();
     await expect(page.locator("#voornaam")).toBeVisible();
     await expect(page.locator("#achternaam")).toBeVisible();
+    await expect(
+      page.locator("#datum"),
+      "zonder JS moet de native datumkiezer terugvallen, anders is er geen datum te kiezen"
+    ).toBeVisible();
+    await expect(page.locator("#kalender")).toBeHidden();
 
     await geenScroll(page, "zonder JS");
   });

@@ -35,10 +35,6 @@ for (const vp of viewports) {
 
     const shot = (naam: string) => page.screenshot({ path: `${DIR}/${vp.name}-${naam}.png` });
 
-    await shot("00-opening");
-
-    await page.getByRole("button", { name: /Beginnen/ }).click();
-    await page.waitForTimeout(500);
     await shot("01-event");
 
     await kies(page, "event_type", "Trouwfeest");
@@ -63,7 +59,10 @@ for (const vp of viewports) {
     await shot("04-datum-periode");
 
     await page.locator("#datum_flexibel").uncheck();
-    await page.locator("#datum").fill("2026-09-14");
+    await page.waitForTimeout(300);
+    await page.locator(".kal__dag:not(:disabled)").nth(3).click();
+    await page.waitForTimeout(300);
+    await shot("04-datum-gekozen");
     await volgende(page);
     await shot("05-locatie");
 

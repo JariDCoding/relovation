@@ -36,23 +36,18 @@
     3: "Uw gegevens",
   };
 
-  // Alleen de vraagschermen tellen mee; de opening is geen vraag.
-  var vragen = schermen.filter(function (s) {
-    return s.getAttribute("data-screen") !== "intro";
-  });
+  // Geen openingsscherm: elk scherm is een vraag. De bezoeker landt meteen op
+  // de eerste, makkelijkste vraag.
+  var vragen = schermen;
   var TOTAAL = vragen.length;
 
-  var index = 0; // positie in `schermen` (0 = opening)
+  var index = 0;
   var autoTimer = null;
 
   form.setAttribute("data-enhanced", "");
 
   function scherm() {
     return schermen[index];
-  }
-
-  function isVraag(s) {
-    return s.getAttribute("data-screen") !== "intro";
   }
 
   // ── Fouten ──────────────────────────────────────────────
@@ -144,11 +139,11 @@
   function foutContainer(s, naam, veldId) {
     if (naam === "bericht") return vraagBlok("privacy");
     if (naam === "datum") {
-      // Bij een flexibele datum is het datumveld verborgen; dan hoort de
-      // melding bij de periodekeuze die ervoor in de plaats staat.
+      // De melding hoort bij het blok dat op dat moment zichtbaar is: de
+      // kalender, of de periodekeuze die ervoor in de plaats komt.
       return document.getElementById("datum_flexibel").checked
         ? document.getElementById("periode-blok")
-        : form.querySelector("[data-datum-veld]");
+        : document.getElementById("kalender");
     }
     if (veldId) return document.getElementById(veldId).closest("div");
     return s;
@@ -189,13 +184,6 @@
 
   function verversVoortgang() {
     var s = scherm();
-
-    if (!isVraag(s)) {
-      progressEl.hidden = true;
-      return;
-    }
-    progressEl.hidden = false;
-
     var hoofdstuk = parseInt(s.getAttribute("data-chapter"), 10);
     var nr = vragen.indexOf(s) + 1;
 
@@ -246,7 +234,7 @@
     if (tekstveld && !s.hasAttribute("data-auto")) {
       tekstveld.focus({ preventScroll: true });
     } else {
-      var kop = s.querySelector(".q__title, .intro__title");
+      var kop = s.querySelector(".q__title");
       if (kop && kop.hasAttribute("tabindex")) kop.focus({ preventScroll: true });
     }
 
@@ -255,8 +243,7 @@
   }
 
   function volgende() {
-    var s = scherm();
-    if (isVraag(s) && !valideer(s)) return;
+    if (!valideer(scherm())) return;
     if (index < schermen.length - 1) toon(index + 1, "vooruit");
   }
 
@@ -362,17 +349,161 @@
   var datumVeld = form.querySelector("[data-datum-veld]");
   var datumInput = document.getElementById("datum");
 
+  // ── Gebrande kalender ───────────────────────────────────
+  // De native datumkiezer is systeem-UI: blauw/wit, niet te stylen, en hij
+  // valt op een vergrendelde viewport buiten beeld. Vandaar een eigen
+  // kalender. Het native veld blijft de waarde dragen (en submit gewoon mee,
+  // ook verborgen), zodat de flow zonder JS blijft werken.
+
+  var MAANDEN = [
+    "januari", "februari", "maart", "april", "mei", "juni",
+    "juli", "augustus", "september", "oktober", "november", "december",
+  ];
+  var DAGEN = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
+
+  var kalEl = document.getElementById("kalender");
+  var kalGrid = kalEl.querySelector("[data-kal-grid]");
+  var kalMaand = kalEl.querySelector("[data-kal-maand]");
+  var kalUitkomst = kalEl.querySelector("[data-kal-uitkomst]");
+  var kalVorige = kalEl.querySelector("[data-kal-vorige]");
+  var kalVolgende = kalEl.querySelector("[data-kal-volgende]");
+
+  var vandaag = nulUur(new Date());
+  var toonMaand = new Date(vandaag.getFullYear(), vandaag.getMonth(), 1);
+  var gekozenDatum = null;
+
+  function nulUur(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  /** Lokale ISO-datum. toISOString() zou in UTC omrekenen en een dag verschuiven. */
+  function naarISO(d) {
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var dag = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + dag;
+  }
+
+  function uitISO(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+  }
+
+  function zelfdeDag(a, b) {
+    return a && b && a.getTime() === b.getTime();
+  }
+
+  function tekenKalender() {
+    kalMaand.textContent = MAANDEN[toonMaand.getMonth()] + " " + toonMaand.getFullYear();
+
+    // Niet terug voorbij de huidige maand: het event ligt in de toekomst.
+    kalVorige.disabled =
+      toonMaand.getFullYear() === vandaag.getFullYear() && toonMaand.getMonth() === vandaag.getMonth();
+
+    kalGrid.textContent = "";
+
+    // De week begint hier op maandag; getDay() geeft zondag als 0.
+    var eerste = new Date(toonMaand.getFullYear(), toonMaand.getMonth(), 1);
+    var offset = (eerste.getDay() + 6) % 7;
+    var aantal = new Date(toonMaand.getFullYear(), toonMaand.getMonth() + 1, 0).getDate();
+
+    for (var i = 0; i < offset; i++) {
+      var leeg = document.createElement("span");
+      leeg.className = "kal__leeg";
+      kalGrid.appendChild(leeg);
+    }
+
+    for (var d = 1; d <= aantal; d++) {
+      var datum = new Date(toonMaand.getFullYear(), toonMaand.getMonth(), d);
+      var knop = document.createElement("button");
+      knop.type = "button";
+      knop.className = "kal__dag";
+      knop.textContent = String(d);
+      knop.setAttribute("data-datum", naarISO(datum));
+
+      if (datum < vandaag) {
+        knop.disabled = true;
+      }
+      if (zelfdeDag(datum, vandaag)) knop.classList.add("is-vandaag");
+      if (zelfdeDag(datum, gekozenDatum)) {
+        knop.classList.add("is-gekozen");
+        knop.setAttribute("aria-current", "date");
+      }
+
+      knop.setAttribute(
+        "aria-label",
+        DAGEN[datum.getDay()] + " " + d + " " + MAANDEN[datum.getMonth()] + " " + datum.getFullYear()
+      );
+
+      kalGrid.appendChild(knop);
+    }
+  }
+
+  function toonUitkomst() {
+    if (!gekozenDatum) {
+      kalUitkomst.textContent = "";
+      return;
+    }
+    kalUitkomst.innerHTML =
+      "Gekozen: <b>" +
+      DAGEN[gekozenDatum.getDay()] +
+      " " +
+      gekozenDatum.getDate() +
+      " " +
+      MAANDEN[gekozenDatum.getMonth()] +
+      " " +
+      gekozenDatum.getFullYear() +
+      "</b>";
+  }
+
+  kalGrid.addEventListener("click", function (e) {
+    var knop = e.target.closest(".kal__dag");
+    if (!knop || knop.disabled) return;
+
+    gekozenDatum = uitISO(knop.getAttribute("data-datum"));
+    datumInput.value = knop.getAttribute("data-datum");
+
+    tekenKalender();
+    toonUitkomst();
+    wisFouten(form.querySelector('[data-q="datum"]'));
+    bewaar();
+  });
+
+  kalVorige.addEventListener("click", function () {
+    toonMaand = new Date(toonMaand.getFullYear(), toonMaand.getMonth() - 1, 1);
+    tekenKalender();
+  });
+
+  kalVolgende.addEventListener("click", function () {
+    toonMaand = new Date(toonMaand.getFullYear(), toonMaand.getMonth() + 1, 1);
+    tekenKalender();
+  });
+
+  /** Zet de kalender in de plaats van het native veld. */
+  function kalenderAan() {
+    datumVeld.hidden = true;
+    kalEl.hidden = false;
+    tekenKalender();
+    toonUitkomst();
+  }
+
   function verversDatum() {
     var isFlex = flexibel.checked;
     periodeBlok.hidden = !isFlex;
-    datumVeld.hidden = isFlex;
+
+    // Met JS staat het native veld altijd verborgen; de kalender neemt het
+    // over. Ligt de datum niet vast, dan verdwijnt ook de kalender.
+    datumVeld.hidden = true;
+    kalEl.hidden = isFlex;
 
     if (isFlex) {
       datumInput.value = "";
+      gekozenDatum = null;
+      toonUitkomst();
     } else {
       form.querySelectorAll('[name="periode"]').forEach(function (r) {
         r.checked = false;
       });
+      tekenKalender();
     }
     wisFouten(form.querySelector('[data-q="datum"]'));
   }
@@ -423,7 +554,13 @@
       });
     });
 
+    // Een herstelde datum moet ook in de kalender terugkomen.
+    gekozenDatum = uitISO(datumInput.value);
+    if (gekozenDatum) toonMaand = new Date(gekozenDatum.getFullYear(), gekozenDatum.getMonth(), 1);
+
     verversDatum();
+    toonUitkomst();
+
     form.querySelectorAll("[data-exclusive]").forEach(function (s) {
       s.querySelectorAll('input[type="checkbox"]').forEach(function (v) {
         v.dispatchEvent(new Event("change", { bubbles: false }));
@@ -561,6 +698,7 @@
       });
   });
 
+  kalenderAan();
   herstel();
   verversVoortgang();
 })();
