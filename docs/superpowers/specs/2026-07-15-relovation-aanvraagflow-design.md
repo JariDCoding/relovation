@@ -194,6 +194,38 @@ moeten écht zijn."* Er zijn geen geverifieerde aantallen of quotes beschikbaar.
 is geen optie. Op verzoek van Jari blijft de flow puur het formulier. Kan later terug op
 tafel als er echte cijfers zijn.
 
+## Kleurcorrectie na de a11y-audit
+
+De goud-tokens uit het designsysteem zijn niet bruikbaar als tekstkleur:
+
+| Combinatie | Gemeten | WCAG AA |
+|---|---|---|
+| `bg/accent` #af8f48 op cream #f4edcf | 2.61:1 | 4.5:1 — faalt |
+| `border/accent` #cca735 op groen #4c6a57 | 2.61:1 | 4.5:1 — faalt |
+
+Goud AA-proof maken vraagt ~#7d6432 op cream (zichtbaar bruiner) of ~#f2e2b4 op groen
+(dan is het goud weg). Beide zijn ontwerpingrepen, geen technische fixes.
+
+**Besluit (Jari): geen nieuwe kleuren.** Kleine tekst — eyebrows, vraagnummers,
+stap-labels — gebruikt `--text-muted` (#55715e, 4.57:1) op cream en `--text-inverse`
+(cream, 5.09:1) op groen. De ondertitel in de groene header ging van 78% naar 94% cream,
+placeholders van 60% naar 100% `--text-muted`.
+
+Goud blijft onaangeroerd waar het decoratief is: de voortgangsbalk, kaartranden, de
+vinkjesvulling, de rand van het conditionele blok en de streepjes bij de bevestiging. Daar
+geldt de tekstnorm niet.
+
+## Loader-overlay zonder JavaScript
+
+`loader.js` haalt de overlay weg; zonder JS gebeurt dat nooit en blijft
+`.r-loader { position: fixed; inset: 0; z-index: 9999 }` eeuwig over de pagina liggen. De
+progressive-enhancement-belofte hierboven was daardoor onwaar. Opgelost met een
+`<noscript>`-blok dat de loader verbergt.
+
+**Dit geldt site-breed:** `index`, `over`, `diensten` en `contact` hebben dezelfde loader
+en zijn dus zonder JS een leeg cream scherm. Alleen `/aanvraag` is gefixt; de rest staat
+open (zie openstaande punten).
+
 ## Zero confusion
 
 Expliciete eis van Jari. Concreet:
@@ -277,15 +309,51 @@ Mobiel eerst — de briefing: *"Elke stap moet vlot invulbaar zijn op smartphone
 - Terug/vooruit: antwoorden blijven staan; na refresh ook.
 - Viewports: 360, 390, 768, 1024, 1440, 1920, 2560.
 
+## Bestemming van de mail
+
+Aanvragen moeten naar **`relovation@robinmusic.be`**. Dat domein heeft Google-MX en kan dus
+ontvangen.
+
+`relovation.be` blijkt inmiddels wél geregistreerd en staat op Jari's Cloudflare-
+nameservers — het vorige ontwerpdoc van vanochtend klopt op dat punt niet meer.
+
+**Blokkade:** het Resend-account heeft nul geverifieerde domeinen. Daardoor mag
+`onboarding@resend.dev` uitsluitend naar `contact@jdcreations.co` sturen; elke andere
+ontvanger geeft een 403. Geverifieerd met een echte API-call — er is dus geen testmail bij
+Robin beland.
+
+Aanpak: `relovation.be` verifiëren bij Resend (domein staat aangemaakt, id
+`164473d4-75d7-4fb9-8283-b79befa0e483`). De drie DNS-records staan in
+`docs/resend-dns-records.md` en moeten door Jari in Cloudflare gezet worden.
+
+`wrangler.jsonc` staat al op de eindwaarden:
+
+```
+CONTACT_FROM = "Relovation <aanvraag@relovation.be>"
+CONTACT_TO   = "relovation@robinmusic.be"
+```
+
+**Niet deployen voor de verificatie rond is** — anders geeft elke inzending een 502. Lokaal
+overschrijft `.dev.vars` deze waarden zodat testen wél kan.
+
 ## Openstaande punten
 
+- **DNS-records toevoegen + verifiëren** — randvoorwaarde voor livegang. Zie
+  `docs/resend-dns-records.md`.
 - **Opslag + dashboard** — de briefing vraagt erom, staat nu bewust buiten scope. Volgende
-  fase: D1-tabel + afgeschermde `/admin`.
-- **`relovation.be` bestaat nog steeds niet** (zie het vorige ontwerpdoc). Mail loopt tot
-  die tijd via `onboarding@resend.dev` naar Jari's eigen adres. De secundaire CTA uit de
-  briefing wijst naar `relovation@robinmusic.be` — dat adres is niet geverifieerd en wordt
-  volgens de briefing toch niet actief gepromoot, dus blijft buiten de flow.
+  fase: D1-tabel + afgeschermde `/admin`. Extra reden om dit te doen: zolang mail de enige
+  bestemming is, is een bounce gelijk aan een verloren lead.
+- **Loader zonder JS op de andere 4 pagina's** — dezelfde bug, alleen `/aanvraag` is gefixt.
+- **Contrast in de gedeelde nav en footer** — 8 tot 11 axe-fouten (footer-links 2.42:1),
+  aanwezig op alle pagina's. Zit in `nav.css`, dus een site-brede ingreep. Buiten scope
+  gehouden; niet veroorzaakt door deze flow.
 - **Sociaal bewijs bij de CTA** — kan alsnog, zodra er echte cijfers of quotes zijn.
 - **Privacyverklaring** — de checkbox verwijst ernaar, maar er is nog geen privacypagina op
   de site. Voorlopig linkt de checkbox naar `contact.html`; te vervangen zodra de pagina er
   is.
+- **Secundaire CTA** — de briefing noemt "Vraag uw voorstel aan" naar
+  `relovation@robinmusic.be`, maar zegt er zelf bij dat die niet actief gepromoot wordt.
+  Bewust niet gebouwd: de flow is de gewenste route.
+- **In-body CTA's** — vijf knoppen op `index` en `over` heten nog "Ontvang offerte" en
+  linken naar `#contact` / `index.html#contact`. Die scrollen naar een sectie op dezelfde
+  pagina, dus omzetten verandert paginagedrag. Niet aangeraakt zonder overleg.
