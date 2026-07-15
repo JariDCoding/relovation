@@ -6,9 +6,18 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "tail": "wrangler tail"
+    "tail": "wrangler tail",
+    "qa:flow": "playwright test tests/aanvraag-flow.spec.ts",
+    "qa:responsive": "playwright test tests/responsive.spec.ts",
+    "qa:breakpoints": "playwright test tests/breakpoint-edges.spec.ts",
+    "qa:text": "playwright test tests/text-scaling.spec.ts",
+    "qa:a11y": "playwright test tests/accessibility.spec.ts",
+    "qa": "npm run qa:flow && npm run qa:responsive && npm run qa:breakpoints && npm run qa:text",
+    "qa:shots": "playwright test tests/shots.spec.ts"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@playwright/test": "^1.61.1",
     "wrangler": "^4.111.0"
   }
 }

@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+  <title>Vertel ons over uw event — Relovation</title>
+  <meta name="description" content="Beantwoord enkele korte vragen. Zo bekijken we persoonlijk welke muzikale formule het best past bij uw moment.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./nav.css">
+  <link rel="stylesheet" href="./loader.css">
+  <style>
+    /* Tokens uit het Figma-designsysteem (Cream mode) — PcanuLMtNgkoyLV2iYFNHL */
+    :root {
+      --bg-page: #f4edcf;
+      --bg-surface: #f7f2d5;
+      --bg-inverse: #4c6a57;
+      --bg-accent: #af8f48;
+
+      --text-primary: #4c6a57;
+      --text-secondary: #4f5f49;
+      --text-muted: #55715e;
+      --text-inverse: #f4edcf;
+
+      --border-default: #4f5f49;
+      --border-subtle: #c2c2ae;
+      --border-accent: #cca735;
+
+      --btn-primary-bg: #4c6a57;
+      --btn-primary-bg-hover: #567d5c;
+      --btn-primary-label: #f4edcf;
+
+      /* Aliassen die de gedeelde nav.css/loader.css verwachten */
+      --bg: var(--bg-page);
+      --ink: var(--text-primary);
+      --ink-deep: #3f5645;
+      --line: rgba(76, 106, 87, 0.24);
+      --line-strong: rgba(76, 106, 87, 0.38);
+      --line-on-dark: rgba(244, 237, 207, 0.34);
+      --cream-on-dark: rgba(244, 237, 207, 0.96);
+
+      --space-2xs: 4px;
+      --space-xs: 8px;
+      --space-sm: 12px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+      --space-3xl: 64px;
+      --space-4xl: 96px;
+
+      --radius-sm: 8px;
+      --radius-md: 20px;
+      --radius-lg: 32px;
+      --radius-pill: 999px;
+
+      --shadow-card: 0 4px 4px rgba(0, 0, 0, 0.1);
+
+      --shell: min(1080px, calc(100vw - clamp(32px, 7vw, 96px)));
+      --error: #9a3412;
+
+      --ease: cubic-bezier(0.18, 0.88, 0.18, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    button, input, select, textarea {
+      font: inherit;
+      color: inherit;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .section-shell {
+      width: var(--shell);
+      margin: 0 auto;
+    }
+
+    /* ── Kop ───────────────────────────────────────────────── */
+
+    .aanvraag {
+      padding: clamp(40px, 7vw, 88px) 0 clamp(64px, 9vw, 120px);
+    }
+
+    .aanvraag__eyebrow {
+      margin: 0 0 var(--space-md);
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      /* Niet het gouden accent: dat haalt maar 2.61:1 op cream. */
+      color: var(--text-muted);
+    }
+
+    .aanvraag__title {
+      margin: 0 0 var(--space-lg);
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      /* Figma H1 is 96px op desktop; vloeiend terug naar 40px op mobiel. */
+      font-size: clamp(40px, 7vw, 96px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .aanvraag__intro {
+      margin: 0;
+      max-width: 62ch;
+      font-size: clamp(17px, 1.6vw, 24px);
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    /* ── Voortgang ─────────────────────────────────────────── */
+
+    .progress {
+      margin: clamp(40px, 6vw, 72px) 0 var(--space-lg);
+    }
+
+    /* Zonder JS is er maar één (lange) stap — dan zegt "Stap 1 van 3" niets. */
+    .aanvraag-form:not([data-enhanced]) .progress { display: none; }
+
+    .progress__meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-sm) var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+
+    .progress__step {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .progress__chapter {
+      font-family: "EB Garamond", serif;
+      font-size: clamp(20px, 2.4vw, 26px);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .progress__track {
+      display: flex;
+      gap: var(--space-xs);
+    }
+
+    .progress__seg {
+      flex: 1;
+      height: 4px;
+      border-radius: var(--radius-pill);
+      background: var(--border-subtle);
+      transition: background-color 320ms var(--ease);
+    }
+
+    .progress__seg.is-done { background: var(--bg-accent); }
+    .progress__seg.is-active { background: var(--text-primary); }
+
+    /* ── Stap ──────────────────────────────────────────────── */
+
+    .step {
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .aanvraag-form[data-enhanced] .step:not(.is-active) { display: none; }
+
+    /* Zonder JS staan de drie stappen onder elkaar. */
+    .aanvraag-form:not([data-enhanced]) .step + .step { margin-top: var(--space-xl); }
+
+    .aanvraag-form[data-enhanced] .step.is-active {
+      animation: step-in 380ms var(--ease) both;
+    }
+
+    @keyframes step-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .step__head {
+      padding: clamp(20px, 3vw, 32px) clamp(20px, 4vw, 40px);
+      background: var(--bg-inverse);
+      color: var(--text-inverse);
+    }
+
+    .step__head-label {
+      margin: 0 0 var(--space-xs);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-inverse);
+    }
+
+    .step__head-title {
+      margin: 0 0 var(--space-xs);
+      font-family: "EB Garamond", serif;
+      font-size: clamp(26px, 3.4vw, 42px);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    /* Focus landt hier bij een stapwissel; geen zichtbare ring nodig. */
+    .step__head-title:focus { outline: none; }
+
+    .step__head-sub {
+      margin: 0;
+      font-size: clamp(15px, 1.4vw, 17px);
+      line-height: 1.5;
+      color: rgba(244, 237, 207, 0.94);
+    }
+
+    .step__body {
+      padding: clamp(24px, 4vw, 40px) clamp(20px, 4vw, 40px);
+      display: grid;
+      gap: clamp(32px, 4vw, 48px);
+    }
+
+    /* ── Vraag ─────────────────────────────────────────────── */
+
+    .q {
+      border: 0;
+      margin: 0;
+      padding: 0;
+      min-width: 0; /* fieldset weigert anders te krimpen in een grid */
+    }
+
+    .q__num {
+      display: block;
+      margin-bottom: var(--space-xs);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* legend gedraagt zich onbetrouwbaar in grid/flex — vandaar de span erin. */
+    .q__legend {
+      display: contents;
+    }
+
+    .q__title {
+      display: block;
+      font-family: "EB Garamond", serif;
+      font-size: clamp(22px, 2.6vw, 32px);
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text-primary);
+    }
+
+    .q__hint {
+      margin: var(--space-xs) 0 0;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .q__counter {
+      margin: var(--space-xs) 0 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .q__counter.is-full { color: var(--text-primary); }
+
+    .q__options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+
+    .q__options--single { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+    @media (max-width: 640px) {
+      .q__options { grid-template-columns: 1fr; }
+    }
+
+    /* ── Keuzekaart ────────────────────────────────────────── */
+
+    .opt { position: relative; }
+
+    .opt input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      margin: 0;
+    }
+
+    .opt__card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-height: 56px; /* ruim boven de 44px-tapdoelnorm */
+      height: 100%;
+      padding: var(--space-md) var(--space-lg);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-page);
+      font-size: 16px;
+      line-height: 1.4;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition:
+        border-color 200ms var(--ease),
+        background-color 200ms var(--ease),
+        transform 200ms var(--ease),
+        opacity 200ms var(--ease);
+    }
+
+    .opt__card::before {
+      content: "";
+      flex: none;
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 50%;
+      background: transparent;
+      transition: border-color 200ms var(--ease), background-color 200ms var(--ease);
+    }
+
+    /* Checkbox-kaarten krijgen een vierkant vinkvak, radio's een rondje. */
+    .opt input[type="checkbox"] + .opt__card::before { border-radius: 6px; }
+
+    .opt__card:hover {
+      border-color: var(--text-primary);
+      transform: translateY(-2px);
+    }
+
+    .opt input:focus-visible + .opt__card {
+      outline: 2px solid var(--bg-accent);
+      outline-offset: 3px;
+    }
+
+    .opt input:checked + .opt__card {
+      border-color: var(--border-accent);
+      border-width: 2px;
+      background: rgba(204, 167, 53, 0.1);
+      /* Compenseer de dikkere rand, anders verspringt de kaart 0,5px. */
+      padding: calc(var(--space-md) - 0.5px) calc(var(--space-lg) - 0.5px);
+    }
+
+    .opt input:checked + .opt__card::before {
+      border-color: var(--bg-accent);
+      background: var(--bg-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23f4edcf' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.8'/%3E%3C/svg%3E") center / 13px no-repeat;
+    }
+
+    /* Q3 zit op zijn maximum: toon zichtbaar waarom er niet meer bij kan. */
+    .opt.is-blocked .opt__card {
+      opacity: 0.42;
+      cursor: not-allowed;
+    }
+
+    .opt.is-blocked .opt__card:hover {
+      border-color: var(--border-subtle);
+      transform: none;
+    }
+
+    /* ── Tekstvelden ───────────────────────────────────────── */
+
+    .field { margin-top: var(--space-md); }
+
+    .field-input,
+    .field-textarea {
+      width: 100%;
+      min-height: 56px;
+      padding: var(--space-md) var(--space-lg);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-page);
+      font-size: 16px; /* onder 16px zoomt iOS bij focus in */
+      color: var(--text-primary);
+      transition: border-color 200ms var(--ease);
+    }
+
+    .field-textarea {
+      min-height: 132px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .field-input::placeholder,
+    .field-textarea::placeholder { color: var(--text-muted); }
+
+    .field-input:hover,
+    .field-textarea:hover { border-color: var(--text-primary); }
+
+    .field-input:focus-visible,
+    .field-textarea:focus-visible {
+      outline: 2px solid var(--bg-accent);
+      outline-offset: 2px;
+      border-color: var(--bg-accent);
+    }
+
+    .field-input--error,
+    .field-textarea--error { border-color: var(--error); }
+
+    .field-date { max-width: 320px; }
+
+    .field-error {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin: var(--space-xs) 0 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--error);
+    }
+
+    .field-error::before {
+      content: "!";
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      border-radius: 50%;
+      background: var(--error);
+      color: var(--bg-page);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ── Checkbox op één regel (Q4 + privacy) ──────────────── */
+
+    .check {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) 0;
+      min-height: 44px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .check input {
+      flex: none;
+      width: 22px;
+      height: 22px;
+      margin: 1px 0 0;
+      accent-color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .check--privacy {
+      align-items: flex-start;
+      padding: clamp(20px, 3vw, 28px);
+      border-radius: var(--radius-md);
+      background: var(--bg-inverse);
+      color: var(--text-inverse);
+    }
+
+    .check--privacy input { accent-color: var(--border-accent); }
+
+    .check--privacy a { color: var(--text-inverse); }
+
+    .check--privacy.has-error {
+      outline: 2px solid var(--error);
+      outline-offset: 3px;
+    }
+
+    /* ── Conditioneel blok (Q4-periode) ────────────────────── */
+
+    .conditional[hidden] { display: none; }
+
+    .conditional {
+      margin-top: var(--space-lg);
+      padding-left: var(--space-lg);
+      border-left: 2px solid var(--border-accent);
+      animation: cond-in 280ms var(--ease) both;
+    }
+
+    @keyframes cond-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .conditional__title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: clamp(19px, 2vw, 24px);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* ── Knoppen ───────────────────────────────────────────── */
+
+    .step__actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-md);
+      padding: 0 clamp(20px, 4vw, 40px) clamp(24px, 4vw, 40px);
+    }
+
+    .aanvraag-form:not([data-enhanced]) .step__nav { display: none; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 56px;
+      padding: 0 var(--space-xl);
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-pill);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      transition:
+        background-color 220ms var(--ease),
+        border-color 220ms var(--ease),
+        color 220ms var(--ease),
+        transform 220ms var(--ease);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--bg-accent);
+      outline-offset: 3px;
+    }
+
+    .btn--primary {
+      background: var(--btn-primary-bg);
+      border-color: var(--btn-primary-bg);
+      color: var(--btn-primary-label);
+    }
+
+    .btn--primary:hover {
+      background: var(--btn-primary-bg-hover);
+      border-color: var(--btn-primary-bg-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn--secondary {
+      background: transparent;
+      border-color: var(--btn-primary-bg);
+      color: var(--btn-primary-bg);
+    }
+
+    .btn--secondary:hover {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-label);
+      transform: translateY(-2px);
+    }
+
+    .aanvraag-form[data-sending] .btn { pointer-events: none; opacity: 0.7; }
+
+    /* ── Status ────────────────────────────────────────────── */
+
+    .form-status {
+      flex: 1 1 100%;
+      margin: 0;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .form-status--error {
+      background: rgba(154, 52, 18, 0.1);
+      color: var(--error);
+    }
+
+    .form-hp {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    /* ── Bevestiging ───────────────────────────────────────── */
+
+    .done[hidden] { display: none; }
+
+    .done {
+      margin-top: clamp(40px, 6vw, 72px);
+      padding: clamp(32px, 5vw, 64px) clamp(24px, 4vw, 56px);
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-card);
+      animation: step-in 420ms var(--ease) both;
+    }
+
+    .done__title {
+      margin: 0 0 var(--space-md);
+      font-family: "EB Garamond", serif;
+      font-size: clamp(32px, 4.4vw, 68px);
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--text-primary);
+    }
+
+    .done__text {
+      margin: 0;
+      max-width: 60ch;
+      font-size: clamp(16px, 1.5vw, 20px);
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    /* Future-pacing: wat er ná het verzenden gebeurt. */
+    .done__next {
+      margin: clamp(32px, 4vw, 48px) 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: var(--space-lg);
+      counter-reset: nextstep;
+    }
+
+    @media (min-width: 760px) {
+      .done__next { grid-template-columns: repeat(3, 1fr); gap: var(--space-xl); }
+    }
+
+    .done__next li {
+      counter-increment: nextstep;
+      padding-top: var(--space-md);
+      border-top: 2px solid var(--border-accent);
+    }
+
+    .done__next li::before {
+      content: counter(nextstep, decimal-leading-zero);
+      display: block;
+      margin-bottom: var(--space-xs);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+    }
+
+    .done__next strong {
+      display: block;
+      margin-bottom: 4px;
+      font-family: "EB Garamond", serif;
+      font-size: clamp(19px, 2vw, 24px);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .done__next span {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .done__actions { margin-top: clamp(32px, 4vw, 48px); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+  <noscript>
+    <style>
+      /* loader.js haalt de overlay weg; zonder JS blijft die anders eeuwig
+         over de pagina liggen en is het formulier onbereikbaar. */
+      .r-loader { display: none; }
+    </style>
+  </noscript>
+</head>
+<body>
+<!-- ── Loader ── -->
+<div class="r-loader" id="r-loader" role="status" aria-label="Pagina laden">
+  <div class="r-loader__inner">
+    <div class="r-loader__note">
+      <img src="./note%20relovtion.svg" alt="">
+    </div>
+    <p class="r-loader__wordmark">Relovation</p>
+    <div class="r-loader__bar"></div>
+  </div>
+</div>
+
+<!-- ── Navigation ── -->
+<header class="r-nav" id="r-nav" aria-label="Hoofdnavigatie">
+  <div class="r-nav__inner">
+    <!-- Brand -->
+    <a class="r-nav__brand" href="./index.html" aria-label="Relovation — home">
+      <span class="r-nav__genre">Live jazz</span>
+      <span class="r-nav__wordmark">
+        <span class="r-nav__note"><img src="./note%20relovtion.svg" alt=""></span>
+        Relovation
+      </span>
+    </a>
+
+    <!-- Desktop links -->
+    <nav aria-label="Primaire navigatie">
+      <ul class="r-nav__links">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./diensten.html">Diensten</a></li>
+        <li><a href="./over.html">Over</a></li>
+        <li><a href="./contact.html">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Actions -->
+    <div class="r-nav__actions">
+      <a class="r-nav__cta" href="./aanvraag.html" aria-current="page">
+        Vertel ons over uw event <span class="r-nav__cta-arrow" aria-hidden="true">→</span>
+      </a>
+      <button class="r-nav__burger" id="r-nav-burger"
+        aria-expanded="false" aria-controls="r-nav-overlay"
+        aria-label="Menu openen">
+        <span class="r-nav__burger-open" aria-hidden="true">Menu</span>
+        <span class="r-nav__burger-close" aria-hidden="true">×</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="r-nav__overlay" id="r-nav-overlay" aria-hidden="true">
+  <nav aria-label="Mobiele navigatie">
+    <ol class="r-nav__ovl-list">
+      <li><a href="./index.html"><span class="r-nav__ovl-num">01</span><span class="r-nav__ovl-title">Home</span></a></li>
+      <li><a href="./diensten.html"><span class="r-nav__ovl-num">02</span><span class="r-nav__ovl-title">Diensten</span></a></li>
+      <li><a href="./over.html"><span class="r-nav__ovl-num">03</span><span class="r-nav__ovl-title">Over</span></a></li>
+      <li><a href="./contact.html"><span class="r-nav__ovl-num">04</span><span class="r-nav__ovl-title">Contact</span></a></li>
+    </ol>
+  </nav>
+  <div class="r-nav__ovl-bottom">
+    <a class="r-nav__cta-ovl" href="./aanvraag.html">Vertel ons over uw event</a>
+    <p class="r-nav__ovl-contact"><a href="mailto:info@relovation.be">info@relovation.be</a></p>
+  </div>
+</div>
+
+<div class="page">
+  <section class="aanvraag">
+    <div class="section-shell">
+
+      <header class="aanvraag__head">
+        <p class="aanvraag__eyebrow">Aanvraag</p>
+        <h1 class="aanvraag__title">Vertel ons over uw event</h1>
+        <p class="aanvraag__intro">
+          Beantwoord enkele korte vragen. Zo bekijken we persoonlijk welke muzikale
+          formule het best past bij uw moment.
+        </p>
+      </header>
+
+      <form class="aanvraag-form" id="aanvraag-form" action="/api/aanvraag" method="post" novalidate>
+
+        <!-- Honeypot: onzichtbaar voor mensen, bots vullen 'm wel in. -->
+        <div class="form-hp" aria-hidden="true">
+          <label for="website">Laat dit veld leeg</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="progress" id="progress">
+          <div class="progress__meta">
+            <span class="progress__step" id="progress-step">Stap 1 van 3</span>
+            <span class="progress__chapter" id="progress-chapter">Event &amp; muziek</span>
+          </div>
+          <div class="progress__track" role="presentation">
+            <span class="progress__seg is-active" data-seg="1"></span>
+            <span class="progress__seg" data-seg="2"></span>
+            <span class="progress__seg" data-seg="3"></span>
+          </div>
+          <p class="sr-only" role="status" aria-live="polite" id="progress-announce">Stap 1 van 3: Event en muziek</p>
+        </div>
+
+        <!-- ══ Stap 1 ══════════════════════════════════════════ -->
+        <section class="step is-active" data-step="1" data-chapter="Event &amp; muziek" aria-labelledby="step-1-title">
+          <div class="step__head">
+            <p class="step__head-label">Stap 1 van 3</p>
+            <h2 class="step__head-title" id="step-1-title" tabindex="-1">Event &amp; muziek</h2>
+            <p class="step__head-sub">Vertel ons wat u wil creëren.</p>
+          </div>
+
+          <div class="step__body">
+
+            <!-- Q1 -->
+            <fieldset class="q" data-q="event_type">
+              <legend class="q__legend">
+                <span class="q__num">Vraag 1</span>
+                <span class="q__title">Wat organiseert u?</span>
+              </legend>
+              <div class="q__options">
+                <label class="opt"><input type="radio" name="event_type" value="Trouwfeest"><span class="opt__card">Trouwfeest</span></label>
+                <label class="opt"><input type="radio" name="event_type" value="Publiek event / festival"><span class="opt__card">Publiek event / festival</span></label>
+                <label class="opt"><input type="radio" name="event_type" value="Bedrijfsfeest"><span class="opt__card">Bedrijfsfeest</span></label>
+                <label class="opt"><input type="radio" name="event_type" value="Horeca / opening / concept event"><span class="opt__card">Horeca / opening / concept event</span></label>
+                <label class="opt"><input type="radio" name="event_type" value="Privéfeest"><span class="opt__card">Privéfeest</span></label>
+                <label class="opt"><input type="radio" name="event_type" value="Ander event"><span class="opt__card">Ander event</span></label>
+              </div>
+            </fieldset>
+
+            <!-- Q2 -->
+            <fieldset class="q" data-q="moment" data-exclusive="Nog niet zeker, graag advies">
+              <legend class="q__legend">
+                <span class="q__num">Vraag 2</span>
+                <span class="q__title">Voor welk moment zoekt u live muziek?</span>
+              </legend>
+              <p class="q__hint">Meerdere antwoorden mogelijk.</p>
+              <div class="q__options">
+                <label class="opt"><input type="checkbox" name="moment" value="Ceremonie"><span class="opt__card">Ceremonie</span></label>
+                <label class="opt"><input type="checkbox" name="moment" value="Voorprogramma / openingsmoment"><span class="opt__card">Voorprogramma / openingsmoment</span></label>
+                <label class="opt"><input type="checkbox" name="moment" value="Receptie / welkomstdrink"><span class="opt__card">Receptie / welkomstdrink</span></label>
+                <label class="opt"><input type="checkbox" name="moment" value="Achtergrondmuziek doorheen het event"><span class="opt__card">Achtergrondmuziek doorheen het event</span></label>
+                <label class="opt"><input type="checkbox" name="moment" value="Diner / walking dinner"><span class="opt__card">Diner / walking dinner</span></label>
+                <label class="opt"><input type="checkbox" name="moment" value="Nog niet zeker, graag advies"><span class="opt__card">Nog niet zeker, graag advies</span></label>
+                <label class="opt"><input type="checkbox" name="moment" value="Avondfeest"><span class="opt__card">Avondfeest</span></label>
+              </div>
+            </fieldset>
+
+            <!-- Q3 -->
+            <fieldset class="q" data-q="sfeer" data-max="2" data-exclusive="Nog niet zeker, graag advies">
+              <legend class="q__legend">
+                <span class="q__num">Vraag 3</span>
+                <span class="q__title">Welke sfeer wilt u creëren?</span>
+              </legend>
+              <p class="q__hint">Kies er maximaal twee.</p>
+              <p class="q__counter" data-counter>0 van 2 gekozen</p>
+              <div class="q__options">
+                <label class="opt"><input type="checkbox" name="sfeer" value="Warm en intiem"><span class="opt__card">Warm en intiem</span></label>
+                <label class="opt"><input type="checkbox" name="sfeer" value="Interactief en energiek"><span class="opt__card">Interactief en energiek</span></label>
+                <label class="opt"><input type="checkbox" name="sfeer" value="Stijlvol op de achtergrond"><span class="opt__card">Stijlvol op de achtergrond</span></label>
+                <label class="opt"><input type="checkbox" name="sfeer" value="Feestelijk en herkenbaar"><span class="opt__card">Feestelijk en herkenbaar</span></label>
+                <label class="opt"><input type="checkbox" name="sfeer" value="Classy en professioneel"><span class="opt__card">Classy en professioneel</span></label>
+                <label class="opt"><input type="checkbox" name="sfeer" value="Nog niet zeker, graag advies"><span class="opt__card">Nog niet zeker, graag advies</span></label>
+              </div>
+            </fieldset>
+
+          </div>
+
+          <div class="step__actions">
+            <button class="btn btn--primary step__nav" type="button" data-next>
+              Volgende: praktische info <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- ══ Stap 2 ══════════════════════════════════════════ -->
+        <section class="step" data-step="2" data-chapter="Praktische info" aria-labelledby="step-2-title">
+          <div class="step__head">
+            <p class="step__head-label">Stap 2 van 3</p>
+            <h2 class="step__head-title" id="step-2-title" tabindex="-1">Praktische info</h2>
+            <p class="step__head-sub">Net genoeg om beschikbaarheid en schaal in te schatten.</p>
+          </div>
+
+          <div class="step__body">
+
+            <!-- Q4 -->
+            <fieldset class="q" data-q="datum">
+              <legend class="q__legend">
+                <span class="q__num">Vraag 4</span>
+                <span class="q__title">Wanneer gaat het event door?</span>
+              </legend>
+
+              <div class="field" data-datum-veld>
+                <label class="sr-only" for="datum">Datum van het event</label>
+                <input class="field-input field-date" id="datum" name="datum" type="date">
+              </div>
+
+              <label class="check">
+                <input type="checkbox" id="datum_flexibel" name="datum_flexibel" value="ja">
+                <span>De datum ligt nog niet definitief vast</span>
+              </label>
+
+              <div class="conditional" id="periode-blok" hidden>
+                <p class="conditional__title">In welke periode denkt u?</p>
+                <div class="q__options q__options--single">
+                  <label class="opt"><input type="radio" name="periode" value="Voorjaar"><span class="opt__card">Voorjaar</span></label>
+                  <label class="opt"><input type="radio" name="periode" value="Zomer"><span class="opt__card">Zomer</span></label>
+                  <label class="opt"><input type="radio" name="periode" value="Najaar"><span class="opt__card">Najaar</span></label>
+                  <label class="opt"><input type="radio" name="periode" value="Winter"><span class="opt__card">Winter</span></label>
+                  <label class="opt"><input type="radio" name="periode" value="Nog niet zeker"><span class="opt__card">Nog niet zeker</span></label>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Q5 -->
+            <div class="q" data-q="locatie">
+              <span class="q__num">Vraag 5</span>
+              <label class="q__title" for="locatie">Waar gaat het event door?</label>
+              <p class="q__hint">De gemeente of regio volstaat als de exacte locatie nog niet vastligt.</p>
+              <div class="field">
+                <input class="field-input" id="locatie" name="locatie" type="text"
+                  placeholder="Locatie, gemeente of regio" autocomplete="address-level2">
+              </div>
+            </div>
+
+            <!-- Q6 -->
+            <fieldset class="q" data-q="gasten">
+              <legend class="q__legend">
+                <span class="q__num">Vraag 6</span>
+                <span class="q__title">Hoeveel gasten verwacht u ongeveer?</span>
+              </legend>
+              <div class="q__options">
+                <label class="opt"><input type="radio" name="gasten" value="Minder dan 30"><span class="opt__card">Minder dan 30</span></label>
+                <label class="opt"><input type="radio" name="gasten" value="150 – 300"><span class="opt__card">150 – 300</span></label>
+                <label class="opt"><input type="radio" name="gasten" value="30 – 80"><span class="opt__card">30 – 80</span></label>
+                <label class="opt"><input type="radio" name="gasten" value="Meer dan 300"><span class="opt__card">Meer dan 300</span></label>
+                <label class="opt"><input type="radio" name="gasten" value="80 – 150"><span class="opt__card">80 – 150</span></label>
+                <label class="opt"><input type="radio" name="gasten" value="Nog niet zeker"><span class="opt__card">Nog niet zeker</span></label>
+              </div>
+            </fieldset>
+
+          </div>
+
+          <div class="step__actions">
+            <button class="btn btn--secondary step__nav" type="button" data-prev>
+              <span aria-hidden="true">←</span> Terug
+            </button>
+            <button class="btn btn--primary step__nav" type="button" data-next>
+              Volgende: uw gegevens <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- ══ Stap 3 ══════════════════════════════════════════ -->
+        <section class="step" data-step="3" data-chapter="Uw gegevens" aria-labelledby="step-3-title">
+          <div class="step__head">
+            <p class="step__head-label">Stap 3 van 3</p>
+            <h2 class="step__head-title" id="step-3-title" tabindex="-1">Uw gegevens</h2>
+            <p class="step__head-sub">Zodat we uw aanvraag persoonlijk kunnen opvolgen.</p>
+          </div>
+
+          <div class="step__body">
+
+            <!-- Q7 -->
+            <div class="q" data-q="naam">
+              <span class="q__num">Vraag 7</span>
+              <label class="q__title" for="naam">Hoe mogen we u noemen?</label>
+              <div class="field">
+                <input class="field-input" id="naam" name="naam" type="text"
+                  placeholder="Voor- en achternaam" autocomplete="name">
+              </div>
+            </div>
+
+            <!-- Q8 -->
+            <div class="q" data-q="email">
+              <span class="q__num">Vraag 8</span>
+              <label class="q__title" for="email">Op welk e-mailadres bereiken we u?</label>
+              <div class="field">
+                <input class="field-input" id="email" name="email" type="email"
+                  placeholder="naam@email.com" autocomplete="email">
+              </div>
+            </div>
+
+            <!-- Q9 -->
+            <div class="q" data-q="telefoon">
+              <span class="q__num">Vraag 9</span>
+              <label class="q__title" for="telefoon">Telefoonnummer</label>
+              <p class="q__hint">We gebruiken uw telefoonnummer enkel om uw aanvraag snel en persoonlijk op te volgen.</p>
+              <div class="field">
+                <input class="field-input" id="telefoon" name="telefoon" type="tel"
+                  placeholder="+32 470 12 34 56" autocomplete="tel">
+              </div>
+            </div>
+
+            <!-- Q10 -->
+            <fieldset class="q" data-q="voorkeur_contact">
+              <legend class="q__legend">
+                <span class="q__num">Vraag 10 · optioneel</span>
+                <span class="q__title">Hoe mogen we u het liefst contacteren?</span>
+              </legend>
+              <div class="q__options q__options--single">
+                <label class="opt"><input type="radio" name="voorkeur_contact" value="E-mail"><span class="opt__card">E-mail</span></label>
+                <label class="opt"><input type="radio" name="voorkeur_contact" value="Telefoon"><span class="opt__card">Telefoon</span></label>
+                <label class="opt"><input type="radio" name="voorkeur_contact" value="WhatsApp"><span class="opt__card">WhatsApp</span></label>
+                <label class="opt"><input type="radio" name="voorkeur_contact" value="Maakt niet uit"><span class="opt__card">Maakt niet uit</span></label>
+              </div>
+            </fieldset>
+
+            <!-- Q11 -->
+            <div class="q" data-q="bericht">
+              <span class="q__num">Vraag 11 · optioneel</span>
+              <label class="q__title" for="bericht">Wil u nog iets kort meegeven?</label>
+              <div class="field">
+                <textarea class="field-textarea" id="bericht" name="bericht"
+                  placeholder="Bijvoorbeeld: gewenste muziekstijl, speciaal moment, timing, praktische info of de sfeer die u voor ogen heeft."></textarea>
+              </div>
+            </div>
+
+            <!-- Privacy -->
+            <div class="q" data-q="privacy">
+              <label class="check check--privacy" id="privacy-blok">
+                <input type="checkbox" id="privacy" name="privacy" value="ja">
+                <span>
+                  Ik heb de <a href="./contact.html">privacyverklaring</a> gelezen en begrijp dat mijn
+                  gegevens gebruikt worden om mijn aanvraag te beantwoorden en, indien nodig, contact
+                  met mij op te nemen over dit event.
+                </span>
+              </label>
+            </div>
+
+          </div>
+
+          <div class="step__actions">
+            <button class="btn btn--secondary step__nav" type="button" data-prev>
+              <span aria-hidden="true">←</span> Terug
+            </button>
+            <button class="btn btn--primary" type="submit">Vraag uw voorstel aan</button>
+            <p class="form-status" role="status" aria-live="polite" hidden></p>
+          </div>
+        </section>
+
+      </form>
+
+      <!-- ══ Bevestiging ═══════════════════════════════════════ -->
+      <div class="done" id="aanvraag-done" hidden tabindex="-1">
+        <h2 class="done__title">Bedankt voor uw aanvraag</h2>
+        <p class="done__text">
+          We hebben uw aanvraag goed ontvangen. We bekijken persoonlijk welke muzikale
+          formule het best past bij uw event en nemen binnenkort contact met u op met een
+          voorstel op maat.
+        </p>
+
+        <ol class="done__next">
+          <li>
+            <strong>We bekijken uw aanvraag</strong>
+            <span>Robin leest persoonlijk mee wat u voor ogen heeft en welke formule daarbij past.</span>
+          </li>
+          <li>
+            <strong>We nemen contact op</strong>
+            <span>Via de manier die u koos. Heeft u vragen, dan beantwoorden we die meteen.</span>
+          </li>
+          <li>
+            <strong>U krijgt een voorstel op maat</strong>
+            <span>Afgestemd op uw moment, uw sfeer en de schaal van uw event.</span>
+          </li>
+        </ol>
+
+        <div class="done__actions">
+          <a class="btn btn--secondary" href="./index.html">Terug naar de website</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<footer class="r-footer">
+  <div class="r-footer__inner">
+    <a class="r-footer__brand" href="./index.html">
+      <span class="r-footer__brand-note"><img src="./note%20relovtion.svg" alt=""></span>
+      Relovation
+    </a>
+    <nav class="r-footer__nav" aria-label="Footer navigatie">
+      <a href="./index.html">Home</a>
+      <a href="./diensten.html">Diensten</a>
+      <a href="./over.html">Over</a>
+      <a href="./contact.html">Contact</a>
+    </nav>
+    <div class="r-footer__contact">
+      <a href="mailto:info@relovation.be">info@relovation.be</a>
+    </div>
+  </div>
+  <div class="r-footer__bottom">
+    <p class="r-footer__copy">&copy; 2025 Relovation &mdash; Alle rechten voorbehouden</p>
+    <p class="r-footer__copy">Made by <a href="https://www.jdcreations.co" target="_blank" rel="noopener noreferrer">JDCreations</a></p>
+  </div>
+</footer>
+
+  <script src="./nav.js"></script>
+  <script src="./loader.js"></script>
+  <script src="./aanvraag-form.js"></script>
+</body>
+</html>

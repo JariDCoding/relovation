@@ -9,3 +9,6 @@ dist/
 .dev.vars
 .dev.vars.*
 *.env
+test-results/
+playwright-report/
+qa-shots/

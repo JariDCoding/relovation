@@ -37,6 +37,12 @@ async function handleApi(request, env, url) {
     }
     return handleContact(request, env);
   }
+  if (url.pathname === "/api/aanvraag") {
+    if (request.method !== "POST") {
+      return json({ ok: false, error: "method_not_allowed" }, 405);
+    }
+    return handleAanvraag(request, env);
+  }
   return json({ ok: false, error: "not_found" }, 404);
 }
 
@@ -124,6 +130,164 @@ async function handleContact(request, env) {
 
   if (!res.ok) {
     // Alleen de foutmelding van Resend loggen, nooit de key.
+    const detail = await res.text().catch(() => "");
+    console.error("resend_error", res.status, detail.slice(0, 300));
+    return json({ ok: false, error: "send_failed" }, 502);
+  }
+
+  return json({ ok: true });
+}
+
+/**
+ * Aanvraagflow (/aanvraag) — drie stappen, elf vragen.
+ * Velden en volgorde van de mail volgen de developer briefing v2, hoofdstuk 06.
+ */
+async function handleAanvraag(request, env) {
+  let data;
+  try {
+    data = await parseBody(request);
+  } catch {
+    return json({ ok: false, error: "bad_request" }, 400);
+  }
+
+  if (str(data.website)) {
+    return json({ ok: true });
+  }
+
+  const eventType = str(data.event_type).slice(0, MAX_FIELD);
+  const moment = str(data.moment).slice(0, MAX_FIELD);
+  const sfeer = str(data.sfeer).slice(0, MAX_FIELD);
+  const datum = str(data.datum).slice(0, MAX_FIELD);
+  const datumFlexibel = str(data.datum_flexibel) === "ja";
+  const periode = str(data.periode).slice(0, MAX_FIELD);
+  const locatie = str(data.locatie).slice(0, MAX_FIELD);
+  const gasten = str(data.gasten).slice(0, MAX_FIELD);
+  const naam = str(data.naam).slice(0, MAX_FIELD);
+  const email = str(data.email).slice(0, MAX_FIELD);
+  const telefoon = str(data.telefoon).slice(0, MAX_FIELD);
+  const voorkeur = str(data.voorkeur_contact).slice(0, MAX_FIELD);
+  const bericht = str(data.bericht).slice(0, MAX_MESSAGE + 1);
+  const privacy = str(data.privacy) === "ja";
+
+  // De sleutels komen overeen met de data-q attributen in aanvraag.html, zodat
+  // de frontend de melding bij de juiste vraag kan zetten.
+  const errors = {};
+  if (!eventType) errors.event_type = "Kies wat u organiseert.";
+  if (!moment) errors.moment = "Kies minstens één moment.";
+  if (!sfeer) errors.sfeer = "Kies minstens één sfeer.";
+  if (datumFlexibel) {
+    if (!periode) errors.datum = "Kies in welke periode u denkt.";
+  } else if (!datum) {
+    errors.datum = "Kies een datum, of vink aan dat de datum nog niet vastligt.";
+  }
+  if (!locatie) errors.locatie = "Vul in waar het event doorgaat.";
+  if (!gasten) errors.gasten = "Kies hoeveel gasten u ongeveer verwacht.";
+  if (!naam) errors.naam = "Vul uw naam in.";
+  if (!email) errors.email = "Vul uw e-mailadres in.";
+  else if (!isEmail(email)) errors.email = "Dit lijkt geen geldig e-mailadres.";
+  if (!telefoon) errors.telefoon = "Vul uw telefoonnummer in.";
+  if (!privacy) errors.privacy = "Vink dit aan om uw aanvraag te kunnen versturen.";
+  if (bericht.length > MAX_MESSAGE) errors.bericht = "Uw bericht is te lang.";
+
+  if (Object.keys(errors).length > 0) {
+    return json({ ok: false, errors }, 400);
+  }
+
+  const wanneer = datumFlexibel ? periode : formatDatum(datum);
+  const subject = `Nieuwe aanvraag – ${eventType} – ${wanneer} – ${locatie}`;
+
+  const blokken = [
+    ["Event & muziek", [
+      ["Type event", eventType],
+      ["Moment muziek", moment],
+      ["Gewenste sfeer", sfeer],
+    ]],
+    ["Praktische info", [
+      [datumFlexibel ? "Periode" : "Datum", wanneer],
+      ["Locatie", locatie],
+      ["Aantal gasten", gasten],
+    ]],
+    ["Contactgegevens", [
+      ["Naam", naam],
+      ["E-mail", email],
+      ["Telefoon", telefoon],
+      ["Voorkeur contact", voorkeur || "Niet opgegeven"],
+    ]],
+    ["Extra info", [
+      ["Vrij bericht", bericht || "-"],
+    ]],
+  ];
+
+  const text = [
+    subject,
+    "",
+    ...blokken.flatMap(([titel, rijen]) => [
+      titel.toUpperCase(),
+      ...rijen.map(([label, v]) => `  ${label.padEnd(18)}${v}`),
+      "",
+    ]),
+  ].join("\n");
+
+  const html = `
+    <div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#4c6a57;line-height:1.6;max-width:640px">
+      <h2 style="margin:0 0 4px;font-size:20px">Nieuwe aanvraag via de website</h2>
+      <p style="margin:0 0 24px;color:#55715e;font-size:14px">${esc(eventType)} &middot; ${esc(wanneer)} &middot; ${esc(locatie)}</p>
+      ${blokken
+        .map(
+          ([titel, rijen]) => `
+        <h3 style="margin:24px 0 8px;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#af8f48">${esc(titel)}</h3>
+        <table style="border-collapse:collapse;width:100%">
+          ${rijen
+            .map(
+              ([label, v]) => `
+            <tr>
+              <td style="padding:6px 16px 6px 0;color:#55715e;vertical-align:top;white-space:nowrap">${esc(label)}</td>
+              <td style="padding:6px 0;white-space:pre-wrap"><strong>${esc(v)}</strong></td>
+            </tr>`
+            )
+            .join("")}
+        </table>`
+        )
+        .join("")}
+      <p style="margin-top:28px;color:#55715e;font-size:13px">
+        Antwoord gewoon op deze mail om ${esc(naam)} direct te bereiken.
+      </p>
+    </div>`;
+
+  return verstuur(env, { subject, text, html, replyTo: email });
+}
+
+/** 2026-09-14 -> 14/09/2026. Ongeldige invoer geeft de oorspronkelijke string terug. */
+function formatDatum(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : iso;
+}
+
+/** Verstuurt via Resend. Deelt de configuratie met het contactformulier. */
+async function verstuur(env, { subject, text, html, replyTo }) {
+  let res;
+  try {
+    res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        from: env.CONTACT_FROM,
+        to: [env.CONTACT_TO],
+        reply_to: replyTo,
+        subject,
+        text,
+        html,
+      }),
+    });
+  } catch (err) {
+    console.error("resend_unreachable", err?.message);
+    return json({ ok: false, error: "send_failed" }, 502);
+  }
+
+  if (!res.ok) {
     const detail = await res.text().catch(() => "");
     console.error("resend_error", res.status, detail.slice(0, 300));
     return json({ ok: false, error: "send_failed" }, 502);
