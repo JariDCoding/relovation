@@ -1,0 +1,14 @@
+{
+  "name": "relovation",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Relovation website - Cloudflare Worker met statische assets en contactformulier",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.111.0"
+  }
+}

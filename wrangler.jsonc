@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "relovation",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-15",
+
+  // Statische bestanden worden rechtstreeks door Cloudflare's asset-laag
+  // geserveerd; de Worker wordt daarvoor niet eens aangeroepen.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+
+    // Reproduceert het huidige Pages-gedrag exact:
+    //   /contact       -> serveert contact.html
+    //   /contact.html  -> 308 naar /contact
+    // Bestaande links blijven dus werken.
+    "html_handling": "auto-trailing-slash",
+
+    // Echte 404's op onbekende URL's (Pages gaf overal 200 + HTML terug,
+    // wat gebroken assets verborg en rommel liet indexeren).
+    "not_found_handling": "none"
+  },
+
+  "observability": { "enabled": true }
+}
