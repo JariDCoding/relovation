@@ -184,6 +184,107 @@
       gap: 0.26em;
     }
 
+    /* ── Logobalk: infinite marquee ──────────────────────────────────────────
+       Elk logo is een MASK, geen <img>. Zo wordt elke bron — svg, png, meerkleur,
+       zwart — exact één merkkleur, zonder de bestanden te hoeven hertekenen.
+       Vault §4/§6: bewijs mag rustig zijn; de namen doen het werk, niet de kleur. */
+    .logos-section {
+      --logo-base: clamp(22px, 2vw, 32px);
+      --logo-gap: clamp(52px, 5.4vw, 104px);
+      padding: clamp(44px, 4.4vw, 76px) 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    .logos-label {
+      margin: 0 0 clamp(26px, 2.6vw, 44px);
+      text-align: center;
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(11px, 0.8vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    /* Randen vervagen i.p.v. hard afsnijden — anders knallen logo's het beeld in. */
+    .logos-marquee {
+      position: relative;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 90%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 90%, transparent 100%);
+    }
+
+    .logos-track {
+      display: flex;
+      width: max-content;
+      will-change: transform;
+      animation: logos-scroll 48s linear infinite;
+    }
+
+    .logos-group {
+      display: flex;
+      align-items: center;
+      flex: 0 0 auto;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    /* Marge op het ITEM, niet gap op de groep: zo is de afstand op de naad tussen
+       groep 1 en 2 exact gelijk aan die binnen een groep. Anders zie je om de
+       ronde een grotere kier — dat is precies de bug die je niet wil. */
+    .logos-item {
+      flex: 0 0 auto;
+      margin-right: var(--logo-gap);
+    }
+
+    .logo-mark {
+      display: block;
+      height: calc(var(--logo-base) * var(--hf, 1));
+      width: calc(var(--logo-base) * var(--hf, 1) * var(--ratio, 1));
+      background-color: var(--ink);
+      opacity: 0.6;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      transition: opacity 0.45s var(--motion-ease);
+    }
+
+    .logos-item:hover .logo-mark {
+      opacity: 1;
+    }
+
+    .logo-mark--kbc { -webkit-mask-image: url("./assets/logos/kbc.svg"); mask-image: url("./assets/logos/kbc.svg"); }
+    .logo-mark--tomorrowland { -webkit-mask-image: url("./assets/logos/tomorrowland.svg"); mask-image: url("./assets/logos/tomorrowland.svg"); }
+    .logo-mark--canon { -webkit-mask-image: url("./assets/logos/canon.svg"); mask-image: url("./assets/logos/canon.svg"); }
+    .logo-mark--lier { -webkit-mask-image: url("./assets/logos/lier.png"); mask-image: url("./assets/logos/lier.png"); }
+    .logo-mark--showtex { -webkit-mask-image: url("./assets/logos/showtex.svg"); mask-image: url("./assets/logos/showtex.svg"); }
+    .logo-mark--suspicious { -webkit-mask-image: url("./assets/logos/suspicious.png"); mask-image: url("./assets/logos/suspicious.png"); }
+    .logo-mark--tlooks { -webkit-mask-image: url("./assets/logos/tlooks.png"); mask-image: url("./assets/logos/tlooks.png"); }
+
+    /* -50% = exact één groep. Van -50% naar 0 = beweging van links naar rechts. */
+    @keyframes logos-scroll {
+      from { transform: translate3d(-50%, 0, 0); }
+      to { transform: translate3d(0, 0, 0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logos-track {
+        animation: none;
+        transform: none;
+      }
+
+      .logos-marquee {
+        overflow-x: auto;
+      }
+    }
+
     .title--promise + .subtitle {
       margin-top: clamp(10px, 1vw, 18px);
     }
@@ -3893,6 +3994,36 @@
     </section>
   </main>
 
+  <!-- Sociale bewijskracht direct onder de hero (Cialdini): namen die de
+       bezoeker kent, in één kleur zodat het merk rustig blijft. -->
+  <section class="logos-section" aria-labelledby="logos-label">
+    <p class="logos-label reveal-copy" id="logos-label">Eerder speelden wij voor</p>
+    <div class="logos-marquee">
+      <div class="logos-track">
+        <ul class="logos-group">
+          <li class="logos-item"><span class="logo-mark logo-mark--kbc" style="--ratio: 1.28; --hf: 1.15;" role="img" aria-label="KBC"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--tomorrowland" style="--ratio: 1; --hf: 1.2;" role="img" aria-label="Tomorrowland"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--canon" style="--ratio: 4.72; --hf: 0.8;" role="img" aria-label="Canon"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--lier" style="--ratio: 1.99; --hf: 1.1;" role="img" aria-label="Stad Lier"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--showtex" style="--ratio: 3.79; --hf: 0.85;" role="img" aria-label="ShowTex"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--suspicious" style="--ratio: 6.88; --hf: 0.7;" role="img" aria-label="Suspicious"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--tlooks" style="--ratio: 0.92; --hf: 1.3;" role="img" aria-label="&rsquo;t Looks Buurtwerking"></span></li>
+        </ul>
+        <!-- Exacte kopie: de animatie schuift precies één groep op, dus de naad
+             valt nooit zichtbaar. aria-hidden zodat een screenreader niet dubbelt. -->
+        <ul class="logos-group" aria-hidden="true">
+          <li class="logos-item"><span class="logo-mark logo-mark--kbc" style="--ratio: 1.28; --hf: 1.15;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--tomorrowland" style="--ratio: 1; --hf: 1.2;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--canon" style="--ratio: 4.72; --hf: 0.8;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--lier" style="--ratio: 1.99; --hf: 1.1;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--showtex" style="--ratio: 3.79; --hf: 0.85;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--suspicious" style="--ratio: 6.88; --hf: 0.7;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--tlooks" style="--ratio: 0.92; --hf: 1.3;"></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <section class="about-section" aria-labelledby="about-title" data-node-id="128:4421">
     <div class="about-shell">
       <div class="about-promo reveal-visual" data-node-id="99:99" data-video-src="video.mp4">
@@ -4110,57 +4241,6 @@
           <div class="package-desc">De volledige bezetting.</div>
           <div class="package-desc">Voor grotere ruimtes en feesten waar live muziek het karakter van de avond bepaalt.</div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="events-section" id="events">
-    <div class="events-shell">
-      <h2 class="section-heading reveal-title">
-        <span class="reveal-line">
-          <span class="reveal-word" style="animation-delay: 0.04s;">Eerdere</span>
-          <span class="reveal-word reveal-word-italic" style="animation-delay: 0.1s;"><em>evenementen</em></span>
-        </span>
-      </h2>
-
-      <div class="events-editorial">
-        <div class="events-notes" aria-hidden="true">
-          <span class="note-draw note-jiggle" aria-hidden="true"></span>
-          <span class="note-draw note-jiggle" aria-hidden="true"></span>
-        </div>
-
-        <article class="event-row event-row--kbc">
-          <div class="event-media event-media--kbc" data-node-id="128:2796">
-            <img src="https://www.figma.com/api/mcp/asset/6f284741-7447-4a3d-b4cc-6c9af4fc8e38" alt="Relovation muzikant op het podium voor KBC Private banking">
-          </div>
-          <div class="event-copy">
-            <h3>KBC Private banking</h3>
-            <p>Live muziek tijdens een private banking-ontvangst — stijlvol en op de achtergrond, zodat gesprekken alle ruimte kregen.</p>
-            <a class="event-link" href="./aanvraag.html">Vertel ons over uw event →</a>
-          </div>
-        </article>
-
-        <article class="event-row event-row--tomorrowland">
-          <div class="event-copy">
-            <h3>Tomorrowland</h3>
-            <p>Live muziek op een van de bekendste eventlocaties van het land, afgestemd op het ritme van de dag.</p>
-            <a class="event-link" href="./aanvraag.html">Vertel ons over uw event →</a>
-          </div>
-          <div class="event-media event-media--tomorrowland">
-            <img src="https://www.figma.com/api/mcp/asset/4792d18e-8359-42b1-bfb9-a2d988a2b86f" alt="Relovation live op event">
-          </div>
-        </article>
-
-        <article class="event-row event-row--canon">
-          <div class="event-media event-media--canon">
-            <img src="https://www.figma.com/api/mcp/asset/6cd7cbc9-db25-4650-88f0-3021582946b1" alt="Relovation op sfeervol podium">
-          </div>
-          <div class="event-copy">
-            <h3>Canon Benelux</h3>
-            <p>Muzikale omkadering van een corporate event, van ontvangst tot avondprogramma.</p>
-            <a class="event-link" href="./aanvraag.html">Vertel ons over uw event →</a>
-          </div>
-        </article>
       </div>
     </div>
   </section>

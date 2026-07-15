@@ -162,7 +162,9 @@ async function handleAanvraag(request, env) {
   const periode = str(data.periode).slice(0, MAX_FIELD);
   const locatie = str(data.locatie).slice(0, MAX_FIELD);
   const gasten = str(data.gasten).slice(0, MAX_FIELD);
-  const naam = str(data.naam).slice(0, MAX_FIELD);
+  const voornaam = str(data.voornaam).slice(0, MAX_FIELD);
+  const achternaam = str(data.achternaam).slice(0, MAX_FIELD);
+  const naam = [voornaam, achternaam].filter(Boolean).join(" ");
   const email = str(data.email).slice(0, MAX_FIELD);
   const telefoon = str(data.telefoon).slice(0, MAX_FIELD);
   const voorkeur = str(data.voorkeur_contact).slice(0, MAX_FIELD);
@@ -182,7 +184,8 @@ async function handleAanvraag(request, env) {
   }
   if (!locatie) errors.locatie = "Vul in waar het event doorgaat.";
   if (!gasten) errors.gasten = "Kies hoeveel gasten u ongeveer verwacht.";
-  if (!naam) errors.naam = "Vul uw naam in.";
+  if (!voornaam) errors.voornaam = "Vul uw voornaam in.";
+  if (!achternaam) errors.achternaam = "Vul uw achternaam in.";
   if (!email) errors.email = "Vul uw e-mailadres in.";
   else if (!isEmail(email)) errors.email = "Dit lijkt geen geldig e-mailadres.";
   if (!telefoon) errors.telefoon = "Vul uw telefoonnummer in.";

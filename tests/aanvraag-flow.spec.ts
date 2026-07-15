@@ -1,16 +1,27 @@
 import { test, expect, Page } from "@playwright/test";
 
 /**
- * De aanvraagflow op /aanvraag. De generieke QA-suites zien alleen stap 1,
- * omdat stap 2 en 3 pas verschijnen na "Volgende". Deze spec loopt de flow
- * echt door en test daarnaast de conditionele logica uit de briefing.
+ * De aanvraagflow op /aanvraag: negen vragen, één per scherm, gegroepeerd in
+ * de drie stappen uit de briefing. De generieke QA-suites zien alleen het
+ * openingsscherm, dus deze spec loopt de flow echt door.
+ *
+ * De kerneis van Jari: elke vraag past binnen één viewport, zonder scrollen.
+ * Dat wordt hieronder gemeten, niet aangenomen.
  */
 
+/**
+ * Het no-scroll-contract geldt vanaf 390px breed — elke telefoon van de
+ * afgelopen jaren. Op een 320x568-scherm (iPhone SE 1e generatie) is het
+ * fysiek onmogelijk: 492px bruikbare hoogte, en zes keuzekaarten van 44px
+ * (de minimale tapdoelnorm) passen daar met vraag, voortgang en knop niet in.
+ * Kleiner maken zou de tapdoelen onder de toegankelijkheidsnorm duwen. Dat
+ * scherm wordt hieronder apart getest op bruikbaarheid in plaats van op fit.
+ */
 const viewports = [
-  { name: "iphone-se", width: 320, height: 568 },
   { name: "iphone-13", width: 390, height: 844 },
   { name: "iphone-pro-max", width: 430, height: 932 },
   { name: "ipad-portrait", width: 768, height: 1024 },
+  { name: "laptop", width: 1440, height: 900 },
   { name: "desktop", width: 1440, height: 1024 },
   { name: "ultrawide", width: 2560, height: 1440 },
 ];
@@ -20,170 +31,283 @@ const viewports = [
  * vangt minstens 1,1s lang elke klik op. Zonder deze wait klikt elke test op
  * de loader in plaats van op het formulier.
  */
-async function wachtOpLoader(page: Page) {
+async function open(page: Page, pad = "/aanvraag") {
+  await page.goto(pad);
   await page.locator(".r-loader.is-done, .r-loader.is-gone").waitFor({ timeout: 10_000 });
 }
 
-async function open(page: Page, pad = "/aanvraag") {
-  await page.goto(pad);
-  await wachtOpLoader(page);
-}
-
-/**
- * Klikt op de zichtbare keuzekaart. De input zelf is 1px en opacity:0 — daar
- * rechtstreeks op klikken raakt het label eroverheen.
- */
+/** Klikt op de zichtbare keuzekaart; de input zelf is 1px en opacity:0. */
 async function kies(page: Page, naam: string, waarde: string) {
   await page.locator(`input[name="${naam}"][value="${waarde}"] + .opt__card`).click();
 }
 
-async function geenHorizontaleScroll(page: Page, waar: string) {
-  const overflow = await page.evaluate(() => {
+async function beginnen(page: Page) {
+  await page.getByRole("button", { name: /Beginnen/ }).click();
+  await expect(page.locator('.screen[data-screen="1"]')).toBeVisible();
+}
+
+async function volgende(page: Page) {
+  await page.locator(".screen.is-active [data-next]").click();
+}
+
+async function geenScroll(page: Page, waar: string) {
+  const m = await page.evaluate(() => {
     const d = document.documentElement;
-    return { scroll: d.scrollWidth, client: d.clientWidth };
+    return {
+      scrollH: d.scrollHeight,
+      clientH: d.clientHeight,
+      scrollW: d.scrollWidth,
+      clientW: d.clientWidth,
+    };
   });
-  expect(
-    overflow.scroll,
-    `${waar}: horizontale overflow (${overflow.scroll}px in ${overflow.client}px)`
-  ).toBeLessThanOrEqual(overflow.client + 1);
+  expect(m.scrollW, `${waar}: horizontale overflow`).toBeLessThanOrEqual(m.clientW + 1);
+  return m;
 }
 
-/** Vult stap 1 volledig in. */
-async function vulStap1(page: Page) {
-  await kies(page, "event_type", "Trouwfeest");
-  await kies(page, "moment", "Ceremonie");
-  await kies(page, "sfeer", "Warm en intiem");
-}
-
-/** Vult stap 2 volledig in. */
-async function vulStap2(page: Page) {
-  await page.locator("#datum").fill("2026-09-14");
-  await page.locator("#locatie").fill("Antwerpen");
-  await kies(page, "gasten", "80 – 150");
-}
-
-test.describe("aanvraagflow — alle drie de stappen", () => {
+test.describe("elke vraag past in één viewport", () => {
+  // De footer staat bewust onder de vouw; we meten de flow zelf.
   for (const vp of viewports) {
-    test(`${vp.name} (${vp.width}x${vp.height}): flow doorlopen zonder overflow`, async ({ page }) => {
+    test(`${vp.name} (${vp.width}x${vp.height})`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await open(page);
+      await beginnen(page);
 
-      // Stap 1
-      await expect(page.locator('.step[data-step="1"]')).toBeVisible();
-      await expect(page.locator('.step[data-step="2"]')).toBeHidden();
-      await geenHorizontaleScroll(page, `${vp.name} stap 1`);
+      const meting: string[] = [];
 
-      await vulStap1(page);
-      await page.getByRole("button", { name: /Volgende: praktische info/ }).click();
+      for (let n = 1; n <= 9; n++) {
+        const actief = page.locator(".screen.is-active");
+        await expect(actief).toHaveAttribute("data-screen", String(n));
 
-      // Stap 2
-      await expect(page.locator('.step[data-step="2"]')).toBeVisible();
-      await expect(page.locator('.step[data-step="1"]')).toBeHidden();
-      await expect(page.locator("#progress-step")).toHaveText("Stap 2 van 3");
-      await geenHorizontaleScroll(page, `${vp.name} stap 2`);
+        // De flow-sectie moet binnen het scherm blijven: dat is de belofte.
+        const hoogte = await page.locator(".flow").evaluate((el) => el.getBoundingClientRect().height);
+        const beschikbaar = vp.height - 76; // nav
+        meting.push(`  vraag ${n}: flow ${Math.round(hoogte)}px / ${beschikbaar}px beschikbaar`);
 
-      await vulStap2(page);
-      await page.getByRole("button", { name: /Volgende: uw gegevens/ }).click();
+        expect(
+          hoogte,
+          `${vp.name} vraag ${n}: de flow is ${Math.round(hoogte)}px hoog, meer dan de ${beschikbaar}px die het scherm biedt — er moet gescrold worden`
+        ).toBeLessThanOrEqual(beschikbaar + 2);
 
-      // Stap 3
-      await expect(page.locator('.step[data-step="3"]')).toBeVisible();
-      await expect(page.locator("#progress-step")).toHaveText("Stap 3 van 3");
-      await geenHorizontaleScroll(page, `${vp.name} stap 3`);
+        await geenScroll(page, `${vp.name} vraag ${n}`);
 
-      // De verzendknop moet volledig zichtbaar en aanklikbaar zijn.
-      const submit = page.getByRole("button", { name: "Vraag uw voorstel aan" });
-      await expect(submit).toBeVisible();
-      const box = await submit.boundingBox();
-      expect(box, `${vp.name}: verzendknop heeft geen afmeting`).not.toBeNull();
-      expect(box!.height, `${vp.name}: verzendknop te klein voor een tapdoel`).toBeGreaterThanOrEqual(44);
-      expect(box!.x, `${vp.name}: verzendknop links buiten beeld`).toBeGreaterThanOrEqual(0);
-      expect(box!.x + box!.width, `${vp.name}: verzendknop rechts buiten beeld`).toBeLessThanOrEqual(vp.width + 1);
+        // Vullen en door.
+        if (n === 1) await kies(page, "event_type", "Trouwfeest");
+        else if (n === 2) { await kies(page, "moment", "Ceremonie"); await volgende(page); }
+        else if (n === 3) { await kies(page, "sfeer", "Warm en intiem"); await volgende(page); }
+        else if (n === 4) { await page.locator("#datum").fill("2026-09-14"); await volgende(page); }
+        else if (n === 5) { await page.locator("#locatie").fill("Antwerpen"); await volgende(page); }
+        else if (n === 6) await kies(page, "gasten", "80 – 150");
+        else if (n === 7) {
+          await page.locator("#voornaam").fill("Jan");
+          await page.locator("#achternaam").fill("Janssen");
+          await page.locator("#email").fill("jan@example.com");
+          await page.locator("#telefoon").fill("+32 470 12 34 56");
+          await volgende(page);
+        } else if (n === 8) await kies(page, "voorkeur_contact", "WhatsApp");
+        else if (n === 9) {
+          await page.locator("#privacy").check();
+          await expect(page.getByRole("button", { name: "Vraag uw voorstel aan" })).toBeVisible();
+        }
+      }
+
+      console.log(`\n${vp.name} (${vp.width}x${vp.height}):\n${meting.join("\n")}`);
     });
   }
 });
 
-test.describe("validatie", () => {
-  test("stap 1 blokkeert bij lege verplichte vragen en toont de reden", async ({ page }) => {
+test.describe("iPhone SE (320x568) — scrollt, maar blijft bruikbaar", () => {
+  test("geen horizontale scroll en alle tapdoelen halen 44px", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
     await open(page);
-    await page.getByRole("button", { name: /Volgende: praktische info/ }).click();
+    await beginnen(page);
 
-    await expect(page.locator('.step[data-step="1"]')).toBeVisible();
-    await expect(page.locator('.step[data-step="2"]')).toBeHidden();
-    await expect(page.locator(".field-error").first()).toBeVisible();
-    await expect(page.locator('[data-q="event_type"] .field-error')).toHaveText("Kies wat u organiseert.");
+    for (let n = 1; n <= 3; n++) {
+      await geenScroll(page, `iphone-se vraag ${n}`);
+
+      // Tapdoelen mogen nooit onder de norm zakken, ook niet om te laten passen.
+      const kaarten = page.locator(".screen.is-active .opt__card");
+      const aantal = await kaarten.count();
+      for (let i = 0; i < aantal; i++) {
+        const box = await kaarten.nth(i).boundingBox();
+        expect(
+          box!.height,
+          `iphone-se vraag ${n}, kaart ${i + 1}: ${Math.round(box!.height)}px is onder de 44px-tapdoelnorm`
+        ).toBeGreaterThanOrEqual(44);
+      }
+
+      if (n === 1) await kies(page, "event_type", "Trouwfeest");
+      else if (n === 2) { await kies(page, "moment", "Ceremonie"); await volgende(page); }
+      else if (n === 3) { await kies(page, "sfeer", "Warm en intiem"); await volgende(page); }
+    }
+
+    await expect(page.locator('.screen[data-screen="4"]')).toBeVisible();
   });
 
-  test("fout verdwijnt zodra de vraag beantwoord wordt", async ({ page }) => {
+  test("de knop is bereikbaar door te scrollen", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
     await open(page);
-    await page.getByRole("button", { name: /Volgende: praktische info/ }).click();
-    await expect(page.locator('[data-q="event_type"] .field-error')).toBeVisible();
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+
+    const knop = page.locator(".screen.is-active [data-next]");
+    await knop.scrollIntoViewIfNeeded();
+    await expect(knop).toBeInViewport();
+  });
+});
+
+test.describe("automatisch door bij enkele keuze", () => {
+  test("vraag 1 springt vanzelf naar vraag 2", async ({ page }) => {
+    await open(page);
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+
+    // Even zichtbaar blijven, dan door — daar is de pauze voor.
+    await expect(page.locator('.screen[data-screen="2"]')).toBeVisible({ timeout: 2000 });
+    await expect(page.locator('.screen[data-screen="1"]')).toBeHidden();
+  });
+
+  test("vraag 2 en 3 springen NIET vanzelf door — daar mag je meerdere kiezen", async ({ page }) => {
+    await open(page);
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await expect(page.locator('.screen[data-screen="2"]')).toBeVisible();
+
+    await kies(page, "moment", "Ceremonie");
+    await page.waitForTimeout(900);
+    await expect(
+      page.locator('.screen[data-screen="2"]'),
+      "meerkeuze mag niet wegspringen: je bent misschien nog niet klaar"
+    ).toBeVisible();
+  });
+});
+
+test.describe("voortgang", () => {
+  test("toont de juiste stap en telling per vraag", async ({ page }) => {
+    await open(page);
+    await expect(page.locator("#progress"), "de opening is geen vraag").toBeHidden();
+
+    await beginnen(page);
+    await expect(page.locator("#progress-chapter")).toContainText("Stap 1 van 3");
+    await expect(page.locator("#progress-chapter")).toContainText("Event & muziek");
+    await expect(page.locator("#progress-count")).toHaveText("Vraag 1 van 9");
 
     await kies(page, "event_type", "Trouwfeest");
-    await expect(page.locator('[data-q="event_type"] .field-error')).toHaveCount(0);
+    await expect(page.locator("#progress-count")).toHaveText("Vraag 2 van 9");
+
+    await kies(page, "moment", "Ceremonie");
+    await volgende(page);
+    await kies(page, "sfeer", "Warm en intiem");
+    await volgende(page);
+
+    await expect(page.locator("#progress-chapter")).toContainText("Stap 2 van 3");
+    await expect(page.locator("#progress-chapter")).toContainText("Praktische info");
+    await expect(page.locator("#progress-count")).toHaveText("Vraag 4 van 9");
+    await expect(page.locator('.progress__seg[data-seg="1"]')).toHaveClass(/is-done/);
+  });
+});
+
+test.describe("validatie", () => {
+  test("vraag 2 blokkeert bij geen keuze en zegt waarom", async ({ page }) => {
+    await open(page);
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await expect(page.locator('.screen[data-screen="2"]')).toBeVisible();
+
+    await volgende(page);
+    await expect(page.locator('.screen[data-screen="2"]')).toBeVisible();
+    await expect(page.locator('.screen[data-screen="2"] .field-error')).toContainText("Kies minstens één moment");
   });
 
-  test("verzendknop is nooit uitgegrijsd — klikken zegt wat er ontbreekt", async ({ page }) => {
+  test("contactscherm meldt per veld wat er ontbreekt", async ({ page }) => {
     await open(page);
-    await vulStap1(page);
-    await page.getByRole("button", { name: /Volgende: praktische info/ }).click();
-    await vulStap2(page);
-    await page.getByRole("button", { name: /Volgende: uw gegevens/ }).click();
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await kies(page, "moment", "Ceremonie");
+    await volgende(page);
+    await kies(page, "sfeer", "Warm en intiem");
+    await volgende(page);
+    await page.locator("#datum").fill("2026-09-14");
+    await volgende(page);
+    await page.locator("#locatie").fill("Antwerpen");
+    await volgende(page);
+    await kies(page, "gasten", "80 – 150");
+    await expect(page.locator('.screen[data-screen="7"]')).toBeVisible();
 
-    const submit = page.getByRole("button", { name: "Vraag uw voorstel aan" });
-    await expect(submit).toBeEnabled();
+    await page.locator("#email").fill("nietgeldig");
+    await volgende(page);
 
-    await submit.click();
-    await expect(page.locator('[data-q="naam"] .field-error')).toHaveText("Vul uw naam in.");
-    await expect(page.locator('[data-q="privacy"] .field-error')).toBeVisible();
+    await expect(page.locator('.screen[data-screen="7"]')).toBeVisible();
+    await expect(page.locator(".field-error").first()).toContainText("Vul uw voornaam in");
+  });
+
+  test("fout verdwijnt zodra je het veld corrigeert", async ({ page }) => {
+    await open(page);
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await kies(page, "moment", "Ceremonie");
+    await volgende(page);
+    await kies(page, "sfeer", "Warm en intiem");
+    await volgende(page);
+    await page.locator("#datum").fill("2026-09-14");
+    await volgende(page);
+
+    await volgende(page); // locatie leeg
+    await expect(page.locator(".field-error")).toBeVisible();
+    await page.locator("#locatie").fill("Gent");
+    await expect(page.locator(".field-error")).toHaveCount(0);
   });
 });
 
 test.describe("conditionele logica uit de briefing", () => {
-  test('Q2: "Nog niet zeker" is exclusief en werkt beide kanten op', async ({ page }) => {
+  test('vraag 2: "Nog niet zeker" is exclusief en werkt beide kanten op', async ({ page }) => {
     await open(page);
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
 
     const ceremonie = page.locator('input[name="moment"][value="Ceremonie"]');
     const advies = page.locator('input[name="moment"][value="Nog niet zeker, graag advies"]');
 
     await kies(page, "moment", "Ceremonie");
     await kies(page, "moment", "Nog niet zeker, graag advies");
-    await expect(ceremonie, "Nog niet zeker moet de rest uitvinken").not.toBeChecked();
+    await expect(ceremonie).not.toBeChecked();
 
     await kies(page, "moment", "Ceremonie");
-    await expect(advies, "een gewone optie moet Nog niet zeker uitvinken").not.toBeChecked();
+    await expect(advies).not.toBeChecked();
   });
 
-  test("Q3: maximaal 2 keuzes, de rest dimt zichtbaar", async ({ page }) => {
+  test("vraag 3: maximaal 2 keuzes, de rest dimt zichtbaar", async ({ page }) => {
     await open(page);
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await kies(page, "moment", "Ceremonie");
+    await volgende(page);
 
-    const teller = page.locator('[data-q="sfeer"] [data-counter]');
+    const teller = page.locator("[data-counter]");
     await expect(teller).toHaveText("0 van 2 gekozen");
 
     await kies(page, "sfeer", "Warm en intiem");
     await expect(teller).toHaveText("1 van 2 gekozen");
-
     await kies(page, "sfeer", "Classy en professioneel");
     await expect(teller).toHaveText("2 van 2 gekozen");
 
-    // Op het maximum: niet-gekozen kaarten zijn geblokkeerd en zichtbaar gedimd.
-    const geblokkeerd = page.locator('[data-q="sfeer"] .opt.is-blocked');
-    await expect(geblokkeerd).toHaveCount(4);
+    await expect(page.locator('.screen[data-screen="3"] .opt.is-blocked')).toHaveCount(4);
     await expect(page.locator('input[name="sfeer"][value="Feestelijk en herkenbaar"]')).toBeDisabled();
 
-    // Eentje weghalen geeft de rest weer vrij.
     await kies(page, "sfeer", "Warm en intiem");
     await expect(teller).toHaveText("1 van 2 gekozen");
-    await expect(page.locator('[data-q="sfeer"] .opt.is-blocked')).toHaveCount(0);
+    await expect(page.locator('.screen[data-screen="3"] .opt.is-blocked')).toHaveCount(0);
   });
 
-  test("Q4: datum-checkbox wisselt naar de periodekeuze", async ({ page }) => {
+  test("vraag 4: datum-checkbox wisselt naar de periodekeuze", async ({ page }) => {
     await open(page);
-    await vulStap1(page);
-    await page.getByRole("button", { name: /Volgende: praktische info/ }).click();
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await kies(page, "moment", "Ceremonie");
+    await volgende(page);
+    await kies(page, "sfeer", "Warm en intiem");
+    await volgende(page);
 
     await expect(page.locator("#periode-blok")).toBeHidden();
-    await expect(page.locator("#datum")).toBeVisible();
-
     await page.locator("#datum").fill("2026-09-14");
     await page.locator("#datum_flexibel").check();
 
@@ -191,93 +315,86 @@ test.describe("conditionele logica uit de briefing", () => {
     await expect(page.locator("#datum")).toBeHidden();
     await expect(page.locator("#datum"), "datum moet gewist worden bij flexibel").toHaveValue("");
 
-    // Zonder periode mag stap 2 niet door.
-    await page.locator("#locatie").fill("Gent");
-    await kies(page, "gasten", "Nog niet zeker");
-    await page.getByRole("button", { name: /Volgende: uw gegevens/ }).click();
-    await expect(page.locator('[data-q="datum"] .field-error')).toBeVisible();
+    await volgende(page);
+    await expect(page.locator(".field-error"), "zonder periode mag je niet door").toBeVisible();
 
     await kies(page, "periode", "Najaar");
-    await page.getByRole("button", { name: /Volgende: uw gegevens/ }).click();
-    await expect(page.locator('.step[data-step="3"]')).toBeVisible();
+    await volgende(page);
+    await expect(page.locator('.screen[data-screen="5"]')).toBeVisible();
   });
 });
 
 test.describe("terug en herstel", () => {
   test("terug behoudt de antwoorden", async ({ page }) => {
     await open(page);
-    await vulStap1(page);
-    await page.getByRole("button", { name: /Volgende: praktische info/ }).click();
-    await page.getByRole("button", { name: /Terug/ }).click();
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await expect(page.locator('.screen[data-screen="2"]')).toBeVisible();
 
-    await expect(page.locator('.step[data-step="1"]')).toBeVisible();
+    await page.locator(".screen.is-active [data-prev]").click();
+    await expect(page.locator('.screen[data-screen="1"]')).toBeVisible();
     await expect(page.locator('input[name="event_type"][value="Trouwfeest"]')).toBeChecked();
-    await expect(page.locator('input[name="moment"][value="Ceremonie"]')).toBeChecked();
   });
 
-  test("na een refresh staan de antwoorden en de stap er nog", async ({ page }) => {
+  test("na een refresh sta je nog op dezelfde vraag met je antwoorden", async ({ page }) => {
     await open(page);
-    await vulStap1(page);
-    await page.getByRole("button", { name: /Volgende: praktische info/ }).click();
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await kies(page, "moment", "Ceremonie");
+    await volgende(page);
+    await kies(page, "sfeer", "Warm en intiem");
+    await volgende(page);
+    await page.locator("#datum").fill("2026-09-14");
+    await volgende(page);
     await page.locator("#locatie").fill("Antwerpen");
 
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await page.locator(".r-loader.is-done, .r-loader.is-gone").waitFor();
 
-    await expect(page.locator("#progress-step")).toHaveText("Stap 2 van 3");
+    await expect(page.locator("#progress-count")).toHaveText("Vraag 5 van 9");
     await expect(page.locator("#locatie")).toHaveValue("Antwerpen");
-    await expect(page.locator('.step[data-step="2"]')).toBeVisible();
   });
 });
 
 test.describe("verzenden", () => {
-  /** Vult stap 3 en verstuurt. Het endpoint wordt gemockt: geen echte mail. */
-  async function totEnMetVerzenden(page: Page, antwoord: object, status = 200) {
-    await page.route("**/api/aanvraag", (route) =>
-      route.fulfill({ status, contentType: "application/json", body: JSON.stringify(antwoord) })
-    );
+  async function totHetEind(page: Page) {
     await open(page);
-    await vulStap1(page);
-    await page.getByRole("button", { name: /Volgende: praktische info/ }).click();
-    await vulStap2(page);
-    await page.getByRole("button", { name: /Volgende: uw gegevens/ }).click();
-    await page.locator("#naam").fill("Jan Janssen");
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await kies(page, "moment", "Ceremonie");
+    await volgende(page);
+    await kies(page, "sfeer", "Warm en intiem");
+    await volgende(page);
+    await page.locator("#datum").fill("2026-09-14");
+    await volgende(page);
+    await page.locator("#locatie").fill("Antwerpen");
+    await volgende(page);
+    await kies(page, "gasten", "80 – 150");
+    await expect(page.locator('.screen[data-screen="7"]')).toBeVisible();
+    await page.locator("#voornaam").fill("Jan");
+    await page.locator("#achternaam").fill("Janssen");
     await page.locator("#email").fill("jan@example.com");
     await page.locator("#telefoon").fill("+32 470 12 34 56");
+    await volgende(page);
+    await kies(page, "voorkeur_contact", "WhatsApp");
+    await expect(page.locator('.screen[data-screen="9"]')).toBeVisible();
     await page.locator("#privacy").check();
-    await page.getByRole("button", { name: "Vraag uw voorstel aan" }).click();
   }
 
-  test("succes toont de bevestiging en verbergt de tegenstrijdige kop", async ({ page }) => {
-    await totEnMetVerzenden(page, { ok: true });
-
-    await expect(page.locator("#aanvraag-done")).toBeVisible();
-    await expect(page.locator("#aanvraag-form")).toBeHidden();
-    await expect(
-      page.locator(".aanvraag__head"),
-      '"Beantwoord enkele korte vragen" mag niet boven "Bedankt" blijven staan'
-    ).toBeHidden();
-    await expect(page.locator(".done__title")).toHaveText("Bedankt voor uw aanvraag");
-    await expect(page.locator(".done__next li")).toHaveCount(3);
-  });
-
-  test("de verstuurde payload bevat alle antwoorden", async ({ page }) => {
+  test("succes toont de bevestiging; de payload heeft voor- en achternaam apart", async ({ page }) => {
     let payload: any = null;
     await page.route("**/api/aanvraag", async (route) => {
       payload = JSON.parse(route.request().postData() || "{}");
       await route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
     });
-    await open(page);
-    await vulStap1(page);
-    await page.getByRole("button", { name: /Volgende: praktische info/ }).click();
-    await vulStap2(page);
-    await page.getByRole("button", { name: /Volgende: uw gegevens/ }).click();
-    await page.locator("#naam").fill("Jan Janssen");
-    await page.locator("#email").fill("jan@example.com");
-    await page.locator("#telefoon").fill("+32 470 12 34 56");
-    await page.locator("#privacy").check();
+
+    await totHetEind(page);
     await page.getByRole("button", { name: "Vraag uw voorstel aan" }).click();
+
     await expect(page.locator("#aanvraag-done")).toBeVisible();
+    await expect(page.locator("#aanvraag-form")).toBeHidden();
+    await expect(page.locator("#progress")).toBeHidden();
+    await expect(page.locator(".done__next li")).toHaveCount(3);
 
     expect(payload).toMatchObject({
       event_type: "Trouwfeest",
@@ -286,35 +403,59 @@ test.describe("verzenden", () => {
       datum: "2026-09-14",
       locatie: "Antwerpen",
       gasten: "80 – 150",
-      naam: "Jan Janssen",
+      voornaam: "Jan",
+      achternaam: "Janssen",
       email: "jan@example.com",
+      voorkeur_contact: "WhatsApp",
       privacy: "ja",
     });
   });
 
-  test("serverfout laat de antwoorden staan en legt uit wat te doen", async ({ page }) => {
-    await totEnMetVerzenden(page, { ok: false, error: "send_failed" }, 502);
+  test("privacy niet aangevinkt: knop blijft klikbaar en zegt wat er mist", async ({ page }) => {
+    await open(page);
+    await beginnen(page);
+    await kies(page, "event_type", "Trouwfeest");
+    await kies(page, "moment", "Ceremonie");
+    await volgende(page);
+    await kies(page, "sfeer", "Warm en intiem");
+    await volgende(page);
+    await page.locator("#datum").fill("2026-09-14");
+    await volgende(page);
+    await page.locator("#locatie").fill("Antwerpen");
+    await volgende(page);
+    await kies(page, "gasten", "80 – 150");
+    await page.locator("#voornaam").fill("Jan");
+    await page.locator("#achternaam").fill("Janssen");
+    await page.locator("#email").fill("jan@example.com");
+    await page.locator("#telefoon").fill("+32 470 12 34 56");
+    await volgende(page);
+    await kies(page, "voorkeur_contact", "WhatsApp");
 
-    await expect(page.locator(".form-status")).toBeVisible();
-    await expect(page.locator(".form-status")).toContainText("info@relovation.be");
+    const knop = page.getByRole("button", { name: "Vraag uw voorstel aan" });
+    await expect(knop, "nooit uitgrijzen zonder uitleg").toBeEnabled();
+    await knop.click();
+
+    await expect(page.locator('[data-q="privacy"] .field-error')).toBeVisible();
     await expect(page.locator("#aanvraag-done")).toBeHidden();
-    await expect(page.locator("#naam"), "ingevulde velden mogen niet gewist worden").toHaveValue("Jan Janssen");
   });
 
-  test("veldfouten van de server komen bij de juiste vraag terecht", async ({ page }) => {
-    await totEnMetVerzenden(page, { ok: false, errors: { email: "Dit lijkt geen geldig e-mailadres." } }, 400);
+  test("serverfout laat alles staan en wijst naar een adres dat bestaat", async ({ page }) => {
+    await page.route("**/api/aanvraag", (route) =>
+      route.fulfill({ status: 502, contentType: "application/json", body: '{"ok":false,"error":"send_failed"}' })
+    );
+    await totHetEind(page);
+    await page.getByRole("button", { name: "Vraag uw voorstel aan" }).click();
 
-    await expect(page.locator('[data-q="email"] .field-error')).toHaveText("Dit lijkt geen geldig e-mailadres.");
+    await expect(page.locator(".form-status")).toContainText("relovation@robinmusic.be");
     await expect(page.locator("#aanvraag-done")).toBeHidden();
+    await expect(page.locator("#privacy")).toBeChecked();
   });
 });
 
 test.describe("zonder JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
-  test("alle drie de stappen staan onder elkaar en het formulier is verzendbaar", async ({ page }) => {
-    // Geen open() hier: zonder JS draait loader.js niet, dus de overlay krijgt
-    // nooit is-done. De <noscript>-regel verbergt hem — dat testen we hieronder.
+  test("alle vragen staan onder elkaar en het formulier is verzendbaar", async ({ page }) => {
     await page.goto("/aanvraag");
 
     await expect(
@@ -322,15 +463,13 @@ test.describe("zonder JavaScript", () => {
       "de loader-overlay moet zonder JS verborgen zijn, anders is de pagina onbereikbaar"
     ).toBeHidden();
 
-    await expect(page.locator('.step[data-step="1"]')).toBeVisible();
-    await expect(page.locator('.step[data-step="2"]')).toBeVisible();
-    await expect(page.locator('.step[data-step="3"]')).toBeVisible();
-
-    // Voortgang en stapknoppen zijn zinloos zonder JS en moeten weg zijn.
+    await expect(page.locator('.screen[data-screen="1"]')).toBeVisible();
+    await expect(page.locator('.screen[data-screen="9"]')).toBeVisible();
     await expect(page.locator("#progress")).toBeHidden();
-    await expect(page.locator(".step__nav").first()).toBeHidden();
     await expect(page.getByRole("button", { name: "Vraag uw voorstel aan" })).toBeVisible();
+    await expect(page.locator("#voornaam")).toBeVisible();
+    await expect(page.locator("#achternaam")).toBeVisible();
 
-    await geenHorizontaleScroll(page, "zonder JS");
+    await geenScroll(page, "zonder JS");
   });
 });

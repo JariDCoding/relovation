@@ -13,6 +13,13 @@
       --bg-deep: #ece2bc;
       --ink: #4c6a57;
       --ink-soft: #5d705d;
+      /* Design system (Cream mode) — zie Figma "◆ Relovation Design System".
+         --gold is bg/accent: DECORATIEF, nooit als tekstkleur (2.61:1 op cream).
+         --ink-muted is text/muted: gekozen om WCAG AA te halen (4.57:1). */
+      --gold: #af8f48;
+      --ink-muted: #55715e;
+      --radius-pill: 999px;
+      --radius-arch: 999px 999px 0 0;
       --line: rgba(76, 106, 87, 0.24);
       --line-soft: rgba(76, 106, 87, 0.14);
       --shadow: rgba(76, 106, 87, 0.12);
@@ -108,15 +115,19 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: var(--button-width);
+      /* min-width, niet width: de CTA-labels ("Vertel ons over uw event") zijn
+         langer dan de 188px uit het design system en moeten de pill mogen
+         oprekken i.p.v. binnenin te breken. Gelijk aan contact/diensten. */
+      min-width: var(--button-width);
       height: var(--button-height);
       padding: 0 24px;
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       border: 1.4px solid var(--line);
       background: transparent;
       color: var(--ink);
       font-size: 13px;
       font-weight: 500;
+      white-space: nowrap;
       text-decoration: none;
       box-shadow: 0 10px 20px rgba(87, 110, 89, 0.04);
       transition:
@@ -305,7 +316,7 @@
     }
 
     .hero-actions .button {
-      width: 248px;
+      min-width: 248px;
       height: 64px;
       padding: 0 34px;
       border-width: 2px;
@@ -323,7 +334,8 @@
       font-weight: 500;
       letter-spacing: 0.17em;
       text-transform: uppercase;
-      color: rgba(76, 106, 87, 0.50);
+      /* Was rgba(76,106,87,0.50) = 2.03:1 op cream. text/muted = 4.57:1. */
+      color: var(--ink-muted);
     }
 
     .hero-eyebrow::before {
@@ -567,29 +579,8 @@
       margin-top: 4px;
     }
 
-    .story-line {
-      display: flex;
-      gap: 0.55rem;
-      align-items: center;
-      margin-top: clamp(18px, 2vw, 26px);
-      color: rgba(76, 106, 87, 0.58);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
 
-    .story-line::before {
-      content: "";
-      flex: 0 0 clamp(54px, 5vw, 76px);
-      height: 1px;
-      background: var(--line-soft);
-    }
 
-    .story-line span {
-      opacity: 0.82;
-    }
 
     .vision-section {
       padding-top: clamp(120px, 12vw, 180px);
@@ -679,12 +670,19 @@
       display: block;
     }
 
+    .vision-body-close {
+      margin-top: 0.85em;
+      font-family: "EB Garamond", serif;
+      font-style: italic;
+      color: var(--ink-muted);
+    }
+
     .vision-cta {
       margin-top: clamp(18px, 2vw, 28px);
     }
 
     .vision-cta .button {
-      width: 187px;
+      min-width: 187px;
       height: 51px;
       padding: 0 24px;
       border-width: 1.4px;
@@ -793,7 +791,8 @@
     .vision-note-text {
       max-width: 300px;
       margin: 0;
-      color: rgba(76, 106, 87, 0.74);
+      /* Was rgba(76,106,87,0.74) = 3.07:1 op cream. text/muted = 4.57:1. */
+      color: var(--ink-muted);
       font-size: 16px;
       font-weight: 500;
       line-height: 1.5;
@@ -998,7 +997,8 @@
     .musicians-section {
       position: relative;
       padding-top: clamp(128px, 11vw, 184px);
-      padding-bottom: clamp(260px, 24vw, 360px);
+      /* Ruimte onder de noot zodat die op cream blijft, boven de groene band. */
+      padding-bottom: clamp(300px, 27vw, 420px);
       overflow: hidden;
       background: var(--bg);
     }
@@ -1038,16 +1038,24 @@
       display: grid;
       justify-items: start;
       align-content: start;
-      gap: 6px;
+      /* vault §7: label->heading 16-40px, heading->body 24-64px. */
+      gap: clamp(13px, 1vw, 17px);
       position: relative;
       z-index: 2;
+    }
+
+    /* Goud = enkel decoratief (design system: goud op cream = 2.61:1). */
+    .musician-rule {
+      width: 56px;
+      height: 2px;
+      background: var(--gold);
     }
 
     .musician-frame {
       width: 100%;
       aspect-ratio: 154 / 210;
       border: 1px solid rgba(76, 106, 87, 0.18);
-      border-radius: 999px 999px 0 0;
+      border-radius: var(--radius-arch);
       overflow: hidden;
       background: rgba(244, 237, 207, 0.3);
     }
@@ -1061,19 +1069,73 @@
 
     .musician-name {
       margin: 0;
-      font-size: clamp(12px, 0.9vw, 14px);
+      font-size: clamp(18px, 1.35vw, 22px);
       font-weight: 500;
       line-height: 1.2;
       color: var(--ink);
     }
 
+    /* Was #b1935f (goud) als tekstkleur: 2.4:1 op cream, haalt WCAG AA niet.
+       text/muted uit het design system = 4.57:1. Het goud verhuist naar
+       .musician-rule, waar het decoratief mag zijn. */
     .musician-role {
-      margin: 0;
+      margin: calc(clamp(13px, 1vw, 17px) * -1 + 4px) 0 0;
       font-family: "EB Garamond", serif;
-      font-size: clamp(12px, 0.86vw, 14px);
+      font-size: clamp(15px, 1.05vw, 17px);
       font-style: italic;
-      line-height: 1.15;
-      color: #b1935f;
+      line-height: 1.3;
+      color: var(--ink-muted);
+    }
+
+    .musician-bio {
+      margin: 0;
+      /* vault §1: body 16-20px, line-height 1.6-1.75, max 50-66 tekens. */
+      font-size: clamp(15px, 1.02vw, 16.5px);
+      line-height: 1.7;
+      font-weight: 400;
+      color: var(--ink-soft);
+      max-width: 34ch;
+      text-wrap: pretty;
+    }
+
+    /* vault §6/§10: tekstlink-CTA, klein en tracked - niet de knal van een knop. */
+    .musician-ig {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      color: var(--ink-muted);
+      text-decoration: none;
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(11px, 0.82vw, 13px);
+      line-height: 1.2;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+      transition:
+        color 220ms var(--motion-ease),
+        border-color 220ms var(--motion-ease);
+    }
+
+    .musician-ig:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    .musicians-note {
+      margin: 0;
+      justify-self: center;
+      max-width: 56ch;
+      text-align: center;
+      font-family: "EB Garamond", serif;
+      font-style: italic;
+      font-size: clamp(16px, 1.15vw, 20px);
+      line-height: 1.6;
+      color: var(--ink-muted);
+      text-wrap: balance;
     }
 
     .musicians-green-base {
@@ -1081,7 +1143,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      height: 56%;
+      height: clamp(240px, 24vw, 360px);
       background: var(--ink);
       z-index: 0;
     }
@@ -1129,7 +1191,8 @@
     .cta-copy {
       width: min(100%, 620px);
       margin: 0;
-      color: rgba(76, 106, 87, 0.88);
+      /* Was rgba(76,106,87,0.88) = 4.00:1 op cream. text/secondary = 4.53:1. */
+      color: var(--ink-soft);
       font-size: clamp(17px, 1.2vw, 20px);
       line-height: 1.65;
       text-wrap: balance;
@@ -1187,9 +1250,6 @@
         margin-top: 16px;
       }
 
-      .story-line {
-        margin-top: clamp(24px, 2.6vw, 36px);
-      }
     }
 
     @media (min-width: 1350px) and (max-width: 1440px) {
@@ -1262,57 +1322,27 @@
 
       .story-copy p {
         max-width: none;
-        margin-top: 285px;
+        margin-top: 18px;
         font-size: 20px;
         line-height: 1.5;
         margin-left: -20%;
       }
 
-      .story-line {
-        margin-top: 210px;
-        letter-spacing: 0;
-        text-transform: none;
-        font-size: 12px;
+      /* Alleen de eerste alinea zakt mee met de kaarten-cascade; de tweede
+         volgt op normale alinea-afstand. */
+      .story-copy p:first-of-type {
+        margin-top: 285px;
       }
 
-      .story-line::before {
-        display: none;
-      }
+
 
       .musicians-shell {
         width: 88%;
-        max-width: 915px;
-      }
-
-      .musicians-grid-top {
-        column-gap: 57px;
-      }
-
-      .musicians-grid-bottom {
-        width: 528px;
-        grid-template-columns: repeat(2, 192px);
-        column-gap: 144px;
-        margin: -4px auto 0;
-      }
-
-      .musician-card--lower {
-        transform: translateY(15px);
+        max-width: 1172px;
       }
 
       .musician-frame {
-        width: 212px;
-        height: 289px;
         background: var(--bg);
-      }
-
-      .musician-name {
-        font-size: 20px;
-        line-height: 1.08;
-      }
-
-      .musician-role {
-        font-size: 14px;
-        line-height: 1.1;
       }
     }
 
@@ -1386,57 +1416,25 @@
 
       .story-copy p {
         max-width: none;
-        margin-top: 342px;
+        margin-top: 20px;
         font-size: 23px;
         line-height: 1.5;
         margin-left: -20%;
       }
 
-      .story-line {
-        margin-top: 251px;
-        letter-spacing: 0;
-        text-transform: none;
-        font-size: 14px;
+      .story-copy p:first-of-type {
+        margin-top: 342px;
       }
 
-      .story-line::before {
-        display: none;
-      }
+
 
       .musicians-shell {
         width: 88%;
-        max-width: 1098px;
-      }
-
-      .musicians-grid-top {
-        column-gap: 68px;
-      }
-
-      .musicians-grid-bottom {
-        width: 634px;
-        grid-template-columns: repeat(2, 230px);
-        column-gap: 173px;
-        margin: -4px auto 0;
-      }
-
-      .musician-card--lower {
-        transform: translateY(18px);
+        max-width: 1406px;
       }
 
       .musician-frame {
-        width: 254px;
-        height: 347px;
         background: var(--bg);
-      }
-
-      .musician-name {
-        font-size: 23px;
-        line-height: 1.08;
-      }
-
-      .musician-role {
-        font-size: 16px;
-        line-height: 1.1;
       }
     }
 
@@ -1593,25 +1591,16 @@
 
       .musicians-section {
         padding-top: 80px;
-        padding-bottom: 140px;
+        padding-bottom: 300px;
       }
 
       .musicians-title {
         font-size: clamp(46px, 9.5vw, 60px);
       }
 
-      .musicians-grid-top,
-      .musicians-grid-bottom {
-        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      .musicians-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         column-gap: 34px;
-      }
-
-      .musicians-grid-bottom {
-        margin-top: 0;
-      }
-
-      .musician-card--lower {
-        transform: none;
       }
 
       .cta-banner {
@@ -1787,16 +1776,11 @@
         margin-top: clamp(24px, 6vw, 32px); /* extra gap after title */
       }
 
-      .story-line {
-        justify-content: flex-end;
-        margin-top: clamp(28px, 7vw, 40px); /* 2× previous value */
-        font-size: 11px;
-        letter-spacing: 0.14em;
+      .story-copy p + p {
+        margin-top: 14px;
       }
 
-      .story-line::before {
-        display: none;
-      }
+
 
       /* Desktop-proportional cascade — left-based, decreasing sizes */
       .story-media {
@@ -1941,8 +1925,8 @@
       }
 
       .vision-cta .button {
-        width: 187px;
-        max-width: 187px;
+        min-width: 187px;
+        max-width: 100%;
       }
 
       /* Visual pulled up to sit alongside the button on the right */
@@ -2041,7 +2025,7 @@
       /* ── Musicians: swipeable carousel ── */
       .musicians-section {
         padding-top: 52px;
-        padding-bottom: 100px;
+        padding-bottom: 260px;
       }
 
       /* Center title — override reveal-title's align-items: flex-start */
@@ -2057,9 +2041,8 @@
         gap: 32px;
       }
 
-      /* Desktop grids hidden — carousel takes over */
-      .musicians-grid-top,
-      .musicians-grid-bottom {
+      /* Desktop grid hidden — carousel takes over */
+      .musicians-grid {
         display: none;
       }
 
@@ -2081,7 +2064,15 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding-bottom: 56px;
+        padding: 0 8px 24px;
+      }
+
+      /* Card is nu gekloond als geheel — centreer de inhoud in de slide. */
+      .musicians-slide .musician-card {
+        justify-items: center;
+        text-align: center;
+        width: 100%;
+        gap: 10px;
       }
 
       /* Arch frame — visible outlined portrait shape */
@@ -2091,29 +2082,39 @@
         aspect-ratio: 154 / 210;
         border: 1.5px solid rgba(76, 106, 87, 0.5);
         background: rgba(76, 106, 87, 0.06);
-        border-radius: 999px 999px 0 0;
+        border-radius: var(--radius-arch);
         overflow: hidden;
       }
 
-      /* Name: cream, large, in the green band */
       .musicians-slide .musician-name {
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 500;
-        color: var(--bg);
+        color: var(--ink);
         text-align: center;
-        margin-top: 22px;
+        margin-top: 12px;
         line-height: 1.2;
       }
 
-      /* Role: gold italic, in the green band */
+      /* Rol in text/muted (WCAG AA) — het goud zit in .musician-rule. */
       .musicians-slide .musician-role {
         font-size: 16px;
         font-family: "EB Garamond", serif;
         font-style: italic;
-        color: #b1935f;
+        color: var(--ink-muted);
         text-align: center;
-        margin-top: 6px;
+        margin-top: -4px;
         line-height: 1.3;
+      }
+
+      .musicians-slide .musician-bio {
+        font-size: 16px;
+        max-width: 42ch;
+        text-align: center;
+        margin-top: 4px;
+      }
+
+      .musicians-slide .musician-ig {
+        margin-top: 6px;
       }
 
       /* Nav buttons: circles at frame mid-height */
@@ -2160,9 +2161,12 @@
         transform: rotate(45deg) translate(-2px, 2px);
       }
 
-      /* Taller green base so name/role sit fully inside it */
+      .musicians-note {
+        font-size: 16px;
+      }
+
       .musicians-green-base {
-        height: 58%;
+        height: 200px;
       }
 
       /* Bigger curve to fill the scallop bottom */
@@ -2313,7 +2317,7 @@
       }
 
       .hero-actions .button {
-        width: 187px;
+        min-width: 187px;
         height: 51px;
         padding: 0 24px;
         border-width: 1.4px;
@@ -2423,24 +2427,17 @@
 
       .story-copy p {
         max-width: 558px;
-        margin-top: 380px;
+        margin-top: 22px;
         font-size: 26px;
         line-height: 1.5;
         margin-left: -20%;
       }
 
-      .story-line {
-        margin-top: 279px;
-        font-size: 16px;
-        line-height: 1.5;
-        letter-spacing: 0;
-        text-transform: none;
-        margin-left: 0;
+      .story-copy p:first-of-type {
+        margin-top: 380px;
       }
 
-      .story-line::before {
-        display: none;
-      }
+
 
       .vision-section {
         padding-top: 176px;
@@ -2493,7 +2490,7 @@
       }
 
       .vision-cta .button {
-        width: 187px;
+        min-width: 187px;
         height: 51px;
         padding: 0 24px;
         border-width: 1.4px;
@@ -2607,51 +2604,24 @@
 
       .musicians-section {
         padding-top: 124px;
-        padding-bottom: 312px;
+        padding-bottom: 400px;
       }
 
       .musicians-shell {
         width: 88%;
-        max-width: 1220px;
+        max-width: 1562px;
       }
 
       .musicians-title {
         font-size: 68px;
       }
 
-      .musicians-grid-top {
-        column-gap: 76px;
-      }
-
-      .musicians-grid-bottom {
-        width: 704px;
-        grid-template-columns: repeat(2, 256px);
-        column-gap: 192px;
-        margin: -6px auto 0;
-      }
-
-      .musician-card--lower {
-        transform: translateY(20px);
-      }
-
       .musician-frame {
-        width: 282px;
-        height: 385px;
         background: var(--bg);
       }
 
-      .musician-name {
-        font-size: 26px;
-        line-height: 1.08;
-      }
-
-      .musician-role {
-        font-size: 18px;
-        line-height: 1.1;
-      }
-
       .musicians-green-base {
-        height: calc(44% - 40px);
+        height: 340px;
       }
 
       .musicians-curve {
@@ -2788,8 +2758,8 @@
               <span class="reveal-word" style="animation-delay: 0.1s;"><em>verhaal</em></span>
             </span>
           </h2>
-          <p>Robin startte op zijn achtste met de saxofoon en is er sindsdien nooit meer mee gestopt. In 2016 leerde hij Lorenzo kennen — een pianist die hem vanaf de eerste repetitie versteld deed staan. Na die eerste repetitie vroeg Robin hem om samen te spelen. Zo begon het.<br><br>Ze repeteerden, speelden hier en daar, en organiseerden in 2018 voor het eerst een eigen concert. Het jaar nadien opnieuw. Relovation groeide van daaruit organisch — niet gepland, maar gedragen door de muziek en de mensen errond. Lorenzo is sindsdien een vaste waarde én een goede vriend. Hij was erbij van het eerste uur, en dat hoor je.</p>
-          <div class="story-line" aria-hidden="true"></div>
+          <p>Robin startte op zijn achtste met de saxofoon en is er sindsdien nooit meer mee gestopt. In 2016 leerde hij Lorenzo kennen — een pianist die hem vanaf de eerste repetitie versteld deed staan. Na die eerste repetitie vroeg Robin hem om samen te spelen. Zo begon het.</p>
+          <p>Ze repeteerden, speelden hier en daar, en organiseerden in 2018 voor het eerst een eigen concert. Het jaar nadien opnieuw. Relovation groeide van daaruit organisch — niet gepland, maar gedragen door de muziek en de mensen errond. Lorenzo is sindsdien een vaste waarde én een goede vriend. Hij was erbij van het eerste uur, en dat hoor je.</p>
         </div>
       </div>
     </section>
@@ -2809,11 +2779,8 @@
             </span>
           </h2>
           <p class="vision-body">
-            <span class="vision-body-line">Live muziek verandert een moment. Ze maakt een ontvangst warmer,</span>
-            <span class="vision-body-line">een diner intiemer, een feest onvergetelijk. Daarom benaderen we</span>
-            <span class="vision-body-line">elk event met dezelfde drie dingen voorop: passie voor de muziek,</span>
-            <span class="vision-body-line">plezier in het spelen, en de professionaliteit om alles foutloos te laten verlopen.</span>
-            <span class="vision-body-line"><em>Dat is waar Relovation voor staat — en wat u hoort zodra we beginnen.</em></span>
+            <span class="vision-body-line">Live muziek verandert een moment. Ze maakt een ontvangst warmer, een diner intiemer, een feest onvergetelijk. Daarom benaderen we elk event met dezelfde drie dingen voorop: passie voor de muziek, plezier in het spelen, en de professionaliteit om alles foutloos te laten verlopen.</span>
+            <span class="vision-body-line vision-body-close">Dat is waar Relovation voor staat — en wat u hoort zodra we beginnen.</span>
           </p>
           <div class="vision-cta reveal-actions">
             <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
@@ -2899,39 +2866,45 @@
           </span>
         </h2>
 
-        <div class="musicians-grid musicians-grid-top">
+        <div class="musicians-grid">
           <article class="musician-card reveal-copy">
+            <span class="musician-rule" aria-hidden="true"></span>
             <div class="musician-frame reveal-visual" aria-hidden="true"></div>
             <p class="musician-name">Robin Crauwels</p>
             <p class="musician-role">Saxofoon &amp; zang</p>
+            <p class="musician-bio">Robin begon op zijn achtste met de saxofoon en stopte er nooit meer mee. Als finalist van The Voice van Vlaanderen 2021 en als zanger op podia als de Koningin Elisabethzaal — met de Radio 2 Ratpack en de VRT Bigband — brengt hij een niveau mee dat u hoort van de eerste noot.</p>
+            <a class="musician-ig" href="https://www.instagram.com/robin_crauwels/" target="_blank" rel="noopener noreferrer">@robin_crauwels</a>
           </article>
 
           <article class="musician-card reveal-copy" style="transition-delay: 0.08s;">
+            <span class="musician-rule" aria-hidden="true"></span>
             <div class="musician-frame reveal-visual" aria-hidden="true"></div>
             <p class="musician-name">Lorenzo Nsumbi</p>
             <p class="musician-role">Piano</p>
+            <p class="musician-bio">Lorenzo studeerde aan Codarts Rotterdam en is er van bij het eerste uur bij. Zijn pianospel is de reden dat Relovation ooit begon.</p>
+            <a class="musician-ig" href="https://www.instagram.com/lorenzo_on_keys/" target="_blank" rel="noopener noreferrer">@lorenzo_on_keys</a>
           </article>
 
           <article class="musician-card reveal-copy" style="transition-delay: 0.16s;">
+            <span class="musician-rule" aria-hidden="true"></span>
             <div class="musician-frame reveal-visual" aria-hidden="true"></div>
             <p class="musician-name">Joppe Van Noten</p>
             <p class="musician-role">Drums</p>
+            <p class="musician-bio">Joppe groeide op in Antwerpen en studeerde aan Codarts Rotterdam. Als leider van zijn eigen kwartet weet hij precies hoe hij een ruimte in beweging brengt.</p>
+            <a class="musician-ig" href="https://www.instagram.com/jv_ondrums/" target="_blank" rel="noopener noreferrer">@jv_ondrums</a>
           </article>
-        </div>
 
-        <div class="musicians-grid musicians-grid-bottom">
-          <article class="musician-card musician-card--lower reveal-copy" style="transition-delay: 0.24s;">
+          <article class="musician-card reveal-copy" style="transition-delay: 0.24s;">
+            <span class="musician-rule" aria-hidden="true"></span>
             <div class="musician-frame reveal-visual" aria-hidden="true"></div>
             <p class="musician-name">Tim Pensaert</p>
             <p class="musician-role">Bas</p>
-          </article>
-
-          <article class="musician-card musician-card--lower reveal-copy" style="transition-delay: 0.32s;">
-            <div class="musician-frame reveal-visual" aria-hidden="true"></div>
-            <p class="musician-name">Niels Braeckmans</p>
-            <p class="musician-role">Pianist</p>
+            <p class="musician-bio">Tim legt de muzikale basis waar alles op rust. Als bassist van Meltheads — finalist De Nieuwe Lichting, tweede op Humo's Rock Rally, Pukkelpop — weet hij wat het is om een zaal te bewegen.</p>
+            <a class="musician-ig" href="https://www.instagram.com/timpensaert/" target="_blank" rel="noopener noreferrer">@timpensaert</a>
           </article>
         </div>
+
+        <p class="musicians-note reveal-copy">De bezetting wordt per event afgestemd op uw wensen en de beschikbaarheid van onze muzikanten.</p>
       </div>
     </section>
 
@@ -3102,18 +3075,17 @@
         slide.setAttribute('role', 'group');
         slide.setAttribute('aria-label', `Muzikant ${i + 1} van ${cards.length}`);
 
-        const frame = card.querySelector('.musician-frame').cloneNode(true);
-        // reveal-visual starts at opacity:0 — remove it so frame is immediately visible
-        frame.classList.remove('reveal-visual');
-        frame.removeAttribute('aria-hidden');
-        const name = document.createElement('p');
-        name.className = 'musician-name';
-        name.textContent = card.querySelector('.musician-name').textContent;
-        const role = document.createElement('p');
-        role.className = 'musician-role';
-        role.textContent = card.querySelector('.musician-role').textContent;
+        // Kloon de hele kaart zodat bio + Instagram-link meegaan naar mobiel.
+        const clone = card.cloneNode(true);
+        // reveal-* starten op opacity:0 — strippen zodat de slide meteen zichtbaar is
+        clone.classList.remove('reveal-copy');
+        clone.style.transitionDelay = '';
+        clone.querySelectorAll('.reveal-visual').forEach((el) => {
+          el.classList.remove('reveal-visual');
+          el.removeAttribute('aria-hidden');
+        });
 
-        slide.append(frame, name, role);
+        slide.appendChild(clone);
         track.appendChild(slide);
       });
 

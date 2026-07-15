@@ -1,12 +1,15 @@
 /**
  * Aanvraagflow -> POST /api/aanvraag
  *
- * Drie stappen, elf vragen. Zonder JS staan alle stappen onder elkaar en doet
- * het formulier een gewone POST naar hetzelfde endpoint; dit script maakt er
- * een begeleide flow van.
+ * Eén vraag per scherm, in de geest van Typeform: negen vragen, gegroepeerd in
+ * de drie stappen uit de briefing. Elk scherm past binnen één viewport, zodat
+ * niemand hoeft te scrollen om de knop te vinden.
+ *
+ * Zonder JS staan alle vragen onder elkaar en doet het formulier een gewone
+ * POST naar hetzelfde endpoint.
  *
  * Uitgangspunt uit de briefing: minimale frictie, nul verwarring. Daarom:
- * valideren pas bij "Volgende", fouten inline bij de vraag zelf, en de
+ * valideren pas bij Volgende, fouten inline bij de vraag zelf, en de
  * verzendknop nooit uitgrijzen — klikken zegt altijd wat er nog ontbreekt.
  */
 (function () {
@@ -16,16 +19,41 @@
   if (!form) return;
 
   var OPSLAG = "relovation-aanvraag";
-  var stappen = Array.prototype.slice.call(form.querySelectorAll(".step"));
+  var AUTO_MS = 400; // even je vinkje zien voor het scherm doorspringt
+
+  var schermen = Array.prototype.slice.call(form.querySelectorAll(".screen"));
   var doneEl = document.getElementById("aanvraag-done");
   var statusEl = form.querySelector(".form-status");
-  var progressStep = document.getElementById("progress-step");
-  var progressChapter = document.getElementById("progress-chapter");
-  var progressAnnounce = document.getElementById("progress-announce");
-  var segmenten = Array.prototype.slice.call(form.querySelectorAll(".progress__seg"));
-  var huidig = 1;
+  var progressEl = document.getElementById("progress");
+  var chapterEl = document.getElementById("progress-chapter");
+  var countEl = document.getElementById("progress-count");
+  var announceEl = document.getElementById("progress-announce");
+  var segmenten = Array.prototype.slice.call(document.querySelectorAll(".progress__seg"));
+
+  var HOOFDSTUK = {
+    1: "Event & muziek",
+    2: "Praktische info",
+    3: "Uw gegevens",
+  };
+
+  // Alleen de vraagschermen tellen mee; de opening is geen vraag.
+  var vragen = schermen.filter(function (s) {
+    return s.getAttribute("data-screen") !== "intro";
+  });
+  var TOTAAL = vragen.length;
+
+  var index = 0; // positie in `schermen` (0 = opening)
+  var autoTimer = null;
 
   form.setAttribute("data-enhanced", "");
+
+  function scherm() {
+    return schermen[index];
+  }
+
+  function isVraag(s) {
+    return s.getAttribute("data-screen") !== "intro";
+  }
 
   // ── Fouten ──────────────────────────────────────────────
 
@@ -43,19 +71,22 @@
     });
   }
 
-  function toonFout(qEl, tekst) {
-    if (qEl.querySelector(".field-error")) return;
+  /**
+   * Zet de melding in `container`. Die moet zichtbaar zijn — een fout in een
+   * verborgen blok (zoals het datumveld als de datum nog niet vastligt) ziet
+   * niemand.
+   */
+  function toonFout(container, tekst, veldId) {
+    if (!container || container.querySelector(".field-error")) return;
 
     var p = document.createElement("p");
     p.className = "field-error";
     p.textContent = tekst;
-    qEl.appendChild(p);
+    container.appendChild(p);
 
-    var veld = qEl.querySelector(".field-input, .field-textarea");
+    var veld = veldId ? document.getElementById(veldId) : null;
     if (veld) {
-      veld.classList.add(
-        veld.tagName === "TEXTAREA" ? "field-textarea--error" : "field-input--error"
-      );
+      veld.classList.add(veld.tagName === "TEXTAREA" ? "field-textarea--error" : "field-input--error");
       veld.setAttribute("aria-invalid", "true");
     }
   }
@@ -81,132 +112,225 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
   }
 
-  // ── Validatie per stap ──────────────────────────────────
+  // ── Validatie per scherm ────────────────────────────────
+  // [veldId of null, check, melding]
 
   var REGELS = {
-    1: [
-      ["event_type", function () { return gekozen("event_type").length > 0; }, "Kies wat u organiseert."],
-      ["moment", function () { return gekozen("moment").length > 0; }, "Kies minstens één moment. Weet u het nog niet? Kies “Nog niet zeker, graag advies”."],
-      ["sfeer", function () { return gekozen("sfeer").length > 0; }, "Kies minstens één sfeer. Weet u het nog niet? Kies “Nog niet zeker, graag advies”."]
-    ],
-    2: [
-      ["datum", function () {
-        var flexibel = form.querySelector("#datum_flexibel").checked;
-        return flexibel ? gekozen("periode").length > 0 : waarde("datum") !== "";
-      }, "Kies een datum, of vink aan dat de datum nog niet vastligt."],
-      ["locatie", function () { return waarde("locatie") !== ""; }, "Vul in waar het event doorgaat — de gemeente of regio volstaat."],
-      ["gasten", function () { return gekozen("gasten").length > 0; }, "Kies hoeveel gasten u ongeveer verwacht."]
-    ],
-    3: [
-      ["naam", function () { return waarde("naam") !== ""; }, "Vul uw naam in."],
+    event_type: [[null, function () { return gekozen("event_type").length > 0; }, "Kies wat u organiseert."]],
+    moment: [[null, function () { return gekozen("moment").length > 0; }, "Kies minstens één moment. Weet u het nog niet? Kies “Nog niet zeker, graag advies”."]],
+    sfeer: [[null, function () { return gekozen("sfeer").length > 0; }, "Kies minstens één sfeer. Weet u het nog niet? Kies “Nog niet zeker, graag advies”."]],
+    datum: [[null, function () {
+      return document.getElementById("datum_flexibel").checked
+        ? gekozen("periode").length > 0
+        : waarde("datum") !== "";
+    }, "Kies een datum, of vink aan dat de datum nog niet vastligt."]],
+    locatie: [["locatie", function () { return waarde("locatie") !== ""; }, "Vul in waar het event doorgaat — de gemeente of regio volstaat."]],
+    gasten: [[null, function () { return gekozen("gasten").length > 0; }, "Kies hoeveel gasten u ongeveer verwacht."]],
+    contact: [
+      ["voornaam", function () { return waarde("voornaam") !== ""; }, "Vul uw voornaam in."],
+      ["achternaam", function () { return waarde("achternaam") !== ""; }, "Vul uw achternaam in."],
       ["email", function () { return waarde("email") !== ""; }, "Vul uw e-mailadres in."],
       ["email", function () { return isEmail(waarde("email")); }, "Dit lijkt geen geldig e-mailadres."],
       ["telefoon", function () { return waarde("telefoon") !== ""; }, "Vul uw telefoonnummer in."],
-      ["privacy", function () { return form.querySelector("#privacy").checked; }, "Vink dit aan om uw aanvraag te kunnen versturen."]
-    ]
+    ],
+    voorkeur_contact: [], // optioneel
+    bericht: [[null, function () { return document.getElementById("privacy").checked; }, "Vink dit aan om uw aanvraag te kunnen versturen."]],
   };
 
-  function valideer(stap) {
-    var stapEl = stappen[stap - 1];
-    wisFouten(stapEl);
+  /**
+   * Waar de melding van dit scherm hoort. Altijd een zichtbaar blok — anders
+   * staat de fout er wel, maar ziet niemand hem.
+   */
+  function foutContainer(s, naam, veldId) {
+    if (naam === "bericht") return vraagBlok("privacy");
+    if (naam === "datum") {
+      // Bij een flexibele datum is het datumveld verborgen; dan hoort de
+      // melding bij de periodekeuze die ervoor in de plaats staat.
+      return document.getElementById("datum_flexibel").checked
+        ? document.getElementById("periode-blok")
+        : form.querySelector("[data-datum-veld]");
+    }
+    if (veldId) return document.getElementById(veldId).closest("div");
+    return s;
+  }
 
+  /** Valideert één scherm. `stil` = geen focus (bij de eindcontrole). */
+  function valideer(s, stil) {
+    var naam = s.getAttribute("data-q");
+    var regels = REGELS[naam];
+    if (!regels) return true;
+
+    wisFouten(s);
     var eerste = null;
+    var gehad = {};
 
-    REGELS[stap].forEach(function (regel) {
-      var qEl = vraagBlok(regel[0]);
-      if (!qEl || qEl.querySelector(".field-error")) return; // één melding per vraag
-      if (regel[1]()) return;
+    regels.forEach(function (r) {
+      var veldId = r[0];
+      var sleutel = veldId || naam;
+      if (gehad[sleutel]) return; // één melding per veld
+      if (r[1]()) return;
 
-      toonFout(qEl, regel[2]);
-      if (regel[0] === "privacy") {
+      toonFout(foutContainer(s, naam, veldId), r[2], veldId);
+      if (naam === "bericht") {
         document.getElementById("privacy-blok").classList.add("has-error");
       }
-      if (!eerste) eerste = qEl;
+
+      gehad[sleutel] = true;
+      if (!eerste) eerste = veldId ? document.getElementById(veldId) : s.querySelector("input, textarea");
     });
 
-    if (eerste) {
-      var focusbaar = eerste.querySelector("input, textarea, select");
-      if (focusbaar) focusbaar.focus({ preventScroll: true });
-      eerste.scrollIntoView({ behavior: "smooth", block: "center" });
-      return false;
+    if (Object.keys(gehad).length === 0) return true;
+
+    if (!stil && eerste) eerste.focus({ preventScroll: true });
+    return false;
+  }
+
+  // ── Voortgang ───────────────────────────────────────────
+
+  function verversVoortgang() {
+    var s = scherm();
+
+    if (!isVraag(s)) {
+      progressEl.hidden = true;
+      return;
     }
-    return true;
-  }
+    progressEl.hidden = false;
 
-  // ── Stapnavigatie ───────────────────────────────────────
+    var hoofdstuk = parseInt(s.getAttribute("data-chapter"), 10);
+    var nr = vragen.indexOf(s) + 1;
 
-  function toon(stap) {
-    huidig = stap;
+    chapterEl.innerHTML = "Stap <b>" + hoofdstuk + "</b> van 3 · " + HOOFDSTUK[hoofdstuk];
+    countEl.textContent = "Vraag " + nr + " van " + TOTAAL;
+    announceEl.textContent =
+      "Stap " + hoofdstuk + " van 3, " + HOOFDSTUK[hoofdstuk] + ". Vraag " + nr + " van " + TOTAAL + ".";
 
-    stappen.forEach(function (el, i) {
-      el.classList.toggle("is-active", i + 1 === stap);
-    });
-
+    // Elk segment vult zich naar rato van de vragen die in die stap af zijn.
     segmenten.forEach(function (seg, i) {
-      seg.classList.toggle("is-done", i + 1 < stap);
-      seg.classList.toggle("is-active", i + 1 === stap);
+      var h = i + 1;
+      var inStap = vragen.filter(function (v) {
+        return parseInt(v.getAttribute("data-chapter"), 10) === h;
+      });
+      var klaar = inStap.filter(function (v) {
+        return vragen.indexOf(v) < nr - 1;
+      }).length;
+      var actief = h === hoofdstuk;
+      var pct = h < hoofdstuk ? 100 : actief ? (klaar / inStap.length) * 100 : 0;
+
+      seg.classList.toggle("is-done", h < hoofdstuk);
+      seg.querySelector(".progress__fill").style.width = pct + "%";
     });
-
-    var titel = stappen[stap - 1].getAttribute("data-chapter");
-    progressStep.textContent = "Stap " + stap + " van 3";
-    progressChapter.innerHTML = titel;
-    progressAnnounce.textContent = "Stap " + stap + " van 3: " + progressChapter.textContent;
-
-    // Focus naar de staptitel, zodat toetsenbord en screenreader mee zijn.
-    var kop = stappen[stap - 1].querySelector(".step__head-title");
-    if (kop) kop.focus({ preventScroll: true });
-
-    document.getElementById("progress").scrollIntoView({ behavior: "smooth", block: "start" });
-    bewaar();
   }
 
-  form.querySelectorAll("[data-next]").forEach(function (knop) {
-    knop.addEventListener("click", function () {
-      if (valideer(huidig)) toon(huidig + 1);
+  // ── Navigatie ───────────────────────────────────────────
+
+  function toon(nieuw, richting) {
+    clearTimeout(autoTimer);
+    index = Math.max(0, Math.min(schermen.length - 1, nieuw));
+
+    schermen.forEach(function (el, i) {
+      var actief = i === index;
+      el.classList.toggle("is-active", actief);
+      if (actief && richting) el.setAttribute("data-dir", richting);
+      else el.removeAttribute("data-dir");
+    });
+
+    verversVoortgang();
+    bewaar();
+
+    var s = scherm();
+
+    // Focus naar het eerste invulveld, zodat je meteen kunt typen. Bij
+    // keuzevragen zou dat het eerste rondje selecteren op sommige browsers —
+    // daar focussen we de vraag zelf.
+    var tekstveld = s.querySelector('.field-input:not([type="date"]), .field-textarea');
+    if (tekstveld && !s.hasAttribute("data-auto")) {
+      tekstveld.focus({ preventScroll: true });
+    } else {
+      var kop = s.querySelector(".q__title, .intro__title");
+      if (kop && kop.hasAttribute("tabindex")) kop.focus({ preventScroll: true });
+    }
+
+    // De flow vult het scherm; terug naar boven zodat de vraag in beeld staat.
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function volgende() {
+    var s = scherm();
+    if (isVraag(s) && !valideer(s)) return;
+    if (index < schermen.length - 1) toon(index + 1, "vooruit");
+  }
+
+  function vorige() {
+    // Terug mag altijd — nooit valideren, niets wissen.
+    if (index > 0) toon(index - 1, "terug");
+  }
+
+  form.querySelectorAll("[data-next]").forEach(function (k) {
+    k.addEventListener("click", volgende);
+  });
+  form.querySelectorAll("[data-prev]").forEach(function (k) {
+    k.addEventListener("click", vorige);
+  });
+
+  // Enter = volgende, behalve in de textarea (daar hoort een nieuwe regel).
+  form.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter") return;
+    if (e.target.tagName === "TEXTAREA") return;
+    if (e.target.type === "submit") return;
+    e.preventDefault();
+    if (index < schermen.length - 1) volgende();
+  });
+
+  // ── Automatisch door bij enkele keuze ───────────────────
+
+  form.querySelectorAll("[data-auto]").forEach(function (s) {
+    s.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        if (!radio.checked) return;
+        wisFouten(s);
+        clearTimeout(autoTimer);
+        // Korte pauze: je ziet je eigen keuze bevestigd worden.
+        autoTimer = setTimeout(function () {
+          if (scherm() === s) volgende();
+        }, AUTO_MS);
+      });
     });
   });
 
-  form.querySelectorAll("[data-prev]").forEach(function (knop) {
-    knop.addEventListener("click", function () {
-      // Terug mag altijd — nooit valideren, niets wissen.
-      toon(huidig - 1);
-    });
-  });
+  // ── Exclusieve optie + maximum (vraag 2 en 3) ───────────
 
-  // ── Q2/Q3: exclusieve optie + maximum ───────────────────
+  form.querySelectorAll("[data-exclusive]").forEach(function (s) {
+    var exclusief = s.getAttribute("data-exclusive");
+    var max = parseInt(s.getAttribute("data-max"), 10) || 0;
+    var teller = s.querySelector("[data-counter]");
+    var vakjes = Array.prototype.slice.call(s.querySelectorAll('input[type="checkbox"]'));
 
-  form.querySelectorAll("[data-exclusive]").forEach(function (fs) {
-    var exclusief = fs.getAttribute("data-exclusive");
-    var max = parseInt(fs.getAttribute("data-max"), 10) || 0;
-    var teller = fs.querySelector("[data-counter]");
-    var vakjes = Array.prototype.slice.call(fs.querySelectorAll('input[type="checkbox"]'));
-
-    function exclusiefVakje() {
+    function exVakje() {
       return vakjes.filter(function (v) { return v.value === exclusief; })[0];
     }
 
     function ververs() {
-      var aangevinkt = vakjes.filter(function (v) { return v.checked; });
+      var aan = vakjes.filter(function (v) { return v.checked; });
 
       if (teller) {
-        teller.textContent = aangevinkt.length + " van " + max + " gekozen";
-        teller.classList.toggle("is-full", aangevinkt.length >= max);
+        teller.textContent = aan.length + " van " + max + " gekozen";
+        teller.classList.toggle("is-full", aan.length >= max);
       }
 
       // Op het maximum: dim de rest, zodat zichtbaar is waaróm er niet meer bij kan.
       if (max) {
-        var vol = aangevinkt.length >= max;
+        var vol = aan.length >= max;
         vakjes.forEach(function (v) {
-          var geblokkeerd = vol && !v.checked;
-          v.closest(".opt").classList.toggle("is-blocked", geblokkeerd);
-          v.disabled = geblokkeerd;
+          var blok = vol && !v.checked;
+          v.closest(".opt").classList.toggle("is-blocked", blok);
+          v.disabled = blok;
         });
       }
     }
 
     vakjes.forEach(function (vakje) {
       vakje.addEventListener("change", function () {
-        var ex = exclusiefVakje();
+        var ex = exVakje();
 
         if (vakje.value === exclusief && vakje.checked) {
           // "Nog niet zeker" gekozen: de rest gaat uit.
@@ -223,7 +347,7 @@
         }
 
         ververs();
-        wisFouten(fs);
+        wisFouten(s);
         bewaar();
       });
     });
@@ -231,7 +355,7 @@
     ververs();
   });
 
-  // ── Q4: datum of periode ────────────────────────────────
+  // ── Datum of periode (vraag 4) ──────────────────────────
 
   var flexibel = document.getElementById("datum_flexibel");
   var periodeBlok = document.getElementById("periode-blok");
@@ -239,18 +363,18 @@
   var datumInput = document.getElementById("datum");
 
   function verversDatum() {
-    var isFlexibel = flexibel.checked;
-    periodeBlok.hidden = !isFlexibel;
-    datumVeld.hidden = isFlexibel;
+    var isFlex = flexibel.checked;
+    periodeBlok.hidden = !isFlex;
+    datumVeld.hidden = isFlex;
 
-    if (isFlexibel) {
+    if (isFlex) {
       datumInput.value = "";
     } else {
       form.querySelectorAll('[name="periode"]').forEach(function (r) {
         r.checked = false;
       });
     }
-    wisFouten(vraagBlok("datum"));
+    wisFouten(form.querySelector('[data-q="datum"]'));
   }
 
   flexibel.addEventListener("change", function () {
@@ -265,7 +389,7 @@
 
   function bewaar() {
     try {
-      var data = { _stap: huidig };
+      var data = { _index: index };
       new FormData(form).forEach(function (v, k) {
         if (k === "website") return;
         if (data[k] === undefined) data[k] = v;
@@ -274,7 +398,7 @@
       sessionStorage.setItem(OPSLAG, JSON.stringify(data));
     } catch (e) {
       // sessionStorage kan geblokkeerd zijn (private mode). Niet erg: dan is
-      // herstel na refresh gewoon weg, de flow zelf werkt onverminderd.
+      // herstel na refresh weg, de flow zelf werkt onverminderd.
     }
   }
 
@@ -288,7 +412,7 @@
     if (!data) return;
 
     Object.keys(data).forEach(function (k) {
-      if (k === "_stap") return;
+      if (k === "_index") return;
       var waarden = [].concat(data[k]);
       form.querySelectorAll('[name="' + k + '"]').forEach(function (el) {
         if (el.type === "checkbox" || el.type === "radio") {
@@ -300,39 +424,38 @@
     });
 
     verversDatum();
-    form.querySelectorAll("[data-exclusive]").forEach(function (fs) {
-      fs.querySelectorAll('input[type="checkbox"]').forEach(function (v) {
+    form.querySelectorAll("[data-exclusive]").forEach(function (s) {
+      s.querySelectorAll('input[type="checkbox"]').forEach(function (v) {
         v.dispatchEvent(new Event("change", { bubbles: false }));
       });
     });
 
-    var stap = parseInt(data._stap, 10);
-    if (stap >= 1 && stap <= 3) {
-      stappen.forEach(function (el, i) {
-        el.classList.toggle("is-active", i + 1 === stap);
+    var i = parseInt(data._index, 10);
+    if (i >= 0 && i < schermen.length) {
+      index = i;
+      schermen.forEach(function (el, n) {
+        el.classList.toggle("is-active", n === index);
       });
-      huidig = stap;
-      segmenten.forEach(function (seg, i) {
-        seg.classList.toggle("is-done", i + 1 < stap);
-        seg.classList.toggle("is-active", i + 1 === stap);
-      });
-      progressStep.textContent = "Stap " + stap + " van 3";
-      progressChapter.innerHTML = stappen[stap - 1].getAttribute("data-chapter");
+      verversVoortgang();
     }
   }
 
   // Fout weghalen zodra de bezoeker het veld corrigeert.
   form.addEventListener("input", function (e) {
-    var qEl = e.target.closest(".q");
-    if (qEl) wisFouten(qEl);
+    var veld = e.target.closest(".field-input, .field-textarea");
+    if (veld) {
+      veld.classList.remove("field-input--error", "field-textarea--error");
+      veld.removeAttribute("aria-invalid");
+      var fout = veld.parentNode && veld.parentNode.querySelector(".field-error");
+      if (fout) fout.remove();
+    }
     bewaar();
   });
 
   form.addEventListener("change", function (e) {
-    var qEl = e.target.closest(".q");
-    if (qEl) wisFouten(qEl);
     if (e.target.id === "privacy" && e.target.checked) {
       document.getElementById("privacy-blok").classList.remove("has-error");
+      wisFouten(vraagBlok("privacy"));
     }
     bewaar();
   });
@@ -358,12 +481,14 @@
     event.preventDefault();
     verbergStatus();
 
-    // Alle drie de stappen controleren, niet alleen de laatste: wie via
-    // sessionStorage midden in de flow terugkomt, kan stap 1 hebben overgeslagen.
-    for (var s = 1; s <= 3; s++) {
-      if (!valideer(s)) {
-        if (s !== huidig) toon(s);
-        toonStatus("Enkele vragen hebben nog aandacht nodig.", "error");
+    // Alle vragen controleren, niet alleen de laatste: wie via sessionStorage
+    // midden in de flow terugkomt, kan een vraag hebben overgeslagen.
+    for (var i = 0; i < vragen.length; i++) {
+      if (!valideer(vragen[i], true)) {
+        var doel = schermen.indexOf(vragen[i]);
+        if (doel !== index) toon(doel, "terug");
+        valideer(vragen[i]);
+        toonStatus("Deze vraag heeft nog aandacht nodig.", "error");
         return;
       }
     }
@@ -382,7 +507,7 @@
     fetch(form.getAttribute("action") || "/api/aanvraag", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     })
       .then(function (res) {
         return res.json().then(function (body) {
@@ -393,32 +518,40 @@
         if (res.body && res.body.ok) {
           try { sessionStorage.removeItem(OPSLAG); } catch (e) { /* niet erg */ }
           form.hidden = true;
-          // Ook de kop weg: "Beantwoord enkele korte vragen" spreekt
-          // "Bedankt voor uw aanvraag" tegen. De bevestiging heeft een eigen titel.
-          var kop = document.querySelector(".aanvraag__head");
-          if (kop) kop.hidden = true;
+          progressEl.hidden = true;
           doneEl.hidden = false;
+          doneEl.classList.add("is-active");
           doneEl.focus({ preventScroll: true });
-          doneEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          window.scrollTo({ top: 0, behavior: "smooth" });
           return;
         }
         if (res.body && res.body.errors) {
-          Object.keys(res.body.errors).forEach(function (naam) {
-            var qEl = vraagBlok(naam);
-            if (qEl) toonFout(qEl, res.body.errors[naam]);
+          // Serverfouten: spring naar het eerste scherm dat een melding krijgt.
+          var eerste = null;
+          Object.keys(res.body.errors).forEach(function (veld) {
+            var s = form.querySelector('[data-q="' + veld + '"]') ||
+              (document.getElementById(veld) && document.getElementById(veld).closest(".screen"));
+            if (s && !eerste) eerste = s.classList.contains("screen") ? s : s.closest(".screen");
           });
-          toonStatus("Enkele vragen hebben nog aandacht nodig.", "error");
+          if (eerste && schermen.indexOf(eerste) !== -1) toon(schermen.indexOf(eerste), "terug");
+
+          Object.keys(res.body.errors).forEach(function (veld) {
+            var el = document.getElementById(veld);
+            var blok = el ? el.closest("div") : vraagBlok(veld);
+            if (blok) toonFout(blok, res.body.errors[veld], el ? veld : null);
+          });
+          toonStatus("Enkele antwoorden hebben nog aandacht nodig.", "error");
           return;
         }
         toonStatus(
-          "Het versturen lukte niet. Probeer het later opnieuw of mail ons rechtstreeks op info@relovation.be.",
+          "Het versturen lukte niet. Probeer het later opnieuw of mail ons rechtstreeks op relovation@robinmusic.be.",
           "error"
         );
       })
       .catch(function () {
         // Netwerkfout: alle antwoorden blijven staan, niemand hoeft opnieuw te typen.
         toonStatus(
-          "Geen verbinding. Controleer uw internet en probeer opnieuw, of mail ons op info@relovation.be.",
+          "Geen verbinding. Controleer uw internet en probeer opnieuw, of mail ons op relovation@robinmusic.be.",
           "error"
         );
       })
@@ -429,4 +562,5 @@
   });
 
   herstel();
+  verversVoortgang();
 })();

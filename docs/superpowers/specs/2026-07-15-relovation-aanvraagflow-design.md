@@ -77,12 +77,43 @@ Geen build-stap, geen framework — consistent met de rest van de site.
 
 ## Flow-vorm
 
-**Drie schermen, elk met 3 tot 5 vragen** — letterlijk zoals de briefing. Overwogen en
-verworpen: één-vraag-per-scherm (klassiek Typeform). Dat botst met de eis uit de briefing
-om `Stap 1 van 3` te tonen, en met de wens dat de bezoeker overzicht houdt.
+**Eén vraag per scherm** — negen vraagschermen, gegroepeerd in de drie stappen uit de
+briefing. Herzien op 2026-07-15 na de eerste oplevering: de eerste versie zette 3 tot 5
+vragen per scherm, wat scrollen vereiste. Reden voor de wijziging (Jari): alles moet in
+één viewport passen zonder te scrollen.
 
-Geen paginaherlaad tussen stappen. `Stap X van 3` + de hoofdstuktitel staan altijd in
-beeld.
+De twee eisen bijten elkaar niet, ze stapelen: `Stap X van 3 · hoofdstuktitel` staat altijd
+in beeld, met daarnaast `Vraag N van 9` en een balk van drie segmenten die zich vult
+naarmate je door de vragen van een stap gaat. Je ziet dus zowel waar je bent in het geheel
+als hoever de huidige stap is.
+
+Negen in plaats van elf schermen, omdat de contactgegevens samen op één scherm staan
+(voornaam, achternaam, e-mail, telefoon). Dat volgt de briefing zelf, die Q7 en Q8 al als
+één blok toont ("Q7 · Q8 — Naam & e-mailadres").
+
+**Openingsscherm.** De titel "Vertel ons over uw event" en de intro krijgen een eigen
+scherm met een Beginnen-knop. Anders kost die kop op elk van de negen schermen verticale
+ruimte — precies het scrollprobleem dat we oplossen. De knop is bovendien zelf een micro-ja
+(Cialdini, foot-in-the-door).
+
+**Automatisch door bij enkele keuze.** Bij vraag 1, 6 en 8 springt de flow na 400 ms naar
+de volgende vraag. Die pauze is bewust: je ziet je eigen keuze bevestigd worden. Bij
+meerkeuzevragen kan dit niet — de flow weet niet wanneer je klaar bent — dus daar blijft
+een Volgende-knop staan. Enter werkt overal, behalve in de textarea.
+
+### Het no-scroll-contract
+
+Vanaf **390px breed** past elke vraag binnen één viewport. Dat wordt per viewport gemeten
+in `tests/aanvraag-flow.spec.ts`, niet aangenomen.
+
+Op **320×568** (iPhone SE 1e generatie) is het fysiek onmogelijk: 492px bruikbare hoogte,
+en zes keuzekaarten van 44px — de minimale tapdoelnorm — passen daar met vraag, voortgang
+en knop niet in. Verder verkleinen zou de tapdoelen onder de toegankelijkheidsnorm duwen.
+Dat scherm scrollt dus, en wordt apart getest op bruikbaarheid: geen horizontale overflow,
+tapdoelen ≥ 44px, knop bereikbaar.
+
+Om dit te halen krimpen de kaarten van 56px naar 48px zodra de opties onder elkaar staan
+(≤ 640px breed) of het scherm laag is (≤ 780px), en naar 44px op zeer korte schermen.
 
 ## Exacte inhoud
 
@@ -120,19 +151,19 @@ beeld.
 ### Stap 3 — Uw gegevens
 *"Vertrouwen behouden en opvolging makkelijk maken."*
 
-| # | Vraag | Type | Verplicht |
+| Scherm | Vraag | Type | Verplicht |
 |---|---|---|---|
-| Q7 | Naam | tekstveld | ja |
-| Q8 | E-mailadres | e-mailveld | ja |
-| Q9 | Telefoonnummer | telefoonveld | ja |
-| Q10 | Hoe mogen we u het liefst contacteren? | enkele keuze | nee |
-| Q11 | Wil u nog iets kort meegeven? | lang tekstveld | nee |
+| 7 | Hoe bereiken we u? | vier tekstvelden op één scherm | ja |
+| 8 | Hoe mogen we u het liefst contacteren? | enkele keuze | nee |
+| 9 | Wil u nog iets kort meegeven? | lang tekstveld | nee |
 
-- Q9 hulptekst: "We gebruiken uw telefoonnummer enkel om uw aanvraag snel en persoonlijk
-  op te volgen."
-- Q10: E-mail · Telefoon · WhatsApp · Maakt niet uit
-- Q11 placeholder: "Bijvoorbeeld: gewenste muziekstijl, speciaal moment, timing,
-  praktische info of de sfeer die u voor ogen heeft."
+- Scherm 7 bundelt voornaam, achternaam, e-mail en telefoon. Voor- en achternaam staan
+  naast elkaar (aparte velden op verzoek van Jari), e-mail en telefoon eronder. Hulptekst:
+  "We gebruiken deze gegevens enkel om uw aanvraag snel en persoonlijk op te volgen."
+- Scherm 8: E-mail · Telefoon · WhatsApp · Maakt niet uit. Springt automatisch door.
+- Scherm 9 placeholder: "Bijvoorbeeld: gewenste muziekstijl, speciaal moment, timing,
+  praktische info of de sfeer die u voor ogen heeft." De privacycheckbox staat op dit
+  scherm, direct boven de verzendknop.
 - Privacycheckbox (verplicht): "Ik heb de privacyverklaring gelezen en begrijp dat mijn
   gegevens gebruikt worden om mijn aanvraag te beantwoorden en, indien nodig, contact met
   mij op te nemen over dit event."
@@ -244,7 +275,9 @@ Expliciete eis van Jari. Concreet:
 **Route:** `POST /api/aanvraag`
 
 1. Honeypot (`website`-veld) — ingevuld → stil `200 ok`, geen mail.
-2. Valideren: Q1–Q9 + privacycheckbox verplicht, e-mailformaat, lengtelimieten.
+2. Valideren: alles behalve voorkeur en bericht is verplicht, plus de privacycheckbox;
+   e-mailformaat en lengtelimieten. De Worker ontvangt `voornaam` en `achternaam` apart en
+   plakt ze samen voor de onderwerpregel.
 3. Mail via Resend (kale `fetch`, geen SDK), `Reply-To` = e-mailadres van de aanvrager.
 4. Antwoord `{ ok: true }` of `{ ok: false, errors: {...} }` met status 400.
 
@@ -259,7 +292,7 @@ Voorbeeld: `Nieuwe aanvraag – Trouwfeest – 14/09/2026 – Antwerpen`
 |---|---|
 | Event & muziek | Type event / Moment muziek / Gewenste sfeer |
 | Praktische info | Datum of periode / Locatie / Aantal gasten |
-| Contactgegevens | Naam / E-mail / Telefoon / Voorkeur contact |
+| Contactgegevens | Naam (voornaam + achternaam) / E-mail / Telefoon / Voorkeur contact |
 | Extra info | Vrij bericht |
 
 **Opslag:** nu niet. De briefing vraagt "inzending opslaan in backend/dashboard", maar dat
