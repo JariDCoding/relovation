@@ -653,9 +653,31 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      gap: 84px;
+      gap: clamp(30px, 4.4vw, 84px);
       margin-bottom: 0;
-      opacity: 0.8;
+    }
+
+    /* Editorial-apparatus: parenthetische index (vault §8).
+       Klein, tracked, gedempt - het contrast met de serif-titel is het signaal. */
+    .arch-index {
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(11px, 0.8vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      color: rgba(76, 106, 87, 0.5);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Hairline onder de titel (vault §6: 1px, ink 12-18%). */
+    .arch-rule {
+      width: 34px;
+      height: 1px;
+      background: rgba(76, 106, 87, 0.32);
+      transform-origin: 50% 50%;
+    }
+
+    .arch-hint {
+      display: none;
     }
 
     .arch {
@@ -669,8 +691,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: 54px 38px 48px;
+      /* flex-start i.p.v. space-between: bij space-between bepaalt de lengte
+         van de bodytekst waar de titel landt, dus lijnen de titels van de drie
+         bogen niet uit. Nu staat de kop op een vaste hoogte en wordt de CTA
+         met margin-top:auto naar de voet geduwd. */
+      justify-content: flex-start;
+      padding: clamp(46px, 3.4vw, 60px) clamp(26px, 2.6vw, 38px) clamp(34px, 2.8vw, 46px);
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -718,9 +744,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--content-gap);
+      /* vault §7: label->heading 16-40px, heading->body 24-64px.
+         Was --content-gap (38-44px) tussen alles - te los, geen ritme. */
+      gap: clamp(15px, 1.3vw, 21px);
       width: 100%;
-      padding-top: 56px;
+      /* Vaste afstand onder het indexnummer -> koppen lijnen uit over de drie
+         bogen, ook al verschilt de tekstlengte. */
+      padding-top: clamp(46px, 4.6vw, 74px);
     }
 
     .arch::before,
@@ -753,6 +783,7 @@
       clip-path: inset(0 0 0 0 round 180px 180px 0 0);
     }
 
+    .arch-index,
     .arch-copy > *,
     .arch-link {
       opacity: 0;
@@ -763,6 +794,17 @@
         opacity 0.72s cubic-bezier(0.2, 0.82, 0.2, 1),
         transform 0.72s cubic-bezier(0.2, 0.82, 0.2, 1),
         filter 0.72s cubic-bezier(0.2, 0.82, 0.2, 1);
+    }
+
+    /* Stagger binnen de kaart: index -> titel -> hairline -> tekst -> CTA.
+       ~100ms per stap (vault §11: 60-120ms). */
+    .arch-index {
+      transition-delay: calc(var(--arch-stagger) + 0.14s);
+    }
+
+    .arch-rule {
+      transition-delay: calc(var(--arch-stagger) + 0.3s);
+      transform: translate3d(0, 14px, 0) scaleX(0.3);
     }
 
     .arch-title {
@@ -795,11 +837,19 @@
       clip-path: inset(100% 0 0 0 round 180px 180px 0 0);
     }
 
+    .arch.is-visible .arch-index,
     .arch.is-visible .arch-copy > *,
     .arch.is-visible .arch-link {
       opacity: 1;
       transform: translate3d(0, 0, 0);
       filter: blur(0);
+    }
+
+    /* Moet NA de regel hierboven staan: gelijke specificiteit, dus wint de
+       laatste. Anders wist translate3d(0,0,0) de scaleX en tekent de
+       hairline zich niet. */
+    .arch.is-visible .arch-rule {
+      transform: translate3d(0, 0, 0) scaleX(1);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -830,31 +880,76 @@
     .arch-title {
       margin: 0;
       font-family: "EB Garamond", serif;
-      font-size: 42px;
-      line-height: 1.5;
-      font-weight: 500;
-      color: var(--ink);
-      white-space: nowrap;
-    }
-
-    .arch-text {
-      margin: 0;
-      font-size: 26px;
-      line-height: 1.5;
+      /* vault §1: H3 28-40px, line-height 1.15, tracking -0.01em.
+         Was 42px/1.5 - een kop met body-line-height leest als een blok. */
+      font-size: clamp(29px, 2.4vw, 38px);
+      line-height: 1.14;
+      letter-spacing: -0.01em;
       font-weight: 500;
       color: var(--ink);
       text-wrap: balance;
     }
 
+    .arch-text {
+      margin: 0;
+      /* vault §1: body 16-20px, line-height 1.6-1.75, max 50-66 tekens.
+         Was 26px/500 - bijna even zwaar als de titel, dus geen hierarchie. */
+      font-size: clamp(16px, 1.1vw, 17.5px);
+      line-height: 1.7;
+      font-weight: 400;
+      color: rgba(76, 106, 87, 0.78);
+      max-width: 27ch;
+      text-wrap: pretty;
+    }
+
     .arch-link {
       display: inline-flex;
       align-items: center;
-      gap: var(--space-1);
+      gap: 10px;
       color: var(--ink);
       text-decoration: none;
-      font-size: 26px;
-      line-height: 1.5;
+      /* vault §6/§10: tekstlink-CTA, klein en tracked - niet de knal van een knop. */
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(11px, 0.82vw, 13px);
+      line-height: 1.2;
       font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      position: relative;
+      padding-bottom: 6px;
+      /* Naar de voet van de boog, los van de tekstlengte erboven. */
+      margin-top: auto;
+      white-space: nowrap;
+    }
+
+    /* Hover: de lijn tekent zich, de pijl schuift (vault §11). Geen bounce. */
+    .arch-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.42;
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      transition: transform 0.5s var(--motion-ease), opacity 0.5s var(--motion-ease);
+    }
+
+    .arch-link:hover::after,
+    .arch-link:focus-visible::after {
+      transform: scaleX(1);
+      opacity: 0.75;
+    }
+
+    .arch-link-arrow {
+      transition: transform 0.5s var(--motion-ease);
+    }
+
+    .arch-link:hover .arch-link-arrow,
+    .arch-link:focus-visible .arch-link-arrow {
+      transform: translateX(5px);
     }
 
     .arch-link:hover {
@@ -2006,14 +2101,9 @@
       }
 
       .arch-title {
-        font-size: clamp(28px, 4vw, 36px);
         white-space: normal;
       }
 
-      .arch-text,
-      .arch-link {
-        font-size: clamp(18px, 2.8vw, 24px);
-      }
 
       .quote-copy h2,
       .cta-banner h2 {
@@ -2247,20 +2337,54 @@
         padding: var(--section-gap-lg) 0 var(--section-gap);
       }
 
+      /* Mobiel: carousel i.p.v. gestapelde kolom.
+         Full-bleed (de rij breekt uit de sectie-marge) zodat de volgende boog
+         aan de rand meekijkt - dat 'peek' is de uitnodiging om te swipen.
+         padding-bottom vangt de 24px translate van de reveal op, anders
+         maakt de scroll-container een verticale scrollbar. */
       .arch-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 28px;
-        margin-bottom: 0;
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: flex-start;
+        gap: 14px;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+        padding: 0 18px 26px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scroll-padding-inline: 18px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+
+      .arch-row::-webkit-scrollbar {
+        display: none;
       }
 
       .arch,
       .arch.is-tall {
-        width: min(100%, 420px);
+        flex: 0 0 auto;
+        width: min(76vw, 330px);
         height: auto;
         aspect-ratio: 344 / 520;
-        margin: 0 auto;
-        padding: 36px 24px 34px;
+        margin: 0;
+        padding: 42px 26px 34px;
+        scroll-snap-align: center;
+      }
+
+      /* Kleine editorial aanwijzing, alleen waar de carousel leeft. */
+      .arch-hint {
+        display: block;
+        margin: 22px 0 0;
+        font-family: "DM Sans", sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(76, 106, 87, 0.42);
+        text-align: center;
       }
 
       .arch-copy {
@@ -2268,14 +2392,9 @@
       }
 
       .arch-title {
-        font-size: clamp(28px, 8vw, 42px);
         white-space: normal;
       }
 
-      .arch-text,
-      .arch-link {
-        font-size: clamp(18px, 5vw, 26px);
-      }
 
       .quote-copy h2,
       .cta-banner h2 {
@@ -3262,14 +3381,7 @@
         padding-top: 42px;
       }
 
-      .arch-title {
-        font-size: clamp(24px, 3.8vw, 30px);
-      }
 
-      .arch-text,
-      .arch-link {
-        font-size: clamp(16px, 2.2vw, 20px);
-      }
 
       .about-heading {
         font-size: clamp(44px, 6.2vw, 56px);
@@ -3367,14 +3479,7 @@
         height: min(43vw, 380px);
       }
 
-      .arch-title {
-        font-size: clamp(25px, 3.7vw, 31px);
-      }
 
-      .arch-text,
-      .arch-link {
-        font-size: clamp(17px, 2.25vw, 21px);
-      }
     }
 
     @media (min-width: 834px) and (max-width: 1023px) {
@@ -3441,14 +3546,7 @@
         padding-top: 44px;
       }
 
-      .arch-title {
-        font-size: clamp(26px, 3.5vw, 32px);
-      }
 
-      .arch-text,
-      .arch-link {
-        font-size: clamp(17px, 2vw, 21px);
-      }
 
       .features-sticky {
         grid-template-columns: 1fr;
@@ -3565,14 +3663,7 @@
         height: min(42vw, 424px);
       }
 
-      .arch-title {
-        font-size: clamp(28px, 2.7vw, 34px);
-      }
 
-      .arch-text,
-      .arch-link {
-        font-size: clamp(18px, 1.8vw, 22px);
-      }
 
       .events-editorial {
         --event-media-w: 216px;
@@ -3901,29 +3992,36 @@
       </h2>
     </div>
 
-    <div class="arch-row">
+    <div class="arch-row" role="group" aria-label="Gelegenheden">
       <article class="arch" style="--arch-stagger: 0s;">
+        <span class="arch-index" aria-hidden="true">(01)</span>
         <div class="arch-copy">
-          <h3 class="arch-title" data-node-id="104:101">Trouwfeesten</h3>
-          <p class="arch-text" data-node-id="105:107">Verfijnde live muziek<br>Voor recepties, diners<br>en bedrijfsevents.</p>
+          <h3 class="arch-title">Trouwfeesten</h3>
+          <span class="arch-rule" aria-hidden="true"></span>
+          <p class="arch-text">Een muzikale invulling met zachtheid en elegantie voor ceremonies, recepties en het begin van een feestavond.</p>
         </div>
-        <a class="arch-link" href="#contact" data-node-id="105:109">Lees meer <span class="arch-link-arrow" aria-hidden="true">→</span></a>
+        <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
-      <article class="arch is-tall" style="--arch-stagger: 0.1s;">
+      <article class="arch" style="--arch-stagger: 0.09s;">
+        <span class="arch-index" aria-hidden="true">(02)</span>
         <div class="arch-copy">
-          <h3 class="arch-title" data-node-id="105:105">Corporate events</h3>
-          <p class="arch-text" data-node-id="105:111">Verfijnde live muziek<br>Voor recepties, diners<br>en bedrijfsevents.</p>
+          <h3 class="arch-title">Bedrijfsevents</h3>
+          <span class="arch-rule" aria-hidden="true"></span>
+          <p class="arch-text">Live muziek die uw ontvangst, walking dinner of private gathering een elegante en professionele sfeer geeft.</p>
         </div>
-        <a class="arch-link" href="#contact" data-node-id="105:112">Lees meer <span class="arch-link-arrow" aria-hidden="true">→</span></a>
+        <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
-      <article class="arch" style="--arch-stagger: 0.2s;">
+      <article class="arch" style="--arch-stagger: 0.18s;">
+        <span class="arch-index" aria-hidden="true">(03)</span>
         <div class="arch-copy">
-          <h3 class="arch-title" data-node-id="105:103">Recepties</h3>
-          <p class="arch-text" data-node-id="105:114">Verfijnde live muziek<br>Voor recepties, diners<br>en bedrijfsevents.</p>
+          <h3 class="arch-title">Recepties</h3>
+          <span class="arch-rule" aria-hidden="true"></span>
+          <p class="arch-text">Voor openingen, private ontvangsten en culturele momenten waarin sfeer en gastvrijheid centraal staan.</p>
         </div>
-        <a class="arch-link" href="#contact" data-node-id="105:115">Lees meer <span class="arch-link-arrow" aria-hidden="true">→</span></a>
+        <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
     </div>
+    <p class="arch-hint" aria-hidden="true">Sleep om te ontdekken</p>
 
     <div class="quote-motion-copy">
       <h2 class="quote-motion-title" aria-label="Verfijnde live jazz die uw event moeiteloos naar een hoger niveau tilt.">
