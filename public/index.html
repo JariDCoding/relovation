@@ -22,13 +22,18 @@
       --line: rgba(76, 106, 87, 0.28);
       --shadow: rgba(76, 106, 87, 0.12);
       --phi: 1.618;
-      --space-1: clamp(16px, 1vw, 18px);
-      --space-2: clamp(24px, 1.5vw, 28px);
-      --space-3: clamp(38px, 2.4vw, 44px);
-      --space-4: clamp(62px, 3.8vw, 72px);
-      --space-5: clamp(100px, 6vw, 116px);
-      --space-6: clamp(162px, 9vw, 188px);
-      --space-7: clamp(248px, 14vw, 304px);
+      /* Spacing — Figma Spacing-collectie (4pt): 4·8·12·16·24·32·48·64·96·128.
+         Elke clamp landt met zijn BOVENgrens op een echte stap en met zijn
+         ondergrens op de eerstvolgende lagere stap. De clamp zelf blijft: Figma
+         is statisch, het web niet — de SCHAAL moet kloppen, niet de pixel.
+         --space-6/-7 bouwen door met de verdubbeling van de schaal (128 -> 192). */
+      --space-1: clamp(12px, 1vw, 16px);      /* sm 12 -> md 16 */
+      --space-2: clamp(16px, 1.5vw, 24px);    /* md 16 -> lg 24 */
+      --space-3: clamp(32px, 2.4vw, 48px);    /* xl 32 -> 2xl 48 */
+      --space-4: clamp(48px, 3.8vw, 64px);    /* 2xl 48 -> 3xl 64 */
+      --space-5: clamp(64px, 6vw, 96px);      /* 3xl 64 -> 4xl 96 */
+      --space-6: clamp(96px, 9vw, 128px);     /* 4xl 96 -> 5xl 128 */
+      --space-7: clamp(128px, 14vw, 192px);   /* 5xl 128 -> 192 (6xl) */
       --section-gap: var(--space-5);
       --section-gap-lg: var(--space-6);
       --section-gap-xl: var(--space-7);
@@ -51,9 +56,17 @@
       --image-width: clamp(513px, 35vw, 860px);
       --image-height: calc(var(--image-width) * 0.6666667);
       --title-size: clamp(132px, 12.222vw, 176px);
-      --about-title-size: clamp(82px, calc(var(--title-size) / var(--phi)), 110px);
-      --promo-title-size: clamp(42px, calc(var(--about-title-size) / var(--phi)), 68px);
-      --subtitle-size: clamp(26px, calc(var(--title-size) / 4.236), 42px);
+      /* Body-schaal LOSGEKOPPELD van --title-size. Dat token was de maat van het
+         wordmark dat weg is; alles wat eraan hing (subtitle 42px) schreeuwde even
+         hard als de kop (ratio 1.7). Nu op de design-system-schaal:
+         Body/L 26 · Body/M 24 · Body/S 16 — kop:body haalt zo ~2.8 op desktop. */
+      --body-l: clamp(19px, 2.2vw, 26px);
+      --body-m: clamp(18px, 1.55vw, 24px);
+      --body-s: clamp(14px, 0.9vw, 16px);
+      --subtitle-size: var(--body-m);
+      /* H2 68 uit het design system; ramp i.p.v. de oude phi-afleiding van 176. */
+      --about-title-size: clamp(32px, 6.4vw, 68px);
+      --promo-title-size: clamp(28px, 4.2vw, 68px);
       --player-ring-size: clamp(148px, 9.72vw, 191px);
       --player-ring-font: clamp(22px, 1.806vw, 26px);
       --hero-scale: clamp(1, calc(var(--hero-width) / 1365px), 1.6);
@@ -154,7 +167,7 @@
        De merknaam staat al in de nav en de footer.
        Design system: Label/Eyebrow — DM Sans Medium 16, tracked. */
     .hero-eyebrow {
-      margin: 0 0 clamp(14px, 1.2vw, 20px);
+      margin: 0 0 var(--space-2);
       font-family: "DM Sans", sans-serif;
       font-size: clamp(12px, 0.9vw, 14px);
       font-weight: 500;
@@ -188,10 +201,15 @@
        Elk logo is een MASK, geen <img>. Zo wordt elke bron — svg, png, meerkleur,
        zwart — exact één merkkleur, zonder de bestanden te hoeven hertekenen.
        Vault §4/§6: bewijs mag rustig zijn; de namen doen het werk, niet de kleur. */
+    /* --hf = optische balans, geen wiskundige gelijke hoogte. Gemeten: elke mask
+       is op h=200 gerasterd en de INKT-oppervlakte geteld; --hf is daarna de
+       equal-area-correctie met exponent 0.7 (volledige equal-area maakt een
+       breed vet woordmerk als Suspicious een lintje, gelijke hoogte laat Canon
+       alles platwalsen — 0.7 zit ertussen en klopt optisch, zie de bar-test). */
     .logos-section {
-      --logo-base: clamp(22px, 2vw, 32px);
+      --logo-base: clamp(30px, 2.8vw, 44px);
       --logo-gap: clamp(52px, 5.4vw, 104px);
-      padding: clamp(44px, 4.4vw, 76px) 0;
+      padding: var(--space-4) 0;
       border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
       background: var(--bg);
@@ -199,7 +217,7 @@
     }
 
     .logos-label {
-      margin: 0 0 clamp(26px, 2.6vw, 44px);
+      margin: 0 0 var(--space-3);
       text-align: center;
       font-family: "DM Sans", sans-serif;
       font-size: clamp(11px, 0.8vw, 13px);
@@ -264,9 +282,13 @@
     .logo-mark--tomorrowland { -webkit-mask-image: url("./assets/logos/tomorrowland.svg"); mask-image: url("./assets/logos/tomorrowland.svg"); }
     .logo-mark--canon { -webkit-mask-image: url("./assets/logos/canon.svg"); mask-image: url("./assets/logos/canon.svg"); }
     .logo-mark--lier { -webkit-mask-image: url("./assets/logos/lier.png"); mask-image: url("./assets/logos/lier.png"); }
-    .logo-mark--showtex { -webkit-mask-image: url("./assets/logos/showtex.svg"); mask-image: url("./assets/logos/showtex.svg"); }
+    /* showtex-mark.svg = het bronbestand zonder de tagline-path ("AMAZING STAGE
+       FABRICS IN MOTION"). Die stond op ~6px en werd als silhouet een vlek; het
+       woordmerk is wat telt. Idem tlooks-mark.png: het woord BUURTWERKING is uit
+       de bron gecropt zodat de penseel-'t Looks groot genoeg kan staan. */
+    .logo-mark--showtex { -webkit-mask-image: url("./assets/logos/showtex-mark.svg"); mask-image: url("./assets/logos/showtex-mark.svg"); }
     .logo-mark--suspicious { -webkit-mask-image: url("./assets/logos/suspicious.png"); mask-image: url("./assets/logos/suspicious.png"); }
-    .logo-mark--tlooks { -webkit-mask-image: url("./assets/logos/tlooks.png"); mask-image: url("./assets/logos/tlooks.png"); }
+    .logo-mark--tlooks { -webkit-mask-image: url("./assets/logos/tlooks-mark.png"); mask-image: url("./assets/logos/tlooks-mark.png"); }
 
     /* Schuift exact één groepsbreedte op; --group-w wordt door JS gemeten.
        Van -1 groep naar 0 = beweging van links naar rechts.
@@ -289,7 +311,7 @@
     }
 
     .title--promise + .subtitle {
-      margin-top: clamp(10px, 1vw, 18px);
+      margin-top: var(--space-2);
     }
 
     .subtitle {
@@ -329,12 +351,15 @@
 
     .actions {
       display: flex;
-      gap: clamp(24px, 2.4vw, 38px);
+      gap: var(--space-2);
       margin-top: var(--stack-actions);
     }
 
     .actions .button {
-      width: 280px;
+      /* min-width i.p.v. width: het label mag de pill nooit meer breken (was
+         "Vertel ons over uw event" over twee regels binnen de knop). 240 i.p.v.
+         280: met het kortere label "Plan uw event" oogt 280 als een leeg vlak. */
+      min-width: 240px;
       height: 71px;
       padding: 0 36px;
       border-width: 2.8px;
@@ -347,9 +372,10 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 187px;
+      min-width: 187px;
       height: 51px;
       padding: 0 24px;
+      white-space: nowrap;
       border-radius: 999px;
       border: 1.4px solid var(--line);
       background: transparent;
@@ -554,7 +580,7 @@
       grid-template-columns: minmax(480px, 1.28fr) minmax(420px, 0.96fr);
       align-items: center;
       justify-content: space-between;
-      gap: clamp(58px, 5vw, 96px);
+      gap: clamp(48px, 5vw, 96px);
       padding-left: calc(70px * var(--hero-scale));
       padding-right: calc(70px * var(--hero-scale));
     }
@@ -617,17 +643,14 @@
 
     .about-text {
       width: 100%;
-      margin: var(--stack-tight) 0 0;
-      font-size: var(--subtitle-size);
+      margin: var(--stack-copy) 0 0;
+      /* Body/L uit het design system, los van --subtitle-size (dat is Body/M). */
+      font-size: var(--body-l);
       line-height: 1.5;
       font-weight: 400;
       color: var(--section-ink);
-      max-width: 33ch;
-    }
-
-    .about-text-line {
-      display: block;
-      white-space: nowrap;
+      /* vault §1: 50-66 tekens. De kolom kapt dit in de praktijk af op ~40. */
+      max-width: 54ch;
     }
 
     .about-actions {
@@ -653,10 +676,6 @@
 
       .about-heading {
         font-size: 68px;
-      }
-
-      .about-text {
-        font-size: 26px;
       }
     }
 
@@ -764,7 +783,9 @@
     .quote-motion-copy {
       position: relative;
       max-width: 1100px;
-      margin: calc(var(--section-gap) + 10%) auto 0;
+      /* Extra stap bovenop --section-gap: de bogen zakken trapsgewijs weg
+         (--arch-offset), dus kolom 03 eindigt lager dan de sectie-marge. */
+      margin: calc(var(--section-gap) + var(--space-5)) auto 0;
     }
 
     .quote-copy h2,
@@ -806,7 +827,7 @@
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      gap: clamp(28px, 3.2vw, 56px);
+      gap: var(--space-3);
       margin-bottom: 0;
     }
 
@@ -819,7 +840,7 @@
       flex-direction: column;
       align-items: flex-start;
       text-align: left;
-      gap: clamp(13px, 1vw, 17px);
+      gap: var(--space-1);
       position: relative;
       opacity: 0;
       transform: translate3d(0, 26px, 0);
@@ -880,7 +901,7 @@
       flex-direction: column;
       align-items: flex-start;
       /* vault §7: label->heading 16-40px, heading->body 24-64px. */
-      gap: clamp(9px, 0.8vw, 13px);
+      gap: clamp(8px, 0.8vw, 12px);
       width: 100%;
       padding-top: clamp(4px, 0.4vw, 8px);
     }
@@ -1034,7 +1055,7 @@
     .arch-link {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       color: var(--ink);
       text-decoration: none;
       /* vault §6/§10: tekstlink-CTA, klein en tracked - niet de knal van een knop. */
@@ -1144,6 +1165,18 @@
       object-fit: contain;
     }
 
+    /* Beeldfragment IN de kop (vault §4 "fragmenten" + §14 Giant Type Over Image):
+       de foto is geen illustratie naast de zin maar een woord in de zin. Radius =
+       pill zodat hij het idioom van de boog-maskers en de pill-knoppen volgt. */
+    .quote-inline-asset.is-fragment img {
+      width: 2.4em;
+      height: 0.86em;
+      object-fit: cover;
+      object-position: 50% 42%;
+      border-radius: 999px;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    }
+
     .quote-inline-asset.is-disc img {
       animation: quoteDiscSpin 10s linear infinite;
       transform-origin: center;
@@ -1215,7 +1248,7 @@
       padding: 0 12%;
       display: grid;
       grid-template-columns: minmax(420px, 1fr) minmax(420px, 1fr);
-      gap: clamp(56px, 6vw, 120px);
+      gap: var(--space-5);
       align-items: center;
       overflow: hidden;
     }
@@ -2176,12 +2209,12 @@
 
     @media (max-width: 1120px) {
       :root {
-        --section-gap: clamp(84px, 8vw, 98px);
-        --section-gap-lg: clamp(128px, 11vw, 146px);
-        --title-gap: clamp(52px, 5vw, 62px);
-        --title-gap-lg: clamp(78px, 7vw, 90px);
-        --content-gap: clamp(30px, 3vw, 36px);
-        --content-gap-lg: clamp(48px, 4.4vw, 58px);
+        --section-gap: clamp(64px, 8vw, 96px);
+        --section-gap-lg: clamp(96px, 11vw, 128px);
+        --title-gap: clamp(48px, 5vw, 64px);
+        --title-gap-lg: clamp(64px, 7vw, 96px);
+        --content-gap: clamp(24px, 3vw, 32px);
+        --content-gap-lg: clamp(48px, 4.4vw, 64px);
       }
 
       .site-nav {
@@ -2365,10 +2398,11 @@
         font-size: clamp(72px, 12vw, 132px);
       }
 
+      /* Geen font-size hier: --subtitle-size (Body/M) doet de hele ramp, anders
+         springt de subtitle op de breakpoint-grens (was 26px -> 22px op 1121). */
       .subtitle {
         width: 100%;
         max-width: 540px;
-        font-size: clamp(20px, 3vw, 26px);
       }
 
       .visual {
@@ -2413,12 +2447,12 @@
 
     @media (max-width: 720px) {
       :root {
-        --section-gap: clamp(68px, 10vw, 82px);
-        --section-gap-lg: clamp(102px, 14vw, 122px);
-        --title-gap: clamp(40px, 7vw, 50px);
-        --title-gap-lg: clamp(58px, 9vw, 70px);
-        --content-gap: clamp(24px, 5vw, 30px);
-        --content-gap-lg: clamp(38px, 7vw, 48px);
+        --section-gap: clamp(48px, 10vw, 64px);
+        --section-gap-lg: clamp(64px, 14vw, 96px);
+        --title-gap: clamp(32px, 7vw, 48px);
+        --title-gap-lg: clamp(48px, 9vw, 64px);
+        --content-gap: clamp(16px, 5vw, 24px);
+        --content-gap-lg: clamp(32px, 7vw, 48px);
       }
 
       body {
@@ -2676,11 +2710,6 @@
 
       .about-text {
         max-width: 100%;
-        font-size: clamp(21px, 5vw, 26px);
-      }
-
-      .about-text-line {
-        white-space: normal;
       }
 
       .subtitle {
@@ -2688,12 +2717,12 @@
       }
 
       .actions {
-        gap: 14px;
+        gap: var(--space-1);
         flex-wrap: nowrap;
       }
 
       .actions .button {
-        width: calc((100% - 14px) / 2);
+        width: calc((100% - var(--space-1)) / 2);
         max-width: none;
         min-width: 0;
         height: 51px;
@@ -2798,12 +2827,11 @@
       }
 
       .subtitle {
-        margin-top: 14px;
-        font-size: 19px;
+        margin-top: var(--space-1);
       }
 
       .actions .button {
-        width: calc((100% - 10px) / 2);
+        width: calc((100% - var(--space-1)) / 2);
         max-width: none;
         min-width: 0;
         height: 51px;
@@ -2847,38 +2875,43 @@
     @media (max-width: 768px) {
       .features-section {
         width: 100% !important;
+        /* De sticky 100dvh-kooi was om een lege placeholder gebouwd. Met echte
+           copy erin paste die niet meer, dus werd `.feature-item p` verborgen —
+           en daarmee vielen de koopargumenten (±250 gasten, inbegrepen) weg op
+           mobiel. De sectie scrollt nu gewoon mee; de boodschap blijft heel. */
+        min-height: 0;
       }
 
       .features-sticky {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        height: 100dvh;
+        position: static;
+        height: auto;
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: auto auto;
         align-items: start;
-        gap: 12px;
-        padding: 64px 6% 20px;
-        overflow: hidden;
+        gap: var(--content-gap);
+        padding: var(--section-gap) 6%;
+        overflow: visible;
       }
 
       .feature-list {
         max-width: none;
-        gap: 16px;
+        gap: var(--space-2);
       }
 
       .feature-item p {
-        display: none;
+        display: block;
       }
 
       .feature-actions {
-        margin-top: 20px;
+        margin-top: var(--space-2);
       }
 
       .feature-visual {
         width: 100%;
-        height: 100%;
-        min-height: 0;
+        height: auto;
+        /* Het beeld is absoluut gepositioneerd binnen deze kolom; zonder hoogte
+           klapt hij dicht nu de sectie niet meer op 100dvh staat. */
+        min-height: clamp(300px, 64vw, 420px);
         aspect-ratio: unset;
       }
 
@@ -2915,12 +2948,11 @@
         --content-width: min(100%, 304px);
         --image-width: min(100%, 300px);
         --title-size: clamp(50px, 14vw, 60px);
-        --subtitle-size: clamp(17px, 4.8vw, 19px);
         --about-title-size: clamp(42px, 11vw, 56px);
         --promo-title-size: clamp(28px, 8vw, 36px);
-        --section-gap: clamp(58px, 11vw, 72px);
-        --section-gap-lg: clamp(82px, 15vw, 104px);
-        --content-gap: clamp(18px, 5vw, 24px);
+        --section-gap: clamp(48px, 11vw, 64px);
+        --section-gap-lg: clamp(64px, 15vw, 96px);
+        --content-gap: clamp(16px, 5vw, 24px);
       }
 
       .hero-inner,
@@ -2989,7 +3021,6 @@
       }
 
       .subtitle {
-        font-size: clamp(17px, 4.8vw, 19px);
         max-width: 100%;
       }
 
@@ -2998,7 +3029,7 @@
       }
 
       .actions {
-        gap: 10px;
+        gap: var(--space-1);
         justify-content: flex-start;
       }
 
@@ -3094,9 +3125,8 @@
         --content-width: min(100%, 328px);
         --image-width: min(100%, 324px);
         --title-size: clamp(56px, 13.2vw, 70px);
-        --subtitle-size: clamp(18px, 4.4vw, 21px);
-        --section-gap: clamp(64px, 10vw, 80px);
-        --section-gap-lg: clamp(94px, 13vw, 116px);
+        --section-gap: clamp(48px, 10vw, 64px);
+        --section-gap-lg: clamp(64px, 13vw, 96px);
       }
 
       .hero-inner,
@@ -3153,7 +3183,6 @@
 
       .subtitle {
         max-width: 100%;
-        font-size: clamp(18px, 4.4vw, 21px);
       }
 
       .subtitle br {
@@ -3167,7 +3196,7 @@
       .actions .button,
       .feature-actions .button,
       .cta-actions .button {
-        width: calc((100% - 12px) / 2);
+        width: calc((100% - var(--space-1)) / 2);
         max-width: none;
         min-width: 0;
         height: 51px;
@@ -3250,10 +3279,9 @@
         --content-width: min(100%, 372px);
         --image-width: min(100%, 360px);
         --title-size: clamp(60px, 11.2vw, 82px);
-        --subtitle-size: clamp(19px, 3.8vw, 23px);
-        --section-gap: clamp(70px, 10vw, 88px);
-        --section-gap-lg: clamp(104px, 13vw, 128px);
-        --content-gap: clamp(22px, 4vw, 28px);
+        --section-gap: clamp(48px, 10vw, 64px);
+        --section-gap-lg: clamp(96px, 13vw, 128px);
+        --content-gap: clamp(16px, 4vw, 24px);
       }
 
       .hero-inner,
@@ -3310,7 +3338,6 @@
 
       .subtitle {
         max-width: 100%;
-        font-size: clamp(19px, 3.8vw, 23px);
       }
 
       .subtitle br {
@@ -3324,7 +3351,7 @@
       .actions .button,
       .feature-actions .button,
       .cta-actions .button {
-        width: calc((100% - 12px) / 2);
+        width: calc((100% - var(--space-1)) / 2);
         max-width: none;
         min-width: 0;
         height: 51px;
@@ -3407,9 +3434,8 @@
         --content-width: min(100%, 520px);
         --image-width: min(100%, 520px);
         --title-size: clamp(88px, 11vw, 118px);
-        --subtitle-size: clamp(24px, 3.3vw, 28px);
-        --section-gap: clamp(82px, 8vw, 104px);
-        --section-gap-lg: clamp(120px, 11vw, 146px);
+        --section-gap: clamp(64px, 8vw, 96px);
+        --section-gap-lg: clamp(96px, 11vw, 128px);
       }
 
       .hero-inner,
@@ -3578,7 +3604,6 @@
         --content-width: min(100%, 580px);
         --image-width: min(100%, 580px);
         --title-size: clamp(94px, 10.2vw, 124px);
-        --subtitle-size: clamp(24px, 3vw, 30px);
       }
 
       .hero-inner,
@@ -3644,7 +3669,6 @@
         --content-width: clamp(520px, 44vw, 620px);
         --image-width: clamp(430px, 38vw, 560px);
         --title-size: clamp(106px, 9.2vw, 138px);
-        --subtitle-size: clamp(24px, 2.7vw, 32px);
       }
 
       .quote-section,
@@ -3741,7 +3765,6 @@
         --content-width: clamp(560px, 41vw, 700px);
         --image-width: clamp(470px, 35vw, 640px);
         --title-size: clamp(118px, 8.8vw, 150px);
-        --subtitle-size: clamp(25px, 2.4vw, 34px);
       }
 
       .quote-section,
@@ -3766,7 +3789,6 @@
         --content-width: clamp(600px, 40vw, 780px);
         --image-width: clamp(520px, 35vw, 760px);
         --title-size: clamp(126px, 8.4vw, 168px);
-        --subtitle-size: clamp(26px, 2.2vw, 38px);
         --player-ring-size: 200px;
         --player-ring-font: 27px;
       }
@@ -3814,7 +3836,6 @@
         --content-width: clamp(640px, 42vw, 900px);
         --image-width: clamp(513px, 35vw, 860px);
         --title-size: clamp(132px, 12.222vw, 176px);
-        --subtitle-size: clamp(26px, calc(var(--title-size) / 4.236), 42px);
       }
     }
 
@@ -3961,11 +3982,11 @@
             <span class="reveal-word reveal-word-italic" style="animation-delay: 0.4s;"><em>hoort.</em></span>
           </span>
         </h1>
-        <p class="subtitle reveal-copy">Live muziek voor trouwfeesten, bedrijfsevents en recepties — volledig verzorgd, helemaal op maat.</p>
+        <p class="subtitle reveal-copy">Live muziek voor trouwfeesten, bedrijfsevents en recepties — volledig verzorgd, op maat.</p>
 
         <div class="actions reveal-actions">
-          <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
-          <a class="button" href="mailto:relovation@robinmusic.be">Vraag uw voorstel aan</a>
+          <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
+          <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
         </div>
       </div>
 
@@ -4004,24 +4025,24 @@
     <div class="logos-marquee">
       <div class="logos-track">
         <ul class="logos-group">
-          <li class="logos-item"><span class="logo-mark logo-mark--kbc" style="--ratio: 1.28; --hf: 1.15;" role="img" aria-label="KBC"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--tomorrowland" style="--ratio: 1; --hf: 1.2;" role="img" aria-label="Tomorrowland"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--canon" style="--ratio: 4.72; --hf: 0.8;" role="img" aria-label="Canon"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--lier" style="--ratio: 1.99; --hf: 1.1;" role="img" aria-label="Stad Lier"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--showtex" style="--ratio: 3.79; --hf: 0.85;" role="img" aria-label="ShowTex"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--suspicious" style="--ratio: 6.88; --hf: 0.7;" role="img" aria-label="Suspicious"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--tlooks" style="--ratio: 0.92; --hf: 1.3;" role="img" aria-label="&rsquo;t Looks Buurtwerking"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--kbc" style="--ratio: 1.28; --hf: 1.22;" role="img" aria-label="KBC"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--tomorrowland" style="--ratio: 1; --hf: 1.32;" role="img" aria-label="Tomorrowland"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--canon" style="--ratio: 4.72; --hf: 0.76;" role="img" aria-label="Canon"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--lier" style="--ratio: 1.99; --hf: 1.18;" role="img" aria-label="Stad Lier"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--showtex" style="--ratio: 5.01; --hf: 0.8;" role="img" aria-label="ShowTex"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--suspicious" style="--ratio: 6.88; --hf: 0.6;" role="img" aria-label="Suspicious"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--tlooks" style="--ratio: 1.03; --hf: 1.42;" role="img" aria-label="&rsquo;t Looks Buurtwerking"></span></li>
         </ul>
         <!-- Exacte kopie: de animatie schuift precies één groep op, dus de naad
              valt nooit zichtbaar. aria-hidden zodat een screenreader niet dubbelt. -->
         <ul class="logos-group" aria-hidden="true">
-          <li class="logos-item"><span class="logo-mark logo-mark--kbc" style="--ratio: 1.28; --hf: 1.15;"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--tomorrowland" style="--ratio: 1; --hf: 1.2;"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--canon" style="--ratio: 4.72; --hf: 0.8;"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--lier" style="--ratio: 1.99; --hf: 1.1;"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--showtex" style="--ratio: 3.79; --hf: 0.85;"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--suspicious" style="--ratio: 6.88; --hf: 0.7;"></span></li>
-          <li class="logos-item"><span class="logo-mark logo-mark--tlooks" style="--ratio: 0.92; --hf: 1.3;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--kbc" style="--ratio: 1.28; --hf: 1.22;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--tomorrowland" style="--ratio: 1; --hf: 1.32;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--canon" style="--ratio: 4.72; --hf: 0.76;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--lier" style="--ratio: 1.99; --hf: 1.18;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--showtex" style="--ratio: 5.01; --hf: 0.8;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--suspicious" style="--ratio: 6.88; --hf: 0.6;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--tlooks" style="--ratio: 1.03; --hf: 1.42;"></span></li>
         </ul>
       </div>
     </div>
@@ -4058,14 +4079,7 @@
               <span class="reveal-word" style="animation-delay: 0.16s;">Relovation?</span>
             </span>
           </h2>
-            <p class="about-text" data-node-id="99:36">
-              <span class="about-text-line">Relovation is een flexibel live muziekconcept voor stijlvolle</span>
-              <span class="about-text-line">events. Geen vaste formule, maar een muzikale invulling die</span>
-              <span class="about-text-line">meebeweegt met de sfeer van het moment — afgestemd op uw</span>
-              <span class="about-text-line">publiek, locatie en programma.</span>
-              <span class="about-text-line">Wij nemen de volledige muzikale omkadering op ons en denken</span>
-              <span class="about-text-line">actief met u mee over wat werkt voor uw specifieke moment.</span>
-            </p>
+            <p class="about-text" data-node-id="99:36">Relovation is een flexibel live muziekconcept voor stijlvolle events. Geen vaste formule, maar muziek die meebeweegt met het moment — afgestemd op uw publiek, locatie en programma. Wij nemen de volledige muzikale omkadering op ons en denken met u mee.</p>
 
             <div class="about-actions">
               <a class="button button-light" href="./over.html" data-node-id="100:30">Meer over ons →</a>
@@ -4095,7 +4109,7 @@
         </figure>
         <div class="arch-copy">
           <h3 class="arch-title">Trouwfeesten</h3>
-          <p class="arch-text">Van de ceremonie en de welkomstdrink tot het begin van de avond. Wij verzorgen de muzikale rode draad door uw trouwdag — afgestemd op elk moment en elke sfeer.</p>
+          <p class="arch-text">Van ceremonie en welkomstdrink tot het begin van de avond. Wij verzorgen de muzikale rode draad door uw trouwdag, afgestemd op elk moment.</p>
         </div>
         <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
@@ -4107,7 +4121,7 @@
         </figure>
         <div class="arch-copy">
           <h3 class="arch-title">Bedrijfsevents</h3>
-          <p class="arch-text">Een stijlvolle, professionele muzikale invulling voor recepties, netwerkmomenten en bedrijfsfeesten. Muziek die uw gasten op hun gemak stelt en meteen de juiste toon zet.</p>
+          <p class="arch-text">Stijlvolle live muziek voor recepties, netwerkmomenten en bedrijfsfeesten. Muziek die uw gasten op hun gemak stelt en de juiste toon zet.</p>
         </div>
         <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
@@ -4119,7 +4133,7 @@
         </figure>
         <div class="arch-copy">
           <h3 class="arch-title">Privéfeesten &amp; openingen</h3>
-          <p class="arch-text">Warme live muziek die gesprekken draagt zonder te overstemmen. Ideaal voor openingen, ontvangsten en stijlvolle avonden waar sfeer centraal staat.</p>
+          <p class="arch-text">Warme live muziek die gesprekken draagt zonder te overstemmen. Voor openingen, ontvangsten en avonden waar sfeer centraal staat.</p>
         </div>
         <a class="arch-link" href="./diensten.html">Ontdek de bezetting <span class="arch-link-arrow" aria-hidden="true">→</span></a>
       </article>
@@ -4127,28 +4141,27 @@
     <p class="arch-hint" aria-hidden="true">Sleep om te ontdekken</p>
 
     <div class="quote-motion-copy">
-      <h2 class="quote-motion-title" aria-label="Verfijnde live jazz die uw event moeiteloos naar een hoger niveau tilt.">
+      <h2 class="quote-motion-title" aria-label="Verfijnde live jazz die uw event naar een hoger niveau tilt.">
         <span class="quote-line">
           <span class="quote-word" style="animation-delay: 0.04s;">Verfijnde</span>
           <span class="quote-word" style="animation-delay: 0.1s;">live</span>
           <span class="quote-word" style="animation-delay: 0.16s;">jazz</span>
           <span class="quote-word" style="animation-delay: 0.22s;">die</span>
-          <span class="quote-word" style="animation-delay: 0.28s;">uw</span>
-          <span class="quote-word" style="animation-delay: 0.34s;">event</span>
         </span>
         <span class="quote-line">
-          <span class="quote-inline-asset" style="animation-delay: 0.4s;" aria-hidden="true">
-            <img src="https://www.figma.com/api/mcp/asset/c27f2408-8f15-4d0e-9906-2991c5aca0f1" alt="">
+          <span class="quote-inline-asset is-fragment" style="animation-delay: 0.28s;" aria-hidden="true">
+            <img src="./assets/photos/home-duo-kaarslicht-zaal.webp" alt="" width="1600" height="1067" loading="lazy" decoding="async">
           </span>
-          <span class="quote-word" style="animation-delay: 0.46s;">moeiteloos</span>
-          <span class="quote-word" style="animation-delay: 0.52s;">naar</span>
-          <span class="quote-word" style="animation-delay: 0.58s;">een</span>
+          <span class="quote-word" style="animation-delay: 0.34s;">uw</span>
+          <span class="quote-word" style="animation-delay: 0.4s;">event</span>
+          <span class="quote-word" style="animation-delay: 0.46s;">naar</span>
+          <span class="quote-word" style="animation-delay: 0.52s;">een</span>
         </span>
         <span class="quote-line">
-          <span class="quote-word" style="animation-delay: 0.64s;">hoger</span>
-          <span class="quote-word" style="animation-delay: 0.7s;">niveau</span>
-          <span class="quote-word" style="animation-delay: 0.76s;">tilt.</span>
-          <span class="quote-inline-asset is-note" style="animation-delay: 0.82s;" aria-hidden="true">
+          <span class="quote-word" style="animation-delay: 0.58s;">hoger</span>
+          <span class="quote-word" style="animation-delay: 0.64s;">niveau</span>
+          <span class="quote-word" style="animation-delay: 0.7s;">tilt.</span>
+          <span class="quote-inline-asset is-note" style="animation-delay: 0.76s;" aria-hidden="true">
             <span class="note-draw note-quotedance"></span>
           </span>
         </span>
@@ -4170,7 +4183,7 @@
           <span class="feature-check" aria-hidden="true"></span>
           <div>
             <h3>Professionele muzikanten</h3>
-            <p>Ervaren, conservatoriumgeschoolde muzikanten die op elk type event het juiste niveau én de juiste rust brengen.</p>
+            <p>Conservatoriumgeschoolde muzikanten die op elk event het juiste niveau én de juiste rust brengen.</p>
           </div>
         </article>
 
@@ -4178,7 +4191,7 @@
           <span class="feature-check" aria-hidden="true"></span>
           <div>
             <h3>Volledig afgestemd</h3>
-            <p>Repertoire, bezetting en volume aangepast aan uw sfeer, locatie en programma. U hoeft niets te regelen.</p>
+            <p>Repertoire, bezetting en volume afgestemd op uw sfeer, locatie en programma. U hoeft niets te regelen.</p>
           </div>
         </article>
 
@@ -4186,7 +4199,7 @@
           <span class="feature-check" aria-hidden="true"></span>
           <div>
             <h3>Eigen geluidsinstallatie</h3>
-            <p>Professionele installatie voor events tot ±250 gasten — inbegrepen, zonder extra gedoe.</p>
+            <p>Voor events tot ±250 gasten — inbegrepen, zonder extra gedoe.</p>
           </div>
         </article>
 
@@ -4194,13 +4207,13 @@
           <span class="feature-check" aria-hidden="true"></span>
           <div>
             <h3>Zorgeloos geregeld</h3>
-            <p>Heldere afspraken, stipt aanwezig en professioneel ter plaatse. Vanuit ervaring adviseren we over bezetting, repertoire en timing — zodat de muziek altijd klopt met uw moment.</p>
+            <p>Heldere afspraken, stipt aanwezig, professioneel ter plaatse. Wij adviseren over bezetting, repertoire en timing — zodat de muziek klopt met uw moment.</p>
           </div>
         </article>
 
         <div class="feature-actions">
-          <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
-          <a class="button" href="mailto:relovation@robinmusic.be">Vraag uw voorstel aan</a>
+          <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
+          <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
         </div>
       </div>
 
@@ -4230,19 +4243,19 @@
         <div class="package-row" style="--package-stagger: 0s;">
           <div class="package-name">DUO</div>
           <div class="package-desc">Zang/sax &amp; piano — onze huidige hoofdformule.</div>
-          <div class="package-desc">Een warm, intiem klankbeeld voor ceremonies, recepties, diners en stijlvolle corporate events. Aanwezig zonder te overheersen.</div>
+          <div class="package-desc">Warm en intiem, voor ceremonies, recepties, diners en corporate events. Aanwezig zonder te overheersen.</div>
         </div>
 
         <div class="package-row" style="--package-stagger: 0.12s;">
           <div class="package-name">TRIO</div>
           <div class="package-desc">Zang/sax, gitaar &amp; contrabas — momenteel in opbouw.</div>
-          <div class="package-desc">Een rijkere livebezetting met extra warmte en karakter, voor events waar de muziek meer aanwezigheid en diepgang mag hebben.</div>
+          <div class="package-desc">Rijker, met extra warmte en karakter. Voor events waar de muziek meer aanwezigheid mag hebben.</div>
         </div>
 
         <div class="package-row" style="--package-stagger: 0.24s;">
           <div class="package-name">FULL BAND</div>
           <div class="package-desc">De volledige bezetting.</div>
-          <div class="package-desc">Voor grotere ruimtes en feesten waar live muziek het karakter van de avond bepaalt.</div>
+          <div class="package-desc">Voor grotere ruimtes en feesten waar de muziek de avond bepaalt.</div>
         </div>
       </div>
     </div>
@@ -4259,10 +4272,10 @@
           <span class="reveal-word" style="animation-delay: 0.28s;">event.</span>
         </span>
       </h2>
-      <p class="reveal-copy">Beantwoord enkele korte vragen over uw event en we bekijken persoonlijk welke muzikale formule het best past. U ontvangt snel een vrijblijvend voorstel op maat.</p>
+      <p class="reveal-copy">Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat.</p>
       <div class="cta-actions reveal-actions">
-        <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
-        <a class="button" href="mailto:relovation@robinmusic.be">Vraag uw voorstel aan</a>
+        <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
+        <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
       </div>
     </div>
   </section>

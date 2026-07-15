@@ -91,10 +91,10 @@ Negen in plaats van elf schermen, omdat de contactgegevens samen op één scherm
 (voornaam, achternaam, e-mail, telefoon). Dat volgt de briefing zelf, die Q7 en Q8 al als
 één blok toont ("Q7 · Q8 — Naam & e-mailadres").
 
-**Openingsscherm.** De titel "Vertel ons over uw event" en de intro krijgen een eigen
-scherm met een Beginnen-knop. Anders kost die kop op elk van de negen schermen verticale
-ruimte — precies het scrollprobleem dat we oplossen. De knop is bovendien zelf een micro-ja
-(Cialdini, foot-in-the-door).
+**Geen openingsscherm.** Eerst gebouwd met een intro-scherm (titel + Beginnen-knop),
+daarna op verzoek van Jari geschrapt: de bezoeker landt meteen op vraag 1. Dat is ook
+sterker — Cialdini's foot-in-the-door wil die eerste makkelijke klik zo vroeg mogelijk, niet
+achter een extra knop. De titel blijft als `sr-only` h1 staan voor SEO en screenreaders.
 
 **Automatisch door bij enkele keuze.** Bij vraag 1, 6 en 8 springt de flow na 400 ms naar
 de volgende vraag. Die pauze is bewust: je ziet je eigen keuze bevestigd worden. Bij
@@ -143,7 +143,7 @@ Om dit te halen krimpen de kaarten van 56px naar 48px zodra de opties onder elka
 | Q5 | Waar gaat het event door? | tekstveld | ja |
 | Q6 | Hoeveel gasten verwacht u ongeveer? | enkele keuze, kaarten | ja |
 
-- Q4: datumkiezer + checkbox "De datum ligt nog niet definitief vast"
+- Q4: gebrande kalender + checkbox "De datum ligt nog niet definitief vast"
 - Q5: placeholder "Locatie, gemeente of regio"; hulptekst "De gemeente of regio volstaat
   als de exacte locatie nog niet vastligt."
 - Q6: Minder dan 30 · 30 – 80 · 80 – 150 · 150 – 300 · Meer dan 300 · Nog niet zeker
@@ -270,6 +270,31 @@ Expliciete eis van Jari. Concreet:
 - Bij het wisselen van stap springt de focus naar de nieuwe staptitel (screenreaders en
   toetsenbord).
 
+## Gebrande kalender
+
+De native `<input type="date">` opent systeem-UI: blauw/wit, niets van de huisstijl, niet te
+stylen, en op een vergrendelde viewport valt de popover buiten beeld. Vervangen door een
+eigen inline kalender:
+
+- cream/groen, EB Garamond voor "juli 2026", Nederlandse maand- en dagnamen
+- week begint op maandag (`getDay()` geeft zondag als 0 — vandaar `(dag + 6) % 7`)
+- alles vóór vandaag geblokkeerd; "vorige maand" uitgeschakeld in de huidige maand
+- vandaag krijgt een gouden ring, de gekozen dag een gevulde groene cirkel
+- onder de kalender staat de keuze voluit: "Gekozen: zaterdag 18 juli 2026"
+
+Het native veld blijft in het formulier als waardehouder (verborgen inputs submitten
+gewoon mee) én als terugval zonder JS. Zonder JS verschijnt de systeemkiezer weer — beter
+lelijk dan geen datum kunnen kiezen.
+
+Twee bugs die dit opleverde, allebei nu met een test afgedekt:
+
+- **De gekozen dag kreeg de hover-tint in plaats van groen.**
+  `.kal__dag:hover:not(:disabled)` heeft specificiteit (0,3,1) en wint van
+  `.kal__dag.is-gekozen` (0,2,1). Net ná je klik — als de muis er nog op staat — kreeg je
+  keuze dus de verkeerde kleur. Opgelost met een expliciete `.is-gekozen:hover`-regel.
+- **`toISOString()` verschoof de datum een dag.** Die rekent om naar UTC; in onze tijdzone
+  wordt 18 juli 00:00 dan 17 juli 22:00. De datum wordt nu lokaal samengesteld.
+
 ## Backend
 
 **Route:** `POST /api/aanvraag`
@@ -299,11 +324,28 @@ Voorbeeld: `Nieuwe aanvraag – Trouwfeest – 14/09/2026 – Antwerpen`
 wordt een aparte fase. Vandaag alleen mail — dat werkt en levert de lead. Zie openstaande
 punten.
 
-## Navigatie
+## Navigatie: focus-modus
 
-Volledige site-nav + footer, zoals de andere pagina's. Overwogen: focus-modus zonder nav
-(MWW: *"onnodige stappen/keuzes verwijderd"*). Jari kiest bewust voor consistentie en
-herkenbaarheid boven het afsluiten van uitgangen.
+Geen site-nav, geen footer. Eerst gebouwd mét (Jari koos toen consistentie), daarna
+omgedraaid naar focus-modus — wat MWW van meet af aan voorschreef: elke menulink is een
+uitgang weg van de flow.
+
+Wat blijft: een smalle balk met het logo (link naar home) en een discrete "Sluiten ×".
+Uitgangen weghalen is niet hetzelfde als iemand opsluiten.
+
+### Vergrendelde viewport
+
+`html, body { overflow: hidden }` en de flow op `100svh`: de pagina scrollt nooit. `svh` in
+plaats van `vh`, want `vh` telt de mobiele adresbalk niet mee — daarmee zou de knop onder de
+vouw belanden.
+
+**Het vangnet.** "Vergrendeld" en "het klopt altijd" bijten elkaar zodra inhoud niet past:
+hard `overflow: hidden` zou de knop onbereikbaar maken. Daarom scrollt niet de pagina maar
+het vraaggebied (`#stage`) intern, als het moet. Op 390px+ komt dat nooit voor (gemeten);
+op een iPhone SE scrollt alleen het vraagblok terwijl de voortgangsbalk staat blijft.
+
+De tests meten allebei apart: de pagina mag nooit scrollen, én het vraaggebied mag zijn
+vangnet niet nodig hebben op 390px+.
 
 De primaire CTA op `index`, `over`, `diensten` en `contact` wordt omgezet van
 "Ontvang offerte" → `contact.html` naar **"Vertel ons over uw event" → `/aanvraag`**, in

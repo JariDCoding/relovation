@@ -13,17 +13,50 @@
       --bg-deep: #ebe1bc;
       --ink: #4c6a57;
       --ink-deep: #3f5645;
-      --ink-soft: rgba(76, 106, 87, 0.82);
+      /* Design-system-tokens, SOLIDE. De oude rgba(76,106,87,.82) haalde 3.55:1 op
+         cream en zakte daarmee onder WCAG AA voor normale tekst. #4f5f49 = 5.83:1. */
+      --ink-soft: #4f5f49;
+      /* Gedempt niveau (labels, noten): 4.57:1 op cream — vervangt rgba .62/.74
+         (2.48:1 en 3.07:1 — beide gezakt). Goud blijft DECORATIEF: 2.61:1. */
+      --ink-muted: #55715e;
+      /* 4.85:1 op --ink; idioom overgenomen uit contact.html. rgba(...,0.9) gaf 4.48:1. */
+      --cream-on-dark: rgba(244, 237, 207, 0.96);
       --line: rgba(76, 106, 87, 0.24);
       --line-strong: rgba(76, 106, 87, 0.38);
       --line-on-dark: rgba(244, 237, 207, 0.34);
       --section-ink: #f4edcf;
       --radius-pill: 999px;
       --radius-arch: 999px 999px 0 0;
+      --radius-card: 20px;
+
+      /* ── Spacing — Figma Spacing-collectie (4pt-basis):
+         4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128, doorgebouwd 128 → 192.
+         De clamps blijven (Figma is statisch, het web niet): wat moet kloppen is de
+         SCHAAL. Daarom staat de BOVENgrens van elke clamp op een echte Figma-stap en
+         de ONDERgrens op de stap eronder. Vault §7. */
+      --space-1: clamp(12px, 1vw, 16px);      /* sm 12  → md 16  */
+      --space-2: clamp(16px, 1.5vw, 24px);    /* md 16  → lg 24  */
+      --space-3: clamp(32px, 2.4vw, 48px);    /* xl 32  → 2xl 48 */
+      --space-4: clamp(48px, 3.8vw, 64px);    /* 2xl 48 → 3xl 64 */
+      --space-5: clamp(64px, 6vw, 96px);      /* 3xl 64 → 4xl 96 */
+      --space-6: clamp(96px, 9vw, 128px);     /* 4xl 96 → 5xl 128 */
+      --space-7: clamp(128px, 14vw, 192px);   /* 5xl 128 → 192 (verdubbeling van de schaal) */
+
+      /* Afgeleiden — zelfde opbouw als index.html, zodat de pagina's convergeren.
+         Sectiegrenzen tellen op tot section-gap-lg + section-gap ≈ 176–224px,
+         precies de 120–240px die vault §7 tussen grote secties vraagt. */
+      --section-gap: var(--space-5);
+      --section-gap-lg: var(--space-6);
+      --content-gap: var(--space-3);
+      --stack-copy: var(--space-2);
+
+      /* ── Type — body losgekoppeld van de titelmaat en op de DS-schaal gezet
+         (Body/L 26 · Body/M 24 · Body/S 16), met clamp naar mobiel. Vault §1. */
+      --body-lg: clamp(19px, 1.35vw, 26px);
+      --body-md: clamp(17px, 1.25vw, 24px);
+      --body-sm: 16px;
+
       --shell: min(1760px, calc(100vw - clamp(40px, 7vw, 120px)));
-      --section-gap: clamp(104px, 8vw, 156px);
-      --section-gap-lg: clamp(144px, 10vw, 196px);
-      --content-gap: clamp(28px, 2.6vw, 42px);
       --motion-duration: 1s;
       --motion-ease: cubic-bezier(0.18, 0.88, 0.18, 1);
       --button-height: 52px;
@@ -100,13 +133,16 @@
       justify-content: center;
       min-width: var(--button-width);
       height: var(--button-height);
-      padding: 0 24px;
+      padding: 0 24px; /* lg 24 — al op de Figma-schaal */
       border-radius: var(--radius-pill);
       border: 1.4px solid var(--line);
       background: transparent;
       color: var(--ink);
-      font-size: 16px;
+      font-size: var(--body-sm);
       font-weight: 600;
+      /* Label mag nooit binnen de pill wikkelen (min-width laat de pill groeien). */
+      white-space: nowrap;
+      line-height: 1;
       box-shadow: 0 10px 20px rgba(87, 110, 89, 0.04);
       transition:
         transform 220ms ease,
@@ -172,7 +208,7 @@
     .services-hero {
       position: relative;
       min-height: var(--hero-height);
-      padding: 0 0 140px;
+      padding: 0 0 var(--space-6);
       background: var(--ink);
       color: var(--section-ink);
       overflow: hidden;
@@ -198,13 +234,14 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      min-height: calc(var(--hero-height) - 140px);
+      min-height: calc(var(--hero-height) - var(--space-6));
       text-align: center;
       display: grid;
       align-content: center;
       justify-items: center;
-      gap: 12px;
-      padding: 0 0 clamp(72px, 7vw, 140px);
+      /* Titel → body: vault §7 vraagt 24–64px; 12px was te krap. */
+      gap: var(--space-2);
+      padding: 0 0 var(--space-6);
     }
 
     .hero-title {
@@ -220,93 +257,103 @@
     .hero-subtitle {
       margin: 0;
       max-width: 48ch;
-      font-size: clamp(17px, 1.22vw, 26px);
+      font-size: var(--body-lg);
       line-height: 1.5;
-      color: rgba(244, 237, 207, 0.9);
+      color: var(--cream-on-dark);
     }
 
     .services-section {
-      padding: clamp(18px, 4vw, 54px) 0 var(--section-gap-lg);
-      background: #f4edcf;
+      padding: var(--space-3) 0 var(--section-gap-lg);
+      background: var(--bg);
     }
 
+    /* Rij-ritme (space-7) blijft bewust ONDER de sectiegrens
+       (section-gap-lg + section-gap), zodat de hiërarchie sectie > rij klopt. */
     .services-list {
       display: grid;
-      gap: clamp(165px, 15vw, 276px);
+      gap: var(--space-7);
     }
 
+    /* Kolommen zijn fluïde i.p.v. een vaste 815px. Met 815px vast kneep de
+       tekstkolom tussen 1441–1560px samen tot ~460px (shell is daar nog ~1340),
+       terwijl de mq pas onder 1441 ingreep. fr-kolommen dekken elke breedte. */
     .service-row {
-      --service-pair-gap: clamp(34px, 4vw, 84px);
+      --service-pair-gap: var(--space-4);
       display: grid;
-      grid-template-columns: 815px minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr);
       gap: var(--service-pair-gap);
       align-items: center;
     }
 
     .service-row:nth-child(even) {
-      grid-template-columns: minmax(0, 1fr) 815px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
     }
 
     .service-row:nth-child(even) .service-media {
       order: 2;
-      justify-self: end;
     }
 
     .service-row:nth-child(even) .service-copy {
       order: 1;
     }
 
+    /* Beeld is een geregisseerd object (§4), geen vulling. Het frame volgt nu de
+       bronratio van de fotografie (3:2) en vult met `cover`.
+       Was: 815×428 (1.9:1) + `object-fit: contain` + een vlakke vulkleur — dat is
+       een frame dat om een LEGE placeholder is gebouwd. Met een echte foto erin
+       letterboxt `contain` (kleurbalken links/rechts) en snijdt de 999px-koepel op
+       een 1.9:1-vlak de onderwerpen de kop af. De boog blijft het idioom voor
+       PORTRET-frames (over.html, contact.html); voor een liggend beeld hoort de
+       kaartradius van het design system: 20px. */
     .service-media {
-      width: 815px;
-      height: 428px;
-      border-radius: var(--radius-arch);
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      border-radius: var(--radius-card);
       overflow: hidden;
-      background: #d9cfaa;
-      outline: 2px solid rgba(76, 106, 87, 0.4);
-      outline-offset: -1px;
-      box-shadow: 0 22px 42px rgba(76, 106, 87, 0.08);
+      background: var(--bg-deep);
+      /* DS Effect — Elevation/Card = 0 4 4 #000 10%; hairline-kader per §6. */
+      box-shadow:
+        inset 0 0 0 1px var(--line),
+        0 4px 4px rgba(0, 0, 0, 0.1);
     }
 
     .service-media img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       object-position: center;
-      background: #d9cfaa;
     }
 
     .service-copy {
       position: relative;
       display: grid;
-      gap: 18px;
-      padding-left: calc(175px + var(--service-pair-gap));
+      gap: var(--stack-copy);
       width: 100%;
       max-width: none;
       justify-self: stretch;
     }
 
-    .service-row:nth-child(even) .service-copy {
-      padding-left: calc(175px + var(--service-pair-gap));
-    }
-
+    /* Ghosted reuzennummer (Module Library §F) — verankert de rij vanaf de kop,
+       i.p.v. los in de goot te zweven zoals voorheen. Daarmee vervalt ook de
+       175px-inspringing die de tekstkolom leegdrukte. Vault §8 + §14-patroon 2. */
     .service-number {
-      position: absolute;
-      left: 0;
-      top: -12px;
-      margin: 0;
+      margin: 0 0 calc(var(--space-2) * -0.45);
+      margin-left: -0.045em; /* optisch: linker zijwit van EB Garamond wegwerken */
       font-family: "EB Garamond", serif;
-      font-size: clamp(104px, 8.6vw, 176px);
-      line-height: 1;
+      font-size: clamp(88px, 8.6vw, 176px);
+      line-height: 0.8;
       font-weight: 500;
       letter-spacing: -0.03em;
       color: rgba(76, 106, 87, 0.11);
       pointer-events: none;
     }
 
+    /* H2 op de DS-schaal (68). Was 52 tegenover een body van 26 = ratio 1.85 —
+       onder de ~2.5 die kop:body nodig heeft. 68/26 = 2.6. */
     .service-title {
       margin: 0;
       font-family: "EB Garamond", serif;
-      font-size: clamp(38px, 2.5vw, 52px);
+      font-size: clamp(40px, 3.6vw, 68px);
       line-height: 1.16;
       font-weight: 500;
       letter-spacing: -0.02em;
@@ -315,17 +362,17 @@
 
     .service-description {
       margin: 0;
-      max-width: 54ch;
+      max-width: 54ch; /* ≈ 50–66 tekens per regel, vault §1 */
       color: var(--ink-soft);
-      font-size: clamp(18px, 1.18vw, 26px);
+      font-size: var(--body-md);
       line-height: 1.5;
       text-wrap: pretty;
     }
 
     .service-points {
       display: grid;
-      gap: 14px;
-      margin: 4px 0 0;
+      gap: var(--space-1);
+      margin: 4px 0 0; /* 2xs 4 — al op de Figma-schaal */
       padding: 0;
       list-style: none;
       width: 100%;
@@ -335,10 +382,10 @@
     .service-points li {
       display: grid;
       grid-template-columns: 20px 1fr;
-      gap: 16px;
+      gap: 16px; /* md 16 — vaste icoongoot, mag niet meeschalen */
       align-items: start;
       color: var(--ink-soft);
-      font-size: clamp(16px, 1vw, 20px);
+      font-size: var(--body-sm);
       line-height: 1.48;
     }
 
@@ -355,11 +402,12 @@
       align-items: center;
       gap: 10px;
       width: fit-content;
-      margin-top: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(76, 106, 87, 0.34);
-      font-size: 19px;
+      margin-top: var(--space-1);
+      padding-bottom: 8px; /* xs 8 — al op de Figma-schaal */
+      border-bottom: 1px solid var(--line-strong);
+      font-size: var(--body-sm);
       font-weight: 500;
+      white-space: nowrap;
       color: var(--ink);
       transition: gap 220ms ease, border-color 220ms ease, color 220ms ease;
     }
@@ -373,11 +421,11 @@
 
     .line-section {
       padding: var(--section-gap) 0 var(--section-gap-lg);
-      background: #f4edcf;
+      background: var(--bg);
     }
 
     .line-section-title {
-      margin: 0 0 26px;
+      margin: 0 0 var(--space-3); /* titel → body: 32–48px, vault §7 */
       font-family: "EB Garamond", serif;
       font-size: clamp(64px, 6vw, 110px);
       line-height: 1.08;
@@ -392,16 +440,16 @@
     }
 
     .line-list {
-      border-top: 1px solid rgba(76, 106, 87, 0.28);
+      border-top: 1px solid var(--line);
     }
 
     .line-item {
       display: grid;
       grid-template-columns: minmax(180px, 0.34fr) minmax(360px, 1fr) minmax(420px, 1fr);
-      gap: 28px;
+      gap: var(--space-3);
       align-items: center;
-      min-height: 138px;
-      border-bottom: 1px solid rgba(76, 106, 87, 0.28);
+      min-height: var(--space-6);
+      border-bottom: 1px solid var(--line);
     }
 
     .line-item-title {
@@ -416,7 +464,7 @@
     .line-item-copy {
       margin: 0;
       color: var(--ink-soft);
-      font-size: 16px;
+      font-size: var(--body-sm);
       line-height: 1.6;
       text-wrap: pretty;
     }
@@ -429,37 +477,37 @@
       line-height: 1.2;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(76, 106, 87, 0.62);
+      color: var(--ink-muted);
     }
 
     /* Side-note binnen een item (vault §8), losgemaakt van de lopende zin. */
     .line-note {
       display: block;
-      margin-top: 8px;
-      color: rgba(76, 106, 87, 0.74);
+      margin-top: 8px; /* xs 8 — al op de Figma-schaal */
+      color: var(--ink-muted);
     }
 
     /* Afsluitende noot onder de lijst — idioom van .vision-note-text (over.html). */
     .line-list-note {
-      margin: 32px 0 0;
+      margin: var(--space-3) 0 0;
       max-width: 52ch;
-      color: rgba(76, 106, 87, 0.74);
-      font-size: 16px;
+      color: var(--ink-muted);
+      font-size: var(--body-sm);
       font-weight: 500;
       line-height: 1.5;
     }
 
     .services-cta-section {
-      padding: clamp(40px, 5vw, 80px) 0 var(--section-gap-lg);
-      background: #f4edcf;
+      padding: var(--space-4) 0 var(--section-gap-lg);
+      background: var(--bg);
     }
 
     .services-cta-panel {
       display: grid;
       justify-items: center;
-      gap: 18px;
+      gap: var(--stack-copy);
       text-align: center;
-      padding: 0 clamp(20px, 8vw, 120px);
+      padding: 0 clamp(24px, 8vw, 128px); /* lg 24 → 5xl 128 */
     }
 
     /* Geen max-width: regels worden handmatig gebroken via .reveal-line,
@@ -483,7 +531,7 @@
       margin: 0;
       max-width: min(620px, 100%);
       color: var(--ink-soft);
-      font-size: clamp(18px, 1.24vw, 26px);
+      font-size: var(--body-lg);
       line-height: 1.5;
       text-wrap: balance;
     }
@@ -498,8 +546,8 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 18px;
-      margin-top: 10px;
+      gap: var(--space-2);
+      margin-top: var(--space-1);
     }
 
     .reveal-copy,
@@ -569,51 +617,12 @@
       }
     }
 
-    @media (min-width: 1181px) and (max-width: 1440px) {
-      .service-row {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-        gap: clamp(28px, 3vw, 56px);
-      }
-
-      .service-row:nth-child(even) {
-        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      }
-
-      .service-media {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 815 / 428;
-        outline: none;
-        box-shadow: inset 0 0 0 2px rgba(76, 106, 87, 0.32), 0 22px 42px rgba(76, 106, 87, 0.08);
-      }
-
-      .service-title {
-        font-size: clamp(44px, 3.4vw, 58px);
-      }
-
-      .service-description {
-        font-size: clamp(20px, 1.5vw, 28px);
-      }
-
-      .service-points li {
-        font-size: clamp(17px, 1.15vw, 22px);
-      }
-
-      .service-copy,
-      .service-row:nth-child(even) .service-copy {
-        padding-left: calc(140px + clamp(28px, 3vw, 56px));
-      }
-    }
+    /* De oude 1181–1440-uitzondering is vervallen: fr-kolommen, aspect-ratio en de
+       fluïde type-tokens dekken dat bereik nu vanuit de basisregels. */
 
     @media (max-width: 1180px) {
       .services-hero {
         min-height: auto;
-        padding: 0 0 110px;
-      }
-
-      .hero-copy {
-        min-height: calc(var(--hero-height) - 110px);
-        padding-bottom: clamp(56px, 6vw, 112px);
       }
 
       .service-row,
@@ -628,27 +637,23 @@
 
       .service-media {
         width: min(100%, 815px);
-        height: auto;
-        aspect-ratio: 815 / 428;
       }
 
-      .service-copy,
-      .service-row:nth-child(even) .service-copy {
-        padding-left: 84px;
+      .service-copy {
         max-width: 720px;
       }
 
       .line-item {
         grid-template-columns: minmax(160px, 0.34fr) minmax(240px, 0.7fr) 1fr;
       }
-
     }
 
     @media (max-width: 820px) {
       :root {
         --shell: min(100vw - 32px, 100vw - 32px);
-        --section-gap: 72px;
-        --section-gap-lg: 96px;
+        /* Geen losse --section-gap-overrides meer: de clamps landen op mobiel
+           vanzelf op hun ondergrens (3xl 64 / 4xl 96) — die zijn al mobiel-maat
+           én op de schaal. De oude 72/96 en 60/80 stonden er náást. */
         --hero-height: auto;
       }
 
@@ -660,7 +665,7 @@
       /* ── Hero ── */
       .services-hero {
         min-height: 0;
-        padding: 96px 0 88px;
+        padding: var(--space-6) 0 var(--space-5);
       }
 
       .services-hero::after {
@@ -670,8 +675,7 @@
 
       .hero-copy {
         min-height: 0;
-        padding-bottom: 56px;
-        gap: 14px;
+        padding-bottom: var(--space-5);
         text-align: center;
         justify-items: center;
       }
@@ -690,29 +694,12 @@
         max-width: 32ch;
       }
 
-      /* ── Services list ── */
-      .services-list {
-        gap: clamp(112px, 22vw, 148px);
-      }
-
-      .service-media {
-        aspect-ratio: 16 / 10;
-      }
-
-      /* Number moves into normal flow, sits above the title */
-      .service-copy,
-      .service-row:nth-child(even) .service-copy {
-        padding-left: 0;
-        gap: 12px;
-      }
-
+      /* ── Services list ──
+         Het nummer staat nu op élke breedte in de flow (dat was hier al de
+         oplossing; die is naar de basisregel gepromoveerd), dus hier alleen nog
+         de maten die mobiel echt anders moeten. */
       .service-number {
-        position: relative;
-        left: auto;
-        top: auto;
-        font-size: clamp(72px, 18vw, 100px);
-        line-height: 0.85;
-        margin-bottom: -8px;
+        font-size: clamp(64px, 18vw, 88px);
       }
 
       .service-title {
@@ -721,16 +708,11 @@
       }
 
       .service-description {
-        font-size: clamp(16px, 4vw, 19px);
         max-width: 100%;
       }
 
       .service-points {
         max-width: 100%;
-      }
-
-      .service-points li {
-        font-size: clamp(15px, 3.8vw, 17px);
       }
 
       /* ── Line section ── */
@@ -740,9 +722,9 @@
 
       .line-item {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 8px; /* xs 8 — al op de Figma-schaal */
         align-items: start;
-        padding: 22px 0;
+        padding: var(--space-2) 0;
         min-height: 0;
       }
 
@@ -759,25 +741,19 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 12px;
+        gap: 12px; /* sm 12 — al op de Figma-schaal */
         width: auto;
       }
 
       .services-cta-actions .button {
         height: var(--button-height);
-        font-size: 13px;
+        font-size: 14px;
       }
     }
 
     @media (max-width: 520px) {
       :root {
         --shell: min(100vw - 28px, 100vw - 28px);
-        --section-gap: 60px;
-        --section-gap-lg: 80px;
-      }
-
-      .services-hero {
-        padding: 80px 0 72px;
       }
 
       .hero-title {
@@ -785,12 +761,23 @@
       }
 
       .service-number {
-        font-size: clamp(64px, 16vw, 88px);
+        font-size: clamp(56px, 16vw, 76px);
+      }
+
+      /* Twee gelijke pills naast elkaar. `width: calc((100% - 12px)/2)` kon hier
+         niet: de flex-container is shrink-to-fit, dus het percentage viel terug op
+         ~100px en het label liep mét nowrap buiten de pill. flex-basis 0 verdeelt
+         de rij eerlijk, `min-width: fit-content` garandeert dat het label nooit
+         breder is dan zijn pill — past het niet, dan wrapt de tweede pill netjes
+         naar een eigen regel i.p.v. te overlopen. */
+      .services-cta-actions {
+        width: 100%;
       }
 
       .services-cta-actions .button {
-        width: calc((100% - 12px) / 2);
-        min-width: 0;
+        flex: 1 1 0;
+        min-width: fit-content;
+        padding: 0 12px;
       }
     }
 
@@ -884,7 +871,7 @@
               <span class="reveal-word" style="animation-delay: 0.1s;">diensten</span>
             </span>
           </h1>
-          <p class="hero-subtitle reveal-copy">Van intieme ceremonie tot groot bedrijfsevent — Relovation verzorgt de volledige muzikale omkadering van uw moment. We denken mee over bezetting, sfeer en repertoire, zodat de muziek altijd klopt.</p>
+          <p class="hero-subtitle reveal-copy">Van intieme ceremonie tot groot bedrijfsevent — wij verzorgen de volledige muzikale omkadering. We denken mee over bezetting, sfeer en repertoire, zodat de muziek klopt.</p>
         </div>
       </section>
 
@@ -893,55 +880,61 @@
           <div class="services-list">
             <article class="service-row">
               <div class="service-media reveal-visual">
-                <img src="https://www.figma.com/api/mcp/asset/0b5c64e3-61c6-43fb-98aa-d4a612a1d046" alt="Relovation tijdens een stijlvol bedrijfsevent">
+                <img src="./assets/photos/diensten-bedrijfsevents-concertzaal.webp"
+                     width="1600" height="1069" loading="lazy" decoding="async"
+                     alt="Zanger in gilet en das in een spotlight op een concertzaalpodium tijdens een bedrijfsevent">
               </div>
 
               <div class="service-copy reveal-copy">
                 <p class="service-number" aria-hidden="true">01</p>
                 <h2 class="service-title">Bedrijfsevents</h2>
-                <p class="service-description">Een ontvangst, walking dinner of netwerkmoment verdient meer dan achtergrondgeluid. Wij zorgen voor een muzikale aanwezigheid die uw gasten op hun gemak stelt en meteen de juiste toon zet — professioneel, warm en volledig afgestemd op uw programma.</p>
+                <p class="service-description">Een ontvangst, walking dinner of netwerkmoment verdient meer dan achtergrondgeluid. Wij zorgen voor een muzikale aanwezigheid die uw gasten op hun gemak stelt en meteen de juiste toon zet.</p>
                 <ul class="service-points">
-                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Stijlvolle live muziek voor recepties, diners en netwerkmomenten</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Live muziek voor recepties, diners en netwerkmomenten</span></li>
                   <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Bezetting en volume afgestemd op locatie, timing en publiek</span></li>
-                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Vanuit ervaring adviseren we mee over wat werkt voor uw specifieke event</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Wij adviseren vanuit ervaring over wat werkt voor uw event</span></li>
                 </ul>
-                <a class="service-cta" href="./aanvraag.html">Vertel ons over uw event <span aria-hidden="true">→</span></a>
+                <a class="service-cta" href="./aanvraag.html">Plan uw event <span aria-hidden="true">→</span></a>
               </div>
             </article>
 
             <article class="service-row">
               <div class="service-media reveal-visual" style="transition-delay: 0.06s;">
-                <img src="https://www.figma.com/api/mcp/asset/0b5c64e3-61c6-43fb-98aa-d4a612a1d046" alt="Relovation tijdens een trouwfeest">
+                <img src="./assets/photos/diensten-trouwfeesten-bruidspaar.webp"
+                     width="1600" height="1067" loading="lazy" decoding="async"
+                     alt="Saxofonist speelt op een trouwfeest terwijl het bruidspaar op de achtergrond danst">
               </div>
 
               <div class="service-copy reveal-copy" style="transition-delay: 0.08s;">
                 <p class="service-number" aria-hidden="true">02</p>
                 <h2 class="service-title">Trouwfeesten</h2>
-                <p class="service-description">Uw trouwdag is uniek. De muziek mag dat ook zijn. Van de ceremonie en de welkomstdrink tot het begin van de avond — wij zorgen voor de muzikale rode draad, afgestemd op uw verhaal, uw timing en uw sfeer.</p>
+                <p class="service-description">Uw trouwdag is uniek. De muziek mag dat ook zijn. Van ceremonie en welkomstdrink tot het begin van de avond zorgen wij voor de muzikale rode draad.</p>
                 <ul class="service-points">
-                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Van intieme ceremonie tot stijlvolle receptie met live muziek</span></li>
-                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Repertoire en bezetting samengesteld op maat van uw dag</span></li>
-                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Wij denken actief mee: vanuit ervaring adviseren we over wat werkt op welk moment</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Van intieme ceremonie tot receptie met live muziek</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Repertoire en bezetting op maat van uw dag</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Wij adviseren vanuit ervaring over wat werkt op welk moment</span></li>
                 </ul>
-                <a class="service-cta" href="./aanvraag.html">Vertel ons over uw event <span aria-hidden="true">→</span></a>
+                <a class="service-cta" href="./aanvraag.html">Plan uw event <span aria-hidden="true">→</span></a>
               </div>
             </article>
 
             <article class="service-row">
               <div class="service-media reveal-visual" style="transition-delay: 0.12s;">
-                <img src="https://www.figma.com/api/mcp/asset/0b5c64e3-61c6-43fb-98aa-d4a612a1d046" alt="Relovation tijdens een privéfeest met warme verlichting">
+                <img src="./assets/photos/diensten-privefeesten-zaal-warm.webp"
+                     width="1600" height="1067" loading="lazy" decoding="async"
+                     alt="Volle feestzaal onder een boog van kaarsen en lichtjes, gasten dansen in warm oranje licht">
               </div>
 
               <div class="service-copy reveal-copy" style="transition-delay: 0.14s;">
                 <p class="service-number" aria-hidden="true">03</p>
                 <h2 class="service-title">Privéfeesten &amp; openingen</h2>
-                <p class="service-description">Voor openingen, private ontvangsten en bijzondere momenten waar sfeer en gastvrijheid centraal staan. Live muziek die gesprekken ondersteunt zonder te overstemmen — en die elke ruimte meteen karakter geeft.</p>
+                <p class="service-description">Voor openingen, private ontvangsten en momenten waar sfeer en gastvrijheid centraal staan. Live muziek die elke ruimte meteen karakter geeft.</p>
                 <ul class="service-points">
-                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Een warme muzikale laag die de sfeer draagt zonder op te dringen</span></li>
-                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Ideaal voor foyers, galerieën, salons en verfijnde eventlocaties</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Een warme muzikale laag die de sfeer draagt zonder te overstemmen</span></li>
+                  <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Voor foyers, galerieën, salons en verfijnde eventlocaties</span></li>
                   <li><img src="./checkmark%20drawn%20svg%204.svg" alt="" aria-hidden="true"><span>Volledig verzorgd: van opbouw tot laatste noot</span></li>
                 </ul>
-                <a class="service-cta" href="./aanvraag.html">Vertel ons over uw event <span aria-hidden="true">→</span></a>
+                <a class="service-cta" href="./aanvraag.html">Plan uw event <span aria-hidden="true">→</span></a>
               </div>
             </article>
           </div>
@@ -961,23 +954,23 @@
             <article class="line-item reveal-copy">
               <h3 class="line-item-title">DUO</h3>
               <p class="line-item-kicker">Zang/sax &amp; piano</p>
-              <p class="line-item-copy">Onze huidige hoofdformule. Een warm, intiem klankbeeld voor ceremonies, recepties, diners en stijlvolle corporate events.</p>
+              <p class="line-item-copy">Onze huidige hoofdformule. Een warm, intiem klankbeeld voor ceremonies, recepties, diners en corporate events.</p>
             </article>
 
             <article class="line-item reveal-copy" style="transition-delay: 0.06s;">
               <h3 class="line-item-title">TRIO</h3>
               <p class="line-item-kicker">Zang/sax, gitaar &amp; contrabas</p>
-              <p class="line-item-copy">Een rijkere livebezetting met extra warmte en karakter. Ideaal voor events waar de muziek meer aanwezigheid en diepgang mag hebben.<em class="line-note">De trioformatie is momenteel in opbouw — neem contact op voor beschikbaarheid.</em></p>
+              <p class="line-item-copy">Een rijkere bezetting met extra warmte en karakter. Voor events waar de muziek meer aanwezigheid mag hebben.<em class="line-note">De trioformatie is in opbouw — neem contact op voor beschikbaarheid.</em></p>
             </article>
 
             <article class="line-item reveal-copy" style="transition-delay: 0.12s;">
               <h3 class="line-item-title">FULL BAND</h3>
               <p class="line-item-kicker">Volledige live bezetting</p>
-              <p class="line-item-copy">De volledige bezetting voor grotere ruimtes en feesten waar live muziek het karakter van de avond bepaalt.</p>
+              <p class="line-item-copy">Voor grotere ruimtes en feesten waar live muziek het karakter van de avond bepaalt.</p>
             </article>
           </div>
 
-          <p class="line-list-note reveal-copy"><em>Niet zeker welke bezetting past bij uw event? Wij adviseren u graag op basis van uw locatie, publiek en programma.</em></p>
+          <p class="line-list-note reveal-copy"><em>Niet zeker welke bezetting bij uw event past? Wij adviseren op basis van uw locatie, publiek en programma.</em></p>
         </div>
       </section>
 
@@ -995,10 +988,10 @@
                 <span class="reveal-word" style="animation-delay: 0.28s;">ons.</span>
               </span>
             </h2>
-            <p class="services-cta-copy reveal-copy">Vertel ons welk moment u wil neerzetten en we denken mee over een muzikale invulling die aansluit bij de sfeer, de ruimte en het ritme van uw event.</p>
+            <p class="services-cta-copy reveal-copy">Vertel ons welk moment u wil neerzetten. Wij denken mee over de muzikale invulling.</p>
             <div class="services-cta-actions reveal-actions">
-              <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
-              <a class="button" href="mailto:relovation@robinmusic.be">Vraag uw voorstel aan</a>
+              <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
+              <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
             </div>
           </div>
         </div>

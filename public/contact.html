@@ -13,15 +13,42 @@
       --bg-deep: #ebe1bc;
       --ink: #4c6a57;
       --ink-deep: #3f5645;
-      --ink-soft: rgba(76, 106, 87, 0.82);
+      /* Was rgba(76,106,87,0.82) -> 3.57:1 op cream, zakte onder AA. Nu de
+         waarde uit het design system: #4f5f49 = 5.83:1 op --bg. */
+      --ink-soft: #4f5f49;
+      --ink-muted: #55715e; /* 4.57:1 op --bg */
       --line: rgba(76, 106, 87, 0.24);
       --line-strong: rgba(76, 106, 87, 0.38);
       --line-on-dark: rgba(244, 237, 207, 0.34);
       --cream-on-dark: rgba(244, 237, 207, 0.96);
       --radius-pill: 999px;
-      --radius-arch: 999px 999px 0 0;
-      --section-gap: clamp(104px, 8vw, 156px);
-      --section-gap-lg: clamp(144px, 10vw, 196px);
+      --radius-card: 20px; /* DS: 20px = kaarten/beelden */
+      --radius-arch: 999px 999px 0 0; /* browser klemt naar halve breedte = de DS-boog */
+
+      /* Spacing — Figma "Spacing" (4pt): 4·8·12·16·24·32·48·64·96·128.
+         Clamp-max = een echte Figma-stap, clamp-min = de stap eronder (vault §7).
+         Boven 128 loopt de schaal door met dezelfde ratio: 128 -> 192 -> 256. */
+      --space-1: clamp(12px, 1vw, 16px); /* md 16 */
+      --space-2: clamp(16px, 1.5vw, 24px); /* lg 24 */
+      --space-3: clamp(32px, 2.4vw, 48px); /* 2xl 48 */
+      --space-4: clamp(48px, 3.8vw, 64px); /* 3xl 64 */
+      --space-5: clamp(64px, 6vw, 96px); /* 4xl 96 */
+      --space-6: clamp(128px, 9vw, 192px); /* 5xl 128 -> 192 */
+      --space-7: clamp(192px, 14vw, 256px); /* 192 -> 256 */
+      --section-gap: var(--space-5);
+      --section-gap-lg: var(--space-6);
+      --title-gap: var(--space-4);
+      --content-gap: var(--space-3);
+      --stack-tight: var(--space-1);
+      --stack-copy: var(--space-2);
+      --stack-actions: var(--space-3);
+
+      /* Type — DS-schaal, bewust LOS van de kopmaten (Body/L 26 · M 24 · S 16). */
+      --body-l: clamp(19px, 1.45vw, 26px);
+      --body-m: clamp(17px, 1.3vw, 24px);
+      --body-s: clamp(14px, 0.9vw, 16px);
+      --label-size: 13px;
+
       --shell: min(1540px, calc(100vw - clamp(40px, 7vw, 120px)));
       --button-height: 52px;
       --button-width: 188px;
@@ -107,6 +134,9 @@
       color: var(--ink);
       font-size: 13px;
       font-weight: 500;
+      /* Label mag nooit binnen de pill afbreken (opdrachtgever 5a). */
+      white-space: nowrap;
+      line-height: 1;
       box-shadow: 0 10px 20px rgba(87, 110, 89, 0.04);
       transition:
         transform 220ms ease,
@@ -138,7 +168,7 @@
     }
 
     .hero-contact {
-      padding: 0 0 104px;
+      padding: 0 0 var(--section-gap);
     }
 
     .hero-contact .section-shell {
@@ -151,8 +181,8 @@
     .hero-contact-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 32px;
-      min-height: 30vh !important;
+      gap: var(--space-3);
+      min-height: 30vh;
       align-items: stretch;
     }
 
@@ -185,7 +215,10 @@
       width: 100%;
       aspect-ratio: 984.455 / 1415.826;
       min-height: 60vh;
-      background: #56735f;
+      /* Was #56735f (los getal, buiten de tokens). Cream-tekst haalde daarop
+         geen AA (copy 3.67:1, labels 3.14:1). Op var(--ink) — dezelfde groen
+         als de footer — haalt alle tekst op 0.96 alpha 4.84:1. */
+      background: var(--ink);
       color: var(--cream-on-dark);
       overflow: hidden;
       display: flex;
@@ -212,7 +245,7 @@
       width: min(calc(100% - 116px), 754px);
       margin-inline: auto;
       display: grid;
-      gap: 22px;
+      gap: var(--stack-copy);
       justify-items: start;
     }
 
@@ -235,59 +268,64 @@
     }
 
     .hero-copy {
-      max-width: 754px;
+      max-width: 54ch; /* vault §1: 50-66 tekens per regel */
       margin: 0;
-      color: rgba(244, 237, 207, 0.84);
-      font-size: 26px;
-      line-height: 1.35;
+      color: var(--cream-on-dark);
+      font-size: var(--body-l);
+      line-height: 1.5;
       text-align: left;
       justify-self: start;
     }
 
     .hero-contact-meta {
-      margin-top: 28px;
-      width: 404px;
-      padding-top: 14px;
+      margin-top: var(--space-2);
+      width: min(100%, 404px);
+      padding-top: var(--space-1);
       border-top: 1px solid var(--line-on-dark);
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 28px;
+      gap: var(--space-2);
     }
 
     .hero-contact-item {
       display: grid;
-      gap: 8px;
+      gap: 8px; /* xs 8 — detailmaat onder de tokenschaal */
       align-content: start;
     }
 
+    /* Getrackt uppercase label — hetzelfde idioom als de andere pagina's (vault §6). */
     .hero-contact-item dt {
-      font-size: 13px;
-      letter-spacing: 0.02em;
-      color: rgba(244, 237, 207, 0.72);
+      font-size: var(--label-size);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cream-on-dark);
     }
 
     .hero-contact-item dd {
       margin: 0;
-      font-size: 15px;
-      line-height: 1.45;
+      font-size: var(--body-s);
+      line-height: 1.5;
       word-break: break-word;
     }
 
     .form-section {
-      padding: calc(var(--section-gap-lg) + var(--section-gap)) 0 var(--section-gap-lg);
+      padding: var(--section-gap-lg) 0;
     }
 
     .form-layout {
       position: relative;
       display: grid;
-      gap: clamp(42px, 3.6vw, 64px);
+      gap: var(--space-4);
       justify-items: center;
     }
 
+    /* Split editorial (vault §14.5): kop links, de alternatieve route als
+       side-note rechts. Vult de dode rechterhelft en houdt het raster
+       asymmetrisch i.p.v. gecentreerd-corporate (vault §5). */
     .form-intro {
       display: grid;
-      grid-template-columns: minmax(420px, 1fr);
-      gap: 24px;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.5fr);
+      gap: var(--space-3);
       align-items: end;
       width: min(100%, 1120px);
     }
@@ -301,14 +339,28 @@
     .form-title {
       font-size: clamp(54px, 4.8vw, 92px);
       color: var(--ink);
+    }
+
+    /* De losse woorden blijven heel, de regel mag wél wikkelen. Voorheen stond
+       white-space: nowrap op de kop zelf — die liep bij 1920 uit zijn kolom. */
+    .form-title .reveal-word,
+    .social-title .reveal-word {
       white-space: nowrap;
+    }
+
+    .form-aside {
+      display: grid;
+      gap: var(--space-2);
+      justify-items: start;
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--line); /* hairline-idioom, vault §6 */
     }
 
     .form-support {
       margin: 0;
       color: var(--ink-soft);
-      font-size: clamp(16px, 1.05vw, 19px);
-      line-height: 1.55;
+      font-size: var(--body-m);
+      line-height: 1.5;
       max-width: 52ch;
     }
 
@@ -365,16 +417,15 @@
 
     .contact-form {
       display: grid;
-      gap: 22px;
+      gap: var(--stack-copy);
       width: min(100%, 1120px);
       justify-items: start;
-      margin-top: 10px;
     }
 
     .form-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(260px, 1fr));
-      gap: 20px 22px;
+      gap: var(--space-2);
       width: 100%;
     }
 
@@ -386,15 +437,11 @@
       grid-column: 1 / -1;
     }
 
-    .form-field--message {
-      margin-top: 10px;
-    }
-
     .form-phone-row {
       grid-column: 1 / -1;
       display: grid;
       grid-template-columns: minmax(180px, 25%) minmax(0, 75%);
-      gap: 22px;
+      gap: var(--space-2);
     }
 
     .field-input,
@@ -415,8 +462,8 @@
 
     .field-input,
     .field-select {
-      height: 72px;
-      padding: 0 56px 0 24px;
+      height: 72px; /* control-hoogte, geen spacing — blijft buiten de schaal */
+      padding: 0 56px 0 24px; /* 56px rechts = ruimte voor de select-pijl (optisch) */
       border-radius: var(--radius-pill);
       text-align: left;
       font-size: 16px;
@@ -425,16 +472,17 @@
     .field-textarea {
       min-height: 290px;
       resize: vertical;
-      padding: 30px 26px;
-      border-radius: 34px;
+      padding: var(--space-2);
+      border-radius: var(--radius-card);
       text-align: left;
       font-size: 16px;
-      line-height: 1.7;
+      line-height: 1.5;
     }
 
+    /* Was rgba(76,106,87,0.88) -> 4.01:1, onder AA. Placeholder is tekst. */
     .field-input::placeholder,
     .field-textarea::placeholder {
-      color: rgba(76, 106, 87, 0.88);
+      color: var(--ink-soft);
     }
 
     .field-input:hover,
@@ -475,13 +523,13 @@
       margin: 8px 0 0 24px;
       color: rgba(168, 74, 58, 0.95);
       font-size: 14px;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
     .form-status {
-      margin: 18px 0 0;
-      padding: 16px 24px;
-      border-radius: 22px;
+      margin: var(--space-1) 0 0;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-card);
       font-size: 15px;
       line-height: 1.5;
       max-width: 520px;
@@ -522,11 +570,13 @@
       margin-top: 12px;
     }
 
+    /* Was 24px desktop / 13px mobiel — een sprong buiten de DS-schaal.
+       Nu Body/M, dus vloeiend mee met de rest. */
     .form-actions .button {
       min-width: 220px;
       height: 60px;
-      padding: 0 34px;
-      font-size: 24px;
+      padding: 0 var(--space-3);
+      font-size: var(--body-m);
       font-weight: 600;
       letter-spacing: 0.01em;
     }
@@ -537,7 +587,7 @@
 
     .social-shell {
       display: grid;
-      gap: 48px;
+      gap: var(--space-3);
     }
 
     .social-divider {
@@ -549,13 +599,13 @@
     .social-grid {
       display: grid;
       grid-template-columns: minmax(340px, 0.78fr) minmax(430px, 0.92fr);
-      gap: clamp(34px, 4vw, 104px);
+      gap: var(--space-5);
       align-items: center;
     }
 
     .social-copy {
       display: grid;
-      gap: 20px;
+      gap: var(--stack-copy);
       max-width: 600px;
     }
 
@@ -575,18 +625,18 @@
     .social-support {
       margin: 0;
       color: var(--ink-soft);
-      font-size: clamp(16px, 1.02vw, 18px);
-      line-height: 1.65;
-      max-width: 40ch;
+      font-size: var(--body-m);
+      line-height: 1.5;
+      max-width: 52ch; /* vault §1: 50-66 tekens */
     }
 
     .social-links {
       display: grid;
-      gap: 20px;
+      gap: var(--stack-copy);
       margin-top: 8px;
       font-family: "DM Sans", sans-serif;
-      font-size: 20px;
-      line-height: 1.35;
+      font-size: var(--body-m);
+      line-height: 1.5;
     }
 
     .social-links a {
@@ -633,23 +683,28 @@
       opacity: 1;
     }
 
+    /* Offset collage (vault §14.3). De oude geometrie (arch right:82px +
+       kaart 1.08 met magische min-height 520px) was om lege placeholders
+       gebouwd: met echte foto's overlapten ze elkaar in het midden en bleef
+       er rechts een dood gat. Ratio's volgen nu de bronbeelden, de overlap
+       is teruggebracht tot één hoek. */
     .social-visual {
       position: relative;
-      min-height: 520px;
+      aspect-ratio: 620 / 560;
       justify-self: end;
       width: min(100%, 620px);
     }
 
     .social-arch {
       position: absolute;
-      right: 82px;
+      right: 0;
       top: 0;
-      width: min(320px, 48%);
-      aspect-ratio: 0.82;
+      width: 46%;
+      aspect-ratio: 0.72; /* bron 1067x1600 -> minimale crop */
       border-radius: var(--radius-arch);
       overflow: hidden;
       box-shadow: 0 22px 38px rgba(76, 106, 87, 0.1);
-      background: #d8cca4;
+      background: var(--bg-deep);
     }
 
     .social-arch img,
@@ -663,11 +718,12 @@
       position: absolute;
       left: 0;
       bottom: 0;
-      width: min(360px, 62%);
-      aspect-ratio: 1.08;
+      width: 64%;
+      aspect-ratio: 1.5; /* bron 1600x1067 -> geen crop */
+      border-radius: var(--radius-card);
       overflow: hidden;
       box-shadow: 0 24px 44px rgba(56, 72, 60, 0.12);
-      background: #a7966f;
+      background: var(--bg-deep);
     }
 
     .reveal-copy,
@@ -782,11 +838,14 @@
 
       .hero-copy {
         max-width: 540px;
-        font-size: 18px;
       }
 
       .form-intro {
         grid-template-columns: 1fr;
+      }
+
+      .form-aside {
+        justify-self: start;
       }
 
       .form-notes {
@@ -806,27 +865,29 @@
     @media (max-width: 820px) {
       :root {
         --shell: min(100vw - 32px, 100vw - 32px);
-        --section-gap: 84px;
-        --section-gap-lg: 110px;
       }
 
       body { background: var(--bg); }
 
-      .hero-portrait { display: none; }
-
+      /* Stond op display:none — dat verborg de enige foto van de pagina op
+         mobiel (restant uit de placeholder-tijd). Vault §12: één kolom, maar
+         beeld en labels blijven staan. */
       .hero-contact {
         padding-top: 0;
       }
 
       .hero-contact-grid {
-        gap: 28px;
+        gap: var(--space-2);
         min-height: 0;
       }
 
+      /* Was min(100%, 420px): een placeholder-restant waardoor de boog op
+         tablet smaller was dan het paneel eronder en de rechterranden niet
+         uitlijnden. Nu vult de boog de shell, met een ratio per breedte. */
       .hero-portrait-frame {
-        width: min(100%, 420px);
+        width: 100%;
         height: auto;
-        aspect-ratio: 0.78;
+        aspect-ratio: 1.25;
       }
 
       .hero-contact-panel {
@@ -846,20 +907,23 @@
       .hero-contact-meta {
         grid-template-columns: 1fr 1fr;
         width: 100%;
-        gap: 16px;
-        margin-top: 20px;
+        gap: var(--space-1);
+        margin-top: var(--space-2);
       }
 
+      /* Optische correctie: het paneel heeft hierboven al 160px bodem-padding
+         om zijn boog vrij te spelen, dus de sectie zelf mag krap starten. */
       .form-section {
-        padding-top: 46px;
+        padding-top: var(--space-3);
       }
 
       .form-grid {
         grid-template-columns: 1fr 1fr;
       }
 
+      /* 130px kapte "🇧🇪 Belgium +32" af. */
       .form-phone-row {
-        grid-template-columns: 130px 1fr;
+        grid-template-columns: minmax(150px, 0.42fr) minmax(0, 1fr);
       }
 
       .field-input,
@@ -895,30 +959,35 @@
 
       .form-actions .button {
         height: 51px;
-        font-size: 13px;
         min-width: 0;
-        padding: 0 24px;
+        padding: 0 var(--space-2);
       }
 
       .social-visual {
-        min-height: 420px;
         width: 100%;
       }
+    }
 
-      .social-arch {
-        right: 0;
-        width: 48%;
+    /* Onder 560px is twee kolommen niet meer leesbaar: de pill-velden houden
+       60-70px padding over voor het label, en het e-mailadres brak midden in
+       het woord ("relovationu@robinmu / sic.be"). */
+    @media (max-width: 560px) {
+      .hero-contact-meta,
+      .form-grid,
+      .form-phone-row {
+        grid-template-columns: 1fr;
       }
 
-      .social-card {
-        width: 58%;
+      /* Op telefoon mag de boog weer staand: de bron is portret (1067x1600). */
+      .hero-portrait-frame {
+        aspect-ratio: 0.86;
       }
     }
 
     @media (min-width: 1800px) and (max-width: 2100px) and (min-height: 980px) and (max-height: 1220px) {
       .hero-contact {
         padding-top: 0;
-        padding-bottom: 72px;
+        padding-bottom: var(--space-4);
       }
 
       .hero-contact .section-shell {
@@ -930,7 +999,7 @@
 
       .hero-contact-grid {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 32px;
+        gap: var(--space-3);
         height: 1055px;
         min-height: 0;
         max-height: 1055px;
@@ -991,24 +1060,24 @@
       .hero-copy {
         width: 33ch;
         max-width: 33ch;
-        font-size: 26px;
-        line-height: 1.35;
+        font-size: var(--body-l);
+        line-height: 1.5;
       }
 
       .hero-contact-meta {
-        width: 820px;
-        margin-top: 40px;
+        width: min(100%, 820px);
+        margin-top: var(--space-3);
         padding-top: 12px;
-        gap: 24px;
+        gap: var(--space-2);
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       }
 
       .hero-contact-item dt {
-        font-size: 14px;
+        font-size: var(--label-size);
       }
 
       .hero-contact-item dd {
-        font-size: 26px;
+        font-size: var(--body-l);
         white-space: nowrap;
       }
 
@@ -1116,7 +1185,9 @@
         <div class="section-shell hero-contact-grid">
           <div class="hero-portrait reveal-visual">
             <div class="hero-portrait-frame">
-              <img src="https://www.figma.com/api/mcp/asset/90fdf81e-3a7d-4786-8e1f-bc7b10a8a80c" alt="Pianist van Relovation in een warme, stijlvolle setting">
+              <img src="./assets/photos/contact-sax-raamreflectie.webp"
+                   width="1067" height="1600" loading="lazy" decoding="async"
+                   alt="Saxofonist van Relovation weerspiegeld in het raam van een lichte lounge">
             </div>
           </div>
 
@@ -1129,7 +1200,7 @@
                 </span>
               </h1>
 
-              <p class="hero-copy reveal-copy">Heeft u een vraag over uw event of wilt u Relovation boeken? Vertel ons wat u voor ogen heeft — we nemen snel contact op met een voorstel op maat.</p>
+              <p class="hero-copy reveal-copy">Een vraag over uw event of wilt u Relovation boeken? Vertel ons wat u voor ogen heeft — u krijgt snel een voorstel op maat.</p>
 
               <dl class="hero-contact-meta reveal-copy">
                 <div class="hero-contact-item">
@@ -1156,12 +1227,14 @@
                   <span class="reveal-word" style="animation-delay: 0.1s;"><em>bericht</em></span>
                 </span>
               </h2>
-              <p class="form-support reveal-copy">Laat ons weten welk moment u wil vormgeven en we nemen snel contact op met een voorstel dat past bij de sfeer van uw event.</p>
-              <p class="form-support reveal-copy" style="transition-delay: 0.06s;">Liever meteen een voorstel op maat? Beantwoord enkele korte vragen over uw event.</p>
-              <div class="reveal-actions" style="transition-delay: 0.12s;">
-                <a class="button" href="./aanvraag.html">Vertel ons over uw event</a>
-              </div>
             </div>
+
+            <aside class="form-aside">
+              <p class="form-support reveal-copy">Liever meteen een voorstel op maat? Beantwoord enkele korte vragen over uw event.</p>
+              <div class="reveal-actions" style="transition-delay: 0.06s;">
+                <a class="button" href="./aanvraag.html">Plan uw event</a>
+              </div>
+            </aside>
 
             <div class="form-notes reveal-visual" aria-hidden="true">
               <img class="form-note" src="./note%20relovtion.svg" alt="">
@@ -1245,10 +1318,14 @@
 
             <div class="social-visual">
               <div class="social-arch reveal-visual">
-                <img src="https://www.figma.com/api/mcp/asset/11495a51-6d8b-451b-8f2f-4eba7e325ad7" alt="Relovation muzikant in warm avondlicht">
+                <img src="./assets/photos/sfeer-keys-kaarslicht-starburst.webp"
+                     width="1067" height="1600" loading="lazy" decoding="async"
+                     alt="Toetsenist van achteren gezien tegen kaarslicht en een starburst-lamp boven het publiek">
               </div>
               <div class="social-card reveal-visual" style="transition-delay: 0.08s;">
-                <img src="https://www.figma.com/api/mcp/asset/184ccaf2-971f-46b6-aca7-481aa5471ca9" alt="Live performance detail van Relovation">
+                <img src="./assets/photos/contact-podium-zicht-publiek.webp"
+                     width="1600" height="1067" loading="lazy" decoding="async"
+                     alt="Blik vanaf het podium over de schouder van de saxofonist naar een publiek in kaarslicht">
               </div>
             </div>
           </div>

@@ -23,6 +23,18 @@
       --line: rgba(76, 106, 87, 0.24);
       --line-soft: rgba(76, 106, 87, 0.14);
       --shadow: rgba(76, 106, 87, 0.12);
+      /* SPACING — DRIFT T.O.V. FIGMA (Spacing-collectie, 4pt: 4·8·12·16·24·32·48·64·96·128).
+         Deze waarden zijn NIET aangepast: de --space-schaal is een gedeeld contract
+         met index/diensten/contact en wordt centraal (index.html) rechtgezet.
+         Vereiste correctie — bovengrens op een echte Figma-stap, ondergrens op de
+         stap eronder; secties bouwen door op de verdubbeling 128 -> 192 -> 256:
+           --space-3: clamp(38px,2.4vw,44px)   -> clamp(32px, 2.4vw, 48px)   (xl -> 2xl)
+           --space-4: clamp(62px,3.8vw,72px)   -> clamp(48px, 3.8vw, 64px)   (2xl -> 3xl)
+           --space-5: clamp(100px,6vw,116px)   -> clamp(64px, 6vw, 96px)     (3xl -> 4xl)
+           --space-6: clamp(162px,9vw,188px)   -> clamp(128px, 9vw, 192px)   (5xl -> 5xl*1.5)
+           --space-7: clamp(248px,14vw,304px)  -> clamp(192px, 14vw, 256px)
+         Deze pagina gebruikt overal de tokens, dus ze loopt automatisch mee zodra
+         :root gesynct wordt. --space-1/-2 landen al op md 16 / lg 24. */
       --space-1: clamp(16px, 1vw, 18px);
       --space-2: clamp(24px, 1.5vw, 28px);
       --space-3: clamp(38px, 2.4vw, 44px);
@@ -45,18 +57,14 @@
       --copy-width: 32rem;
       --hero-title: 110px;
       --section-title: clamp(60px, 5.6vw, 84px);
-      --body-size: clamp(16px, 1.22vw, 19px);
+      /* 5b: body-maten staan op de schaal van het design system (Body/S 16 ->
+         Body/M 24) en zijn niet afgeleid van een titelmaat. 19px landde nergens.
+         Kop:body blijft >= 2.5 op desktop (zie meting in het rapport). */
+      --body-size: clamp(16px, 1.4vw, 24px);
       --button-height: 52px;
       --button-width: 188px;
       --hero-media-width: clamp(460px, 40vw, 680px);
-      --hero-back-width: 434.24px;
-      --hero-back-height: 670.22px;
-      --hero-front-width: 451px;
-      --hero-front-height: 419px;
-      --story-media-width: clamp(360px, 34vw, 520px);
-      --story-card-lg: clamp(138px, 11vw, 196px);
-      --story-card-md: clamp(112px, 8.4vw, 152px);
-      --story-card-sm: clamp(84px, 6.2vw, 118px);
+      --musician-gap: var(--space-1);
     }
 
     * {
@@ -115,9 +123,9 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      /* min-width, niet width: de CTA-labels ("Vertel ons over uw event") zijn
-         langer dan de 188px uit het design system en moeten de pill mogen
-         oprekken i.p.v. binnenin te breken. Gelijk aan contact/diensten. */
+      /* min-width, niet width: de pill mag oprekken i.p.v. binnenin te breken.
+         Samen met white-space: nowrap hieronder kan het label nooit meer over
+         twee regels vallen. Gelijk aan contact/diensten. */
       min-width: var(--button-width);
       height: var(--button-height);
       padding: 0 24px;
@@ -310,13 +318,12 @@
 
     .hero-actions {
       display: flex;
-      gap: 18px;
+      gap: var(--space-1);
       align-items: center;
       margin-top: calc(var(--stack-actions) * 2);
     }
 
     .hero-actions .button {
-      min-width: 248px;
       height: 64px;
       padding: 0 34px;
       border-width: 2px;
@@ -346,17 +353,25 @@
       background: rgba(76, 106, 87, 0.28);
     }
 
+    /* HERONTWERP hero-beeld. De oude compositie was een 0.65-boog (434x670) met
+       een bijna-vierkante kaart (451x419) ervoor — maten van lege placeholders.
+       Het enige beeld met alle vier de leden is 3:2; in beide oude kaders vielen
+       er twee muzikanten buiten beeld. Nu: het bandbeeld is het ene dominante
+       object (vault §5, §14.5 split screen editorial), met een klein
+       detailfragment dat de hoek overlapt (vault §4 "details uitvergroten",
+       §5 overlap). Ratio's zijn native — nergens nog een gedwongen crop. */
     .hero-media {
       position: relative;
       width: min(100%, var(--hero-media-width));
-      height: clamp(540px, 48vw, 760px);
+      /* Het bandbeeld bepaalt de hoogte; het detail hangt eronder uit. */
+      aspect-ratio: 3 / 2;
       margin-left: auto;
       margin-top: clamp(92px, 8vw, 138px);
-      --hero-back-y: 26px;
+      --hero-back-y: 28px;
       --hero-back-scale: 0.975;
       --hero-back-opacity: 0;
-      --hero-front-x: 34px;
-      --hero-front-y: 92px;
+      --hero-front-x: 24px;
+      --hero-front-y: 64px;
       --hero-front-scale: 0.94;
       --hero-front-opacity: 0;
       --hero-front-clip: inset(22% 0 0 0 round 0);
@@ -364,6 +379,7 @@
 
     .hero-card {
       position: absolute;
+      margin: 0;
       overflow: hidden;
       background: rgba(255, 255, 255, 0.12);
       box-shadow: 0 28px 72px rgba(76, 106, 87, 0.11);
@@ -375,13 +391,13 @@
       object-fit: cover;
     }
 
+    /* Bandbeeld — dominant, radius 20px (design system: kaarten/beelden). */
     .hero-card--back {
       top: 0;
       right: 0;
-      width: var(--hero-back-width);
-      height: var(--hero-back-height);
-      aspect-ratio: 434.24 / 670.22;
-      border-radius: 999px 999px 0 0;
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      border-radius: 20px;
       opacity: var(--hero-back-opacity);
       transform: translate3d(0, var(--hero-back-y), 0) scale(var(--hero-back-scale));
       filter: blur(calc((1 - var(--hero-back-opacity)) * 8px));
@@ -389,18 +405,22 @@
       z-index: 1;
     }
 
+    /* Detailfragment — klein, vierkant, breekt bewust uit het raster (vault §2). */
     .hero-card--front {
-      left: clamp(10px, 2vw, 34px);
-      top: clamp(188px, 15vw, 246px);
-      width: var(--hero-front-width);
-      height: var(--hero-front-height);
-      aspect-ratio: 141 / 131;
-      border-radius: 0;
+      left: clamp(-32px, -2.4vw, -14px);
+      bottom: clamp(-52px, -3.6vw, -26px);
+      width: clamp(112px, 10vw, 168px);
+      aspect-ratio: 1;
+      border-radius: 20px;
       opacity: var(--hero-front-opacity);
       clip-path: var(--hero-front-clip);
       transform: translate3d(var(--hero-front-x), var(--hero-front-y), 0) scale(var(--hero-front-scale));
       filter: blur(calc((1 - var(--hero-front-opacity)) * 10px));
       z-index: 2;
+    }
+
+    .hero-card--front img {
+      object-position: 53% center;
     }
 
     .hero-card::after {
@@ -414,6 +434,8 @@
     .scroll-cue {
       display: grid;
       place-items: center;
+      align-content: center;
+      gap: 8px;
       width: 56px;
       height: 56px;
       margin: clamp(26px, 3.8vw, 42px) auto 0;
@@ -421,39 +443,51 @@
       text-decoration: none;
     }
 
-    .scroll-cue img:first-child {
+    .scroll-cue img {
       width: 28px;
       height: 28px;
       opacity: 0.9;
     }
 
-    .scroll-cue img:last-child {
-      position: absolute;
-      width: 13px;
-      height: 18px;
-      transform: rotate(180deg);
+    /* De pijl was een verlopen Figma-asset. Nu een CSS-chevron — zelfde idioom
+       als de mobiele scroll-cue verderop, geen extra request. */
+    .scroll-cue::after {
+      content: "";
+      display: block;
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid rgba(76, 106, 87, 0.6);
+      border-bottom: 1.5px solid rgba(76, 106, 87, 0.6);
+      transform: rotate(45deg);
     }
 
     .story-section {
-      padding-top: clamp(72px, 12vw, 168px);
-      padding-bottom: clamp(128px, 11vw, 178px);
+      /* Sectieritme op de tokens i.p.v. losse clamps (was 72-168 / 128-178). */
+      padding-block: var(--section-gap-lg);
     }
 
     .story-shell {
       display: grid;
-      grid-template-columns: minmax(390px, 500px) minmax(320px, 470px);
+      grid-template-columns: minmax(390px, 1fr) minmax(320px, 470px);
       gap: clamp(30px, 4.2vw, 62px);
       align-items: start;
       justify-content: center;
-      min-height: clamp(660px, 64vw, 820px);
     }
 
+    /* HERONTWERP 'ons verhaal'. Er stonden vier vierkante kaarten in een trap,
+       alle vier gevoed door dezelfde (verlopen) placeholder-URL. Met echte
+       fotografie bestaat die trap niet: er is één straatfestival-beeld. Vier keer
+       hetzelfde beeld naast elkaar is geen compositie. Nu een offset collage van
+       twee 3:2-beelden uit dezelfde straatreeks (vault §14.3), dominant beeld
+       rechtsboven, tweede beeld overlappend linksonder (§5 overlap).
+       Geometrie is puur proportioneel — één regel, alle breakpoints. */
     .story-media {
       position: relative;
-      left: clamp(18px, 2.4vw, 36px);
       align-self: start;
-      width: min(100%, 470px);
-      height: clamp(500px, 46vw, 660px);
+      width: min(100%, 620px);
+      /* card1 h = 0.56W (84% breed, 3:2), card2 top = 0.46W, h = 0.40W
+         -> containerhoogte 0.86W. */
+      aspect-ratio: 100 / 86;
       --card-1-opacity: 0;
       --card-1-x: -16px;
       --card-1-y: 38px;
@@ -464,16 +498,6 @@
       --card-2-y: 52px;
       --card-2-scale: 0.92;
       --card-2-clip: inset(22% 0 0 0 round 0);
-      --card-3-opacity: 0;
-      --card-3-x: -18px;
-      --card-3-y: 44px;
-      --card-3-scale: 0.92;
-      --card-3-clip: inset(24% 0 0 0 round 0);
-      --card-4-opacity: 0;
-      --card-4-x: 12px;
-      --card-4-y: 40px;
-      --card-4-scale: 0.9;
-      --card-4-clip: inset(24% 0 0 0 round 0);
     }
 
     .story-notes {
@@ -482,7 +506,9 @@
 
     .story-card {
       position: absolute;
+      margin: 0;
       overflow: hidden;
+      border-radius: 20px;
       box-shadow: 0 22px 52px rgba(76, 106, 87, 0.12);
       transition: filter 180ms linear;
     }
@@ -502,10 +528,10 @@
     }
 
     .story-card--1 {
-      top: 2%;
-      left: 32%;
-      width: var(--story-card-lg);
-      aspect-ratio: 1;
+      top: 0;
+      right: 0;
+      width: 84%;
+      aspect-ratio: 3 / 2;
       opacity: var(--card-1-opacity);
       clip-path: var(--card-1-clip);
       transform: translate3d(var(--card-1-x), var(--card-1-y), 0) scale(var(--card-1-scale));
@@ -514,10 +540,10 @@
     }
 
     .story-card--2 {
-      top: 24%;
-      left: 17%;
-      width: var(--story-card-md);
-      aspect-ratio: 1;
+      top: 53.5%;
+      left: 0;
+      width: 60%;
+      aspect-ratio: 3 / 2;
       opacity: var(--card-2-opacity);
       clip-path: var(--card-2-clip);
       transform: translate3d(var(--card-2-x), var(--card-2-y), 0) scale(var(--card-2-scale));
@@ -525,33 +551,9 @@
       z-index: 2;
     }
 
-    .story-card--3 {
-      top: 45%;
-      left: 6%;
-      width: var(--story-card-sm);
-      aspect-ratio: 1;
-      opacity: var(--card-3-opacity);
-      clip-path: var(--card-3-clip);
-      transform: translate3d(var(--card-3-x), var(--card-3-y), 0) scale(var(--card-3-scale));
-      filter: blur(calc((1 - var(--card-3-opacity)) * 8px));
-      z-index: 3;
-    }
-
-    .story-card--4 {
-      top: 66%;
-      left: 11%;
-      width: calc(var(--story-card-sm) * 0.72);
-      aspect-ratio: 1;
-      opacity: var(--card-4-opacity);
-      clip-path: var(--card-4-clip);
-      transform: translate3d(var(--card-4-x), var(--card-4-y), 0) scale(var(--card-4-scale));
-      filter: blur(calc((1 - var(--card-4-opacity)) * 8px));
-      z-index: 4;
-    }
-
     .story-copy {
       display: grid;
-      gap: clamp(18px, 1.8vw, 24px);
+      gap: var(--space-2);
       align-content: start;
       justify-self: start;
       align-self: start;
@@ -583,8 +585,7 @@
 
 
     .vision-section {
-      padding-top: clamp(120px, 12vw, 180px);
-      padding-bottom: clamp(140px, 12vw, 196px);
+      padding-block: var(--section-gap-lg);
       overflow: visible;
     }
 
@@ -629,7 +630,7 @@
     .vision-copy {
       grid-column: 2;
       display: grid;
-      gap: clamp(16px, 1.6vw, 22px);
+      gap: var(--space-1);
       width: min(100%, 408px);
       align-content: start;
       justify-self: start;
@@ -659,26 +660,65 @@
       line-height: 1.5;
     }
 
-    .vision-body {
-      max-width: 580px !important;
-      transform: none;
-      display: grid;
-      gap: 0.12em;
-    }
-
-    .vision-body-line {
-      display: block;
-    }
-
-    .vision-body-close {
-      margin-top: 0.85em;
+    .vision-copy .vision-body-close {
       font-family: "EB Garamond", serif;
       font-style: italic;
       color: var(--ink-muted);
     }
 
+    /* MODULE (vault §8 + Module Library). De opsomming "passie voor de muziek,
+       plezier in het spelen, en de professionaliteit om alles foutloos te laten
+       verlopen" stond als staartzin in een lopende alinea. Als label + spec-rijen
+       met hairlines leest ze in één oogopslag; elk feit blijft staan, alleen de
+       verbindingswoorden verdwijnen. */
+    .vision-copy .vision-specs-label {
+      margin: var(--space-1) 0 0;
+      max-width: none;
+      font-family: "DM Sans", sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      /* text/muted = 4.57:1 op cream. */
+      color: var(--ink-muted);
+    }
+
+    .vision-specs {
+      margin: 0;
+      display: grid;
+      border-top: 1px solid var(--line);
+    }
+
+    .vision-spec {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding-block: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .vision-spec dt {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: clamp(19px, 1.5vw, 24px);
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    .vision-spec dd {
+      margin: 0;
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(13px, 0.95vw, 15px);
+      line-height: 1.5;
+      text-align: right;
+      color: var(--ink-muted);
+    }
+
     .vision-cta {
-      margin-top: clamp(18px, 2vw, 28px);
+      margin-top: var(--space-2);
     }
 
     .vision-cta .button {
@@ -690,36 +730,32 @@
       box-shadow: 0 10px 20px rgba(87, 110, 89, 0.04);
     }
 
+    /* HERONTWERP 'onze visie'-beeld. Twee kaders (0.65-boog + 1.35-liggend) om
+       placeholders heen gebouwd; er is één visie-beeld. Dat beeld heeft één
+       dominant onderwerp in filmisch goudlicht — precies wat vault §5 vraagt.
+       Nu één boog op 4:5 (vault §4 portretratio), top-radii = halve breedte
+       (design system). object-position 53% houdt de saxofonist én de bokeh in
+       beeld; de crop snijdt niets weg dat het onderwerp draagt. */
     .vision-visual {
       grid-column: 3;
       position: relative;
-      min-height: clamp(420px, 34vw, 610px);
       width: min(100%, 420px);
       justify-self: center;
       overflow: visible;
-      --vision-back-opacity: 1;
-      --vision-back-y: 24px;
-      --vision-back-scale: 1;
-      --vision-back-clip: inset(0 0 0 0 round 999px 999px 0 0);
-      --vision-front-opacity: 1;
-      --vision-front-x: 16px;
-      --vision-front-y: 36px;
-      --vision-front-scale: 1;
-      --vision-front-clip: inset(0 0 0 0 round 0);
     }
 
     .vision-figure {
-      position: absolute;
+      position: relative;
+      margin: 0;
       overflow: hidden;
       box-shadow: 0 24px 52px rgba(76, 106, 87, 0.12);
-      transition: filter 180ms linear;
     }
 
     .vision-figure img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center;
+      object-position: 53% center;
     }
 
     .vision-figure::after {
@@ -731,28 +767,9 @@
     }
 
     .vision-figure--back {
-      top: 0;
-      left: 86px;
-      width: clamp(220px, 16vw, 320px);
-      aspect-ratio: 340 / 519.33;
-      border-radius: 999px 999px 0 0;
-      opacity: var(--vision-back-opacity);
-      clip-path: var(--vision-back-clip);
-      transform: translate3d(0, var(--vision-back-y), 0) scale(var(--vision-back-scale));
-      filter: blur(calc((1 - var(--vision-back-opacity)) * 8px));
-      z-index: 1;
-    }
-
-    .vision-figure--front {
-      left: 0;
-      top: clamp(176px, 15vw, 248px);
-      width: clamp(220px, 17vw, 344px);
-      aspect-ratio: 368 / 272;
-      opacity: var(--vision-front-opacity);
-      clip-path: var(--vision-front-clip);
-      transform: translate3d(var(--vision-front-x), var(--vision-front-y), 0) scale(var(--vision-front-scale));
-      filter: blur(calc((1 - var(--vision-front-opacity)) * 8px));
-      z-index: 2;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      border-radius: var(--radius-arch);
     }
 
     .vision-quote {
@@ -799,13 +816,12 @@
     }
 
     .presence-section {
-      padding-top: clamp(124px, 11vw, 180px);
-      padding-bottom: clamp(184px, 16vw, 260px);
+      padding-block: var(--section-gap-lg);
     }
 
     .presence-shell {
       display: grid;
-      gap: clamp(42px, 4vw, 64px);
+      gap: var(--space-4);
     }
 
     .presence-line {
@@ -834,13 +850,13 @@
     .presence-row {
       display: grid;
       grid-template-columns: minmax(260px, 340px) minmax(680px, 1fr);
-      column-gap: clamp(72px, 8vw, 148px);
+      column-gap: var(--space-5);
       align-items: start;
     }
 
     .presence-intro {
       display: grid;
-      gap: clamp(22px, 1.9vw, 30px);
+      gap: var(--space-2);
       align-content: start;
     }
 
@@ -892,7 +908,7 @@
     .presence-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(150px, 1fr));
-      column-gap: clamp(34px, 4vw, 72px);
+      column-gap: var(--space-4);
       align-items: start;
     }
 
@@ -900,7 +916,7 @@
       display: grid;
       align-content: start;
       grid-template-rows: auto auto minmax(2.5em, auto) auto;
-      gap: 18px;
+      gap: var(--space-1);
     }
 
     .presence-col {
@@ -996,8 +1012,9 @@
 
     .musicians-section {
       position: relative;
-      padding-top: clamp(128px, 11vw, 184px);
-      /* Ruimte onder de noot zodat die op cream blijft, boven de groene band. */
+      padding-top: var(--section-gap-lg);
+      /* Bewuste uitzondering buiten de schaal: deze waarde is geen ritme maar
+         constructie — ze houdt de noot op cream, bóven de groene band + boog. */
       padding-bottom: clamp(300px, 27vw, 420px);
       overflow: hidden;
       background: var(--bg);
@@ -1006,7 +1023,7 @@
     .musicians-shell {
       position: relative;
       display: grid;
-      gap: clamp(48px, 4vw, 72px);
+      gap: var(--space-4);
       z-index: 2;
     }
 
@@ -1029,8 +1046,8 @@
     .musicians-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      column-gap: clamp(24px, 2.6vw, 48px);
-      row-gap: clamp(44px, 4vw, 68px);
+      column-gap: var(--space-2);
+      row-gap: var(--space-4);
       align-items: start;
     }
 
@@ -1039,7 +1056,7 @@
       justify-items: start;
       align-content: start;
       /* vault §7: label->heading 16-40px, heading->body 24-64px. */
-      gap: clamp(13px, 1vw, 17px);
+      gap: var(--musician-gap);
       position: relative;
       z-index: 2;
     }
@@ -1063,7 +1080,11 @@
     .musician-frame img {
       width: 100%;
       height: 100%;
+      /* Portretten zijn 760x940 (0.81), het kader 154x210 (0.73): cover snijdt
+         alleen ~9% aan de zijkanten weg, verticaal gaat er niets verloren. Elke
+         kop blijft ruim binnen de boogcurve. */
       object-fit: cover;
+      object-position: center;
       display: block;
     }
 
@@ -1079,7 +1100,9 @@
        text/muted uit het design system = 4.57:1. Het goud verhuist naar
        .musician-rule, waar het decoratief mag zijn. */
     .musician-role {
-      margin: calc(clamp(13px, 1vw, 17px) * -1 + 4px) 0 0;
+      /* Optische correctie: trekt de rol terug tegen de naam aan, tegen de
+         grid-gap in. Bewust buiten de schaal. */
+      margin: calc(var(--musician-gap) * -1 + 4px) 0 0;
       font-family: "EB Garamond", serif;
       font-size: clamp(15px, 1.05vw, 17px);
       font-style: italic;
@@ -1163,7 +1186,7 @@
     .cta-banner {
       position: relative;
       margin-top: -2px;
-      padding: clamp(112px, 10vw, 156px) 0 clamp(124px, 11vw, 172px);
+      padding-block: var(--section-gap-lg);
       background: var(--bg);
       z-index: 2;
     }
@@ -1202,17 +1225,11 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 16px;
+      gap: var(--space-1);
       margin-top: clamp(10px, 1vw, 14px);
     }
 
     @media (min-width: 1101px) and (max-width: 1440px) {
-      :root {
-        --story-card-lg: clamp(180px, 14vw, 240px);
-        --story-card-md: clamp(148px, 11vw, 196px);
-        --story-card-sm: clamp(110px, 8.2vw, 148px);
-      }
-
       .over-hero .section-shell {
         width: min(1440px, calc(100vw - clamp(80px, 10vw, 140px)));
       }
@@ -1231,27 +1248,29 @@
         grid-template-columns: minmax(420px, 1fr) minmax(340px, 500px);
         justify-content: stretch;
         gap: clamp(48px, 5vw, 80px);
-        min-height: clamp(680px, 64vw, 820px);
       }
 
       .story-media {
-        width: min(100%, 520px);
-        height: clamp(560px, 52vw, 720px);
+        width: min(100%, 560px);
       }
 
       .story-copy {
         width: min(100%, 480px);
         margin-top: clamp(60px, 6vw, 100px);
-        gap: clamp(24px, 2.4vw, 36px);
+        gap: var(--space-2);
       }
 
       .story-copy p {
         max-width: 34ch;
-        margin-top: 16px;
       }
-
     }
 
+    /* De pixelposities die hier stonden beschreven de 4-kaart-cascade (kaart 1..4
+       op 72/302/562/784px) en de alinea-offsets die daarop uitgelijnd waren
+       (p:first-of-type margin-top: 285px). Die compositie bestaat niet meer; de
+       nieuwe collage is proportioneel en heeft geen breakpoint-geometrie nodig.
+       Wat blijft is de kolombreedte + de bewuste titel-offset (vault §2: lijn uit
+       op het raster, breek het daarna bewust). */
     @media (min-width: 1350px) and (max-width: 1440px) {
       .story-section .section-shell {
         width: 1172px;
@@ -1261,59 +1280,22 @@
         width: 1172px;
         grid-template-columns: 648px 418px;
         gap: 106px;
-        min-height: 990px;
         align-items: start;
         justify-content: start;
       }
 
       .story-media {
-        left: 0;
         width: 648px;
-        height: 990px;
-      }
-
-      .story-card--1 {
-        top: 72px;
-        left: 231px;
-        width: 416px;
-        height: 308px;
-        aspect-ratio: auto;
-      }
-
-      .story-card--2 {
-        top: 302px;
-        left: 68px;
-        width: 372px;
-        height: 275px;
-        aspect-ratio: auto;
-      }
-
-      .story-card--3 {
-        top: 562px;
-        left: 0;
-        width: 328px;
-        height: 243px;
-        aspect-ratio: auto;
-      }
-
-      .story-card--4 {
-        top: 784px;
-        left: 143px;
-        width: 276px;
-        height: 204px;
-        aspect-ratio: auto;
       }
 
       .story-copy {
         width: 418px;
         margin-top: 112px;
-        gap: 0;
         overflow: visible;
       }
 
       .story-copy .story-title {
         margin-left: 63px;
-        margin-top: 15%;
         font-size: 84px;
         line-height: 1.06;
         white-space: nowrap;
@@ -1321,20 +1303,10 @@
       }
 
       .story-copy p {
-        max-width: none;
-        margin-top: 18px;
+        max-width: 34ch;
         font-size: 20px;
         line-height: 1.5;
-        margin-left: -20%;
       }
-
-      /* Alleen de eerste alinea zakt mee met de kaarten-cascade; de tweede
-         volgt op normale alinea-afstand. */
-      .story-copy p:first-of-type {
-        margin-top: 285px;
-      }
-
-
 
       .musicians-shell {
         width: 88%;
@@ -1355,59 +1327,22 @@
         width: 1406px;
         grid-template-columns: 777px 502px;
         gap: 127px;
-        min-height: 1185px;
         align-items: start;
         justify-content: start;
       }
 
       .story-media {
-        left: 0;
         width: 777px;
-        height: 1185px;
-      }
-
-      .story-card--1 {
-        top: 86px;
-        left: 277px;
-        width: 500px;
-        height: 370px;
-        aspect-ratio: auto;
-      }
-
-      .story-card--2 {
-        top: 363px;
-        left: 81px;
-        width: 446px;
-        height: 329px;
-        aspect-ratio: auto;
-      }
-
-      .story-card--3 {
-        top: 674px;
-        left: 0;
-        width: 393px;
-        height: 292px;
-        aspect-ratio: auto;
-      }
-
-      .story-card--4 {
-        top: 941px;
-        left: 172px;
-        width: 331px;
-        height: 245px;
-        aspect-ratio: auto;
       }
 
       .story-copy {
         width: 502px;
         margin-top: 135px;
-        gap: 0;
         overflow: visible;
       }
 
       .story-copy .story-title {
         margin-left: 76px;
-        margin-top: 15%;
         font-size: 99px;
         line-height: 1.06;
         white-space: nowrap;
@@ -1415,18 +1350,10 @@
       }
 
       .story-copy p {
-        max-width: none;
-        margin-top: 20px;
+        max-width: 34ch;
         font-size: 23px;
         line-height: 1.5;
-        margin-left: -20%;
       }
-
-      .story-copy p:first-of-type {
-        margin-top: 342px;
-      }
-
-
 
       .musicians-shell {
         width: 88%;
@@ -1494,10 +1421,9 @@
       }
 
       .hero-media {
-        margin: 0 auto;
         width: min(100%, 520px);
-        height: clamp(460px, 92vw, 620px);
-        margin-top: 18px;
+        /* margin-bottom vangt het detailfragment op dat onderaan uithangt. */
+        margin: 18px auto clamp(34px, 6vw, 52px);
       }
 
       .scroll-cue {
@@ -1505,12 +1431,7 @@
       }
 
       .story-section {
-        padding-top: 54px;
-        padding-bottom: 72px;
-      }
-
-      .story-shell {
-        min-height: 0;
+        padding-block: 54px 72px;
       }
 
       .story-copy .story-title {
@@ -1520,10 +1441,8 @@
 
       .story-media {
         order: 2;
-        width: min(100%, 460px);
+        width: min(100%, 520px);
         margin: 0 auto;
-        left: 0;
-        height: clamp(470px, 108vw, 640px);
       }
 
       .story-copy {
@@ -1534,8 +1453,7 @@
       }
 
       .vision-section {
-        padding-top: 80px;
-        padding-bottom: 88px;
+        padding-block: 80px 88px;
       }
 
       .vision-shell {
@@ -1556,7 +1474,8 @@
       .vision-visual {
         grid-column: auto;
         order: 1;
-        min-height: clamp(380px, 86vw, 520px);
+        width: min(100%, 380px);
+        justify-self: start;
       }
 
       .vision-quote {
@@ -1571,8 +1490,7 @@
       }
 
       .presence-section {
-        padding-top: 80px;
-        padding-bottom: 96px;
+        padding-block: 80px 96px;
       }
 
       .presence-row {
@@ -1590,8 +1508,7 @@
       }
 
       .musicians-section {
-        padding-top: 80px;
-        padding-bottom: 300px;
+        padding-block: 80px 300px;
       }
 
       .musicians-title {
@@ -1604,8 +1521,7 @@
       }
 
       .cta-banner {
-        padding-top: 80px;
-        padding-bottom: 80px;
+        padding-block: 80px;
       }
     }
 
@@ -1615,26 +1531,20 @@
         --shell-width: calc(100vw - 40px);
         /* Fluid title: 68px at 430px, 54px at 360px */
         --hero-title: clamp(54px, 15.8vw, 68px);
-        /* Back card: ~10% larger than previous iteration */
-        --hero-back-width: min(41.8vw, 179px);
-        --hero-back-height: calc(var(--hero-back-width) * 670.22 / 434.24);
-        /* Front card: ~10% larger */
-        --hero-front-width: min(47.3vw, 204px);
-        --hero-front-height: calc(var(--hero-front-width) * 131 / 141);
       }
 
       /* ── Hero section ── */
       .over-hero {
-        padding-top: 64px;
-        padding-bottom: 48px;
+        padding-block: 64px 48px;
       }
 
-      /* Block layout so hero-copy flows and hero-media sits absolutely on top */
+      /* Het bandbeeld is 3:2 en zakt op mobiel onder de tekst i.p.v. absoluut
+         achter de knop te hangen (vault §12: overlap -> bewuste stapeling).
+         De oude min-height rekende met twee absolute kaarten. */
       .hero-shell {
         display: block;
         position: relative;
-        /* Tall enough for full-width text + images starting below button */
-        min-height: max(620px, calc(70vw + clamp(300px, 78vw, 380px) + 24px));
+        min-height: 0;
       }
 
       /* Text column — full natural width, z-index above images */
@@ -1677,22 +1587,12 @@
         font-size: 14px;
       }
 
-      /* Image pair starts below button area, floats bottom-right */
+      /* Beeld onder de tekst, volle breedte; het detail overlapt de linkerhoek. */
       .hero-media {
-        position: absolute;
-        right: -20px;
-        top: clamp(290px, 70vw, 360px);
-        width: 66vw;
-        height: clamp(330px, 86vw, 418px);
-        margin: 0;
+        position: relative;
+        width: 100%;
+        margin: clamp(26px, 7vw, 34px) 0 clamp(30px, 7vw, 40px);
         z-index: 1;
-      }
-
-      /* Front card repositioned for tighter overlap at mobile scale */
-      .hero-card--front {
-        clip-path: inset(0 0 0 0 round 0);
-        left: 0;
-        top: clamp(140px, 35vw, 180px);
       }
 
       /* Scroll cue: left-aligned circle with down arrow on mobile */
@@ -1726,10 +1626,9 @@
         transform: rotate(45deg) translate(-1px, -2px);
       }
 
-      /* ── Story section — right text + big staircase cascade ── */
+      /* ── Story section — right text + offset collage ── */
       .story-section {
-        padding-top: 56px;
-        padding-bottom: 56px;
+        padding-block: 56px;
       }
 
       /* flex-column keeps 'order' working; block kills it */
@@ -1780,52 +1679,13 @@
         margin-top: 14px;
       }
 
-
-
-      /* Desktop-proportional cascade — left-based, decreasing sizes */
+      /* De collage is proportioneel: dezelfde twee kaarten als op desktop,
+         geen aparte mobiele geometrie meer nodig. */
       .story-media {
         order: 2;
         position: relative;
         width: 100%;
-        left: 0;
-        height: clamp(400px, 123vw, 510px);
         margin: clamp(28px, 7vw, 40px) auto 0;
-      }
-
-      /* Card 1 — top-right, largest */
-      .story-card--1 {
-        top: 7.3%;
-        left: 36%;
-        right: auto;
-        width: 51%;
-        aspect-ratio: 4 / 3;
-      }
-
-      /* Card 2 — steps left and down */
-      .story-card--2 {
-        top: 30.6%;
-        left: 10%;
-        right: auto;
-        width: 46%;
-        aspect-ratio: 4 / 3;
-      }
-
-      /* Card 3 — far left, smaller */
-      .story-card--3 {
-        top: 56.9%;
-        left: 0;
-        right: auto;
-        width: 41%;
-        aspect-ratio: 4 / 3;
-      }
-
-      /* Card 4 — steps back right, smallest */
-      .story-card--4 {
-        top: 79.3%;
-        left: 22%;
-        right: auto;
-        width: 34%;
-        aspect-ratio: 4 / 3;
       }
 
       /* Floating music notes — top-left area */
@@ -1860,8 +1720,7 @@
 
       /* ── Vision section ── */
       .vision-section {
-        padding-top: 52px;
-        padding-bottom: 80px;
+        padding-block: 52px 80px;
       }
 
       /* Show notes, tucked top-right */
@@ -1929,36 +1788,17 @@
         max-width: 100%;
       }
 
-      /* Visual pulled up to sit alongside the button on the right */
+      /* Eén boog, rechts uitgelijnd: de tekstkolom houdt links zijn ruimte
+         (vault §5 asymmetrisch, geen gecentreerde stapel). */
       .vision-visual {
         order: unset;
         position: relative;
-        width: 100%;
-        min-height: clamp(258px, 74vw, 320px);
-        margin-top: -55px;
+        width: min(72%, 260px);
+        justify-self: auto;
+        align-self: flex-end;
+        margin-top: clamp(24px, 6vw, 32px);
         z-index: 1;
         overflow: visible;
-        --vision-back-y: 0px;
-        --vision-front-x: 0px;
-        --vision-front-y: 0px;
-      }
-
-      /* Back: portrait arch on far right */
-      .vision-figure--back {
-        top: 0;
-        left: 57%;
-        right: auto;
-        width: 43%;
-        aspect-ratio: 165 / 249;
-      }
-
-      /* Front: landscape below and slightly left of back */
-      .vision-figure--front {
-        top: clamp(90px, 30vw, 135px);
-        left: 38%;
-        right: auto;
-        width: 50%;
-        aspect-ratio: 184 / 171;
       }
 
       /* Quote: full width, left indent matching Figma */
@@ -2277,8 +2117,7 @@
       }
 
       .over-hero {
-        padding-top: 84px;
-        padding-bottom: 82px;
+        padding-block: 84px 82px;
       }
 
       .over-hero .section-shell {
@@ -2312,12 +2151,12 @@
       }
 
       .hero-actions {
-        gap: 20px;
+        gap: var(--space-1);
         margin-top: 68px;
       }
 
       .hero-actions .button {
-        min-width: 187px;
+        min-width: var(--button-width);
         height: 51px;
         padding: 0 24px;
         border-width: 1.4px;
@@ -2325,24 +2164,11 @@
         box-shadow: 0 10px 20px rgba(87, 110, 89, 0.04);
       }
 
+      /* De kaartposities die hier stonden (434x670-boog + 451x419) hoorden bij de
+         oude placeholder-compositie. De 3:2-verhouding regelt de hoogte nu zelf. */
       .hero-media {
         width: 766px;
-        height: 812px;
-        margin-top: 0;
-      }
-
-      .hero-card--back {
-        top: 27px;
-        right: -10%;
-        width: 434.24px;
-        height: 670.22px;
-      }
-
-      .hero-card--front {
-        left: 15%;
-        top: 389px;
-        width: 451px;
-        height: 419px;
+        margin-top: 40px;
       }
 
       .scroll-cue {
