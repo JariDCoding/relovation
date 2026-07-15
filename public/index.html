@@ -85,7 +85,10 @@
     }
 
     body {
-      min-height: 8994px;
+      /* Was min-height: 8994px — de hoogte van het oude Figma-canvas. De pagina
+         eindigt op ~6700px, dus dat waren ruim 2 schermen lege cream ná de CTA.
+         Alleen ≤720px had al een `min-height: auto`-pleister; nu is het overal weg. */
+      min-height: 0;
       font-family: "DM Sans", sans-serif;
       background:
         radial-gradient(circle at 12% 16%, rgba(255, 255, 255, 0.35), transparent 28%),
@@ -182,7 +185,10 @@
     /* .title.title--promise i.p.v. .title--promise: de breakpoint-blokken verderop
        zetten .title opnieuw (gelijke specificiteit, later in de sheet = die wonnen). */
     .title.title--promise {
-      font-size: clamp(30px, 4.4vw, 72px);
+      /* clamp-min 38 i.p.v. 30 — vault §12: "Hero blijft groot, schaal display
+         niet te ver terug". Op 390 hield 30px de kop niet overeind naast de
+         18px subtitle (ratio 1.7); 38px geeft ook mobiel weer hiërarchie. */
+      font-size: clamp(38px, 4.4vw, 72px);
       max-width: 100%;
       /* Bewuste afwijking van de 150%-huisregel uit het design system: die geldt
          voor koppen van één of twee woorden. Een kop van vier regels valt bij
@@ -1306,7 +1312,9 @@
     .feature-item p {
       margin: 8px 0 0;
       max-width: 333px;
-      color: rgba(76, 106, 87, 0.9);
+      /* text/secondary uit het design system: 5.83:1. De vorige
+         rgba(76,106,87,0.9) haalde 4.17:1 — onder AA op body-grootte. */
+      color: var(--ink-soft);
       line-height: 1.45;
     }
 
@@ -1583,7 +1591,8 @@
     }
 
     .package-desc {
-      color: rgba(76,106,87,0.88);
+      /* Was rgba(76,106,87,0.88) = 4.01:1 op cream — onder AA op 16px. */
+      color: var(--ink-soft);
       line-height: 1.55;
       opacity: 0;
       transform: translate3d(0, 12px, 0);
@@ -1912,7 +1921,8 @@
       width: min(575px, 100%);
       margin: var(--stack-tight) auto var(--stack-actions);
       line-height: 1.6;
-      color: rgba(76,106,87,0.88);
+      /* Was rgba(76,106,87,0.88) = 4.01:1 op cream — onder AA op 16px. */
+      color: var(--ink-soft);
     }
 
     .cta-actions {
@@ -4183,7 +4193,7 @@
           <span class="feature-check" aria-hidden="true"></span>
           <div>
             <h3>Professionele muzikanten</h3>
-            <p>Conservatoriumgeschoolde muzikanten die op elk event het juiste niveau én de juiste rust brengen.</p>
+            <p>Ervaren, conservatoriumgeschoolde muzikanten die op elk event het juiste niveau én de juiste rust brengen.</p>
           </div>
         </article>
 

@@ -35,13 +35,13 @@
            --space-7: clamp(248px,14vw,304px)  -> clamp(192px, 14vw, 256px)
          Deze pagina gebruikt overal de tokens, dus ze loopt automatisch mee zodra
          :root gesynct wordt. --space-1/-2 landen al op md 16 / lg 24. */
-      --space-1: clamp(16px, 1vw, 18px);
-      --space-2: clamp(24px, 1.5vw, 28px);
-      --space-3: clamp(38px, 2.4vw, 44px);
-      --space-4: clamp(62px, 3.8vw, 72px);
-      --space-5: clamp(100px, 6vw, 116px);
-      --space-6: clamp(162px, 9vw, 188px);
-      --space-7: clamp(248px, 14vw, 304px);
+      --space-1: clamp(12px, 1vw, 16px);
+      --space-2: clamp(16px, 1.5vw, 24px);
+      --space-3: clamp(32px, 2.4vw, 48px);
+      --space-4: clamp(48px, 3.8vw, 64px);
+      --space-5: clamp(64px, 6vw, 96px);
+      --space-6: clamp(96px, 9vw, 128px);
+      --space-7: clamp(128px, 14vw, 192px);
       --section-gap: var(--space-5);
       --section-gap-lg: var(--space-6);
       --title-gap: var(--space-4);
@@ -722,7 +722,7 @@
     }
 
     .vision-cta .button {
-      min-width: 187px;
+      min-width: var(--button-width);
       height: 51px;
       padding: 0 24px;
       border-width: 1.4px;
@@ -1784,7 +1784,7 @@
       }
 
       .vision-cta .button {
-        min-width: 187px;
+        min-width: var(--button-width);
         max-width: 100%;
       }
 
@@ -2039,27 +2039,11 @@
     @media (max-width: 390px) {
       :root {
         --hero-title: clamp(50px, 14.5vw, 56px);
-        --hero-back-width: min(44vw, 172px);
-        --hero-back-height: calc(var(--hero-back-width) * 670.22 / 434.24);
-        --hero-front-width: min(49.5vw, 193px);
-        --hero-front-height: calc(var(--hero-front-width) * 131 / 141);
       }
 
-      .hero-shell {
-        min-height: max(580px, calc(68vw + clamp(270px, 74vw, 330px) + 24px));
-      }
-
-      .hero-media {
-        right: -12px;
-        top: clamp(265px, 68vw, 320px);
-        width: 62vw;
-        height: clamp(265px, 74vw, 320px);
-      }
-
-      .hero-card--front {
-        top: clamp(115px, 32vw, 145px);
-      }
-
+      /* De absolute hero-geometrie die hier stond (62vw breed, top: 265px) hoorde
+         bij het oude twee-kaarten-blok. Het beeld stapelt nu gewoon onder de
+         tekst; breedte en hoogte volgen uit de 3:2-ratio. */
       .hero-copy .lead {
         max-width: 100%;
         font-size: 15px;
@@ -2071,11 +2055,9 @@
         font-size: 13px;
       }
 
-      /* Story cascade for small phones — same staircase, scaled down */
       .story-copy .story-title {
         font-size: clamp(36px, 9.8vw, 42px);
       }
-
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2180,94 +2162,43 @@
       }
 
       .story-section {
-        padding-top: 126px;
-        padding-bottom: 164px;
+        padding-block: var(--section-gap-lg);
       }
 
       .story-shell {
         width: 1562px;
         grid-template-columns: 863px 558px;
         gap: 141px;
-        min-height: 1317px;
         align-items: start;
       }
 
       .story-media {
-        left: 0;
         width: 863px;
-        height: 1317px;
-      }
-
-      .story-card--1 {
-        top: 96px;
-        left: 308px;
-        width: 555px;
-        height: 411px;
-        aspect-ratio: auto;
-      }
-
-      .story-card--2 {
-        top: 403px;
-        left: 90px;
-        width: 495px;
-        height: 366px;
-        aspect-ratio: auto;
-      }
-
-      .story-card--3 {
-        top: 749px;
-        left: 0;
-        width: 437px;
-        height: 324px;
-        aspect-ratio: auto;
-      }
-
-      .story-card--4 {
-        top: 1045px;
-        left: 191px;
-        width: 368px;
-        height: 272px;
-        aspect-ratio: auto;
       }
 
       .story-copy {
         width: 558px;
         margin-top: 150px;
-        gap: 0;
         overflow: visible;
-        padding-left: 0;
-        padding-right: 0;
       }
 
       .story-copy .story-title {
         max-width: max-content;
         margin-left: 84px;
-        margin-top: 15%;
         font-size: 110px;
         line-height: 1.06;
         white-space: nowrap;
         overflow: visible;
-        padding-left: 0;
-        align-self: center;
       }
 
       .story-copy p {
         max-width: 558px;
-        margin-top: 22px;
         font-size: 26px;
         line-height: 1.5;
-        margin-left: -20%;
       }
-
-      .story-copy p:first-of-type {
-        margin-top: 380px;
-      }
-
-
 
       .vision-section {
-        padding-top: 176px;
-        padding-bottom: 214px;
+        padding-block: var(--section-gap-lg);
       }
 
       .vision-notes {
@@ -2298,7 +2229,11 @@
         margin-left: 10px;
       }
 
-      .vision-copy p {
+      /* Gescoped op .vision-body: de bewuste bleed naar rechts (-220px) geldt voor
+         de alinea, niet voor het label / de spec-rijen / de slotregel — die
+         moeten binnen de kolom blijven staan, anders lopen de hairlines over het
+         beeld heen. */
+      .vision-copy .vision-body {
         max-width: 404px;
         font-size: 24px;
         line-height: 1.5;
@@ -2309,14 +2244,28 @@
         margin-left: 10px;
       }
 
+      .vision-copy .vision-specs-label,
+      .vision-specs,
+      .vision-copy .vision-body-close {
+        margin-left: 10px;
+        position: relative;
+        z-index: 5;
+      }
+
+      .vision-copy .vision-body-close {
+        max-width: 404px;
+        font-size: 22px;
+        line-height: 1.5;
+      }
+
       .vision-cta {
-        margin-top: 82px;
+        margin-top: var(--space-4);
         margin-left: 10px;
         transform: translateX(5%);
       }
 
       .vision-cta .button {
-        min-width: 187px;
+        min-width: var(--button-width);
         height: 51px;
         padding: 0 24px;
         border-width: 1.4px;
@@ -2326,31 +2275,17 @@
 
       .vision-visual {
         grid-column: 2;
-        min-height: 700px;
         width: 404px;
         justify-self: center;
-        margin-left: 0;
+        margin-top: 52px;
       }
 
-      .vision-figure--back {
-        top: 52px;
-        left: 46px;
-        width: 330px;
-        height: 509.328px;
-      }
-
-      .vision-figure--front {
-        left: -110px;
-        top: 408px;
-        width: 331.2px;
-        height: 244.8px;
-        aspect-ratio: 23 / 17;
-      }
-
+      /* padding-top was 424px: uitgelijnd op de tweede (verdwenen) figuur op
+         top: 408. Met één boog van 404x505 is 168px de juiste inzet. */
       .vision-quote {
         grid-column: 3;
         width: 418px;
-        padding-top: 424px;
+        padding-top: 168px;
         margin-left: 0;
         justify-self: end;
       }
@@ -2374,8 +2309,7 @@
       }
 
       .presence-section {
-        padding-top: 132px;
-        padding-bottom: 236px;
+        padding-block: var(--section-gap-lg);
       }
 
       .presence-shell {
@@ -2385,7 +2319,7 @@
 
       .presence-row {
         grid-template-columns: 332px minmax(860px, 1fr);
-        column-gap: 116px;
+        column-gap: var(--space-5);
       }
 
       .presence-title {
@@ -2400,14 +2334,14 @@
 
       .presence-grid {
         grid-template-columns: repeat(3, 1fr);
-        column-gap: 88px;
+        column-gap: var(--space-4);
         transform: translateX(10%);
         margin-top: 5%;
       }
 
       .presence-item {
         grid-template-rows: auto auto 64px auto;
-        gap: 22px;
+        gap: var(--space-2);
       }
 
       .presence-number {
@@ -2429,7 +2363,7 @@
       }
 
       .musicians-section {
-        padding-top: 124px;
+        padding-top: var(--section-gap-lg);
         padding-bottom: 400px;
       }
 
@@ -2534,25 +2468,27 @@
               <span class="reveal-word" style="animation-delay: 0.1s;">ons</span>
             </span>
           </h1>
-          <p class="lead">Relovation ontstond vanuit een gedeelde passie voor muziek en de overtuiging dat live spelen altijd het verschil maakt.</p>
+          <p class="lead">Relovation ontstond uit een gedeelde passie voor muziek en de overtuiging dat live spelen altijd het verschil maakt.</p>
           <div class="hero-actions reveal-actions">
-            <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
+            <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
           </div>
         </div>
 
         <div class="hero-media reveal-visual" data-scroll-scene="hero">
-          <figure class="hero-card hero-card--back" aria-hidden="true">
-            <img src="https://www.figma.com/api/mcp/asset/8f5a5b6a-bec4-4749-9e2d-0aaf6b98ce14" alt="Relovation pianist glimlachend tijdens een live optreden">
+          <figure class="hero-card hero-card--back">
+            <img src="./assets/photos/over-hero-band-podium.webp" width="1600" height="1066"
+                 loading="lazy" decoding="async"
+                 alt="De vier muzikanten van Relovation staan gearmd op het podium en buigen na hun optreden.">
           </figure>
           <figure class="hero-card hero-card--front" aria-hidden="true">
-            <img src="https://www.figma.com/api/mcp/asset/9c18741a-d826-4cac-8e12-3be0f7e07cb9" alt="Relovation trompettist tijdens een intiem live moment">
+            <img src="./assets/photos/detail-drumpedaal-tapijt.webp" width="1600" height="1067"
+                 loading="lazy" decoding="async" alt="">
           </figure>
         </div>
       </div>
 
       <a class="scroll-cue reveal-visual" href="#verhaal" aria-label="Ga naar Ons verhaal">
         <img src="./note%20relovtion.svg" alt="">
-        <img src="https://www.figma.com/api/mcp/asset/5ac97c7a-9b9e-4f19-b9cd-414e304159d6" alt="">
       </a>
     </section>
 
@@ -2563,17 +2499,14 @@
             <img src="./note%20relovtion.svg" alt="">
             <img src="./note%20relovtion.svg" alt="">
           </div>
-          <figure class="story-card story-card--1" aria-hidden="true">
-            <img src="https://www.figma.com/api/mcp/asset/e07d4d7f-750a-4ade-9054-6fe5677f8e22" alt="">
+          <figure class="story-card story-card--1">
+            <img src="./assets/photos/over-verhaal-straatfestival.webp" width="1600" height="1067"
+                 loading="lazy" decoding="async"
+                 alt="Een saxofonist van Relovation speelt zittend tussen het publiek op een zonnig straatfestival.">
           </figure>
           <figure class="story-card story-card--2" aria-hidden="true">
-            <img src="https://www.figma.com/api/mcp/asset/e07d4d7f-750a-4ade-9054-6fe5677f8e22" alt="">
-          </figure>
-          <figure class="story-card story-card--3" aria-hidden="true">
-            <img src="https://www.figma.com/api/mcp/asset/e07d4d7f-750a-4ade-9054-6fe5677f8e22" alt="">
-          </figure>
-          <figure class="story-card story-card--4" aria-hidden="true">
-            <img src="https://www.figma.com/api/mcp/asset/e07d4d7f-750a-4ade-9054-6fe5677f8e22" alt="">
+            <img src="./assets/photos/sfeer-openingen-straat-kind.webp" width="1600" height="1067"
+                 loading="lazy" decoding="async" alt="">
           </figure>
         </div>
 
@@ -2584,8 +2517,8 @@
               <span class="reveal-word" style="animation-delay: 0.1s;"><em>verhaal</em></span>
             </span>
           </h2>
-          <p>Robin startte op zijn achtste met de saxofoon en is er sindsdien nooit meer mee gestopt. In 2016 leerde hij Lorenzo kennen — een pianist die hem vanaf de eerste repetitie versteld deed staan. Na die eerste repetitie vroeg Robin hem om samen te spelen. Zo begon het.</p>
-          <p>Ze repeteerden, speelden hier en daar, en organiseerden in 2018 voor het eerst een eigen concert. Het jaar nadien opnieuw. Relovation groeide van daaruit organisch — niet gepland, maar gedragen door de muziek en de mensen errond. Lorenzo is sindsdien een vaste waarde én een goede vriend. Hij was erbij van het eerste uur, en dat hoor je.</p>
+          <p>Robin startte op zijn achtste met de saxofoon en stopte nooit meer. In 2016 leerde hij Lorenzo kennen — een pianist die hem vanaf de eerste repetitie versteld deed staan. Na die repetitie vroeg hij hem om samen te spelen. Zo begon het.</p>
+          <p>Ze repeteerden, speelden hier en daar, en organiseerden in 2018 hun eerste eigen concert. Het jaar nadien opnieuw. Relovation groeide van daaruit organisch — niet gepland, maar gedragen door de muziek en de mensen errond. Lorenzo is sindsdien een vaste waarde én een goede vriend, en dat hoor je.</p>
         </div>
       </div>
     </section>
@@ -2604,21 +2537,33 @@
               <span class="reveal-word" style="animation-delay: 0.1s;"><em>visie</em></span>
             </span>
           </h2>
-          <p class="vision-body">
-            <span class="vision-body-line">Live muziek verandert een moment. Ze maakt een ontvangst warmer, een diner intiemer, een feest onvergetelijk. Daarom benaderen we elk event met dezelfde drie dingen voorop: passie voor de muziek, plezier in het spelen, en de professionaliteit om alles foutloos te laten verlopen.</span>
-            <span class="vision-body-line vision-body-close">Dat is waar Relovation voor staat — en wat u hoort zodra we beginnen.</span>
-          </p>
+          <p class="vision-body">Live muziek verandert een moment. Ze maakt een ontvangst warmer, een diner intiemer, een feest onvergetelijk.</p>
+          <p class="vision-specs-label">Bij elk event voorop</p>
+          <dl class="vision-specs">
+            <div class="vision-spec">
+              <dt>Passie</dt>
+              <dd>voor de muziek</dd>
+            </div>
+            <div class="vision-spec">
+              <dt>Plezier</dt>
+              <dd>in het spelen</dd>
+            </div>
+            <div class="vision-spec">
+              <dt>Professionaliteit</dt>
+              <dd>alles verloopt foutloos</dd>
+            </div>
+          </dl>
+          <p class="vision-body-close">Dat is waar Relovation voor staat — en wat u hoort zodra we beginnen.</p>
           <div class="vision-cta reveal-actions">
-            <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
+            <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
           </div>
         </div>
 
-        <div class="vision-visual reveal-visual" aria-hidden="true">
+        <div class="vision-visual reveal-visual">
           <figure class="vision-figure vision-figure--back">
-            <img src="https://www.figma.com/api/mcp/asset/7deb99c0-5a6c-4c4e-b169-ed51bd088e22" alt="Relovation pianist tijdens live moment">
-          </figure>
-          <figure class="vision-figure vision-figure--front">
-            <img src="https://www.figma.com/api/mcp/asset/a3ac5bfe-c00d-457a-b074-5ad968657568" alt="Relovation trompettist tijdens intiem optreden">
+            <img src="./assets/photos/over-visie-sax-goudlicht.webp" width="1600" height="1067"
+                 loading="lazy" decoding="async"
+                 alt="Een saxofonist in gilet en das speelt solo in warm goudkleurig podiumlicht.">
           </figure>
         </div>
 
@@ -2654,7 +2599,7 @@
                 <span class="reveal-word" style="animation-delay: 0.1s;"><em>aanwezigheid</em></span>
               </span>
             </h2>
-            <p>Relovation brengt geen muziek die om aandacht vraagt, maar muziek die het moment optilt. Verfijnd in timing, zacht in présence en sterk in sfeer.</p>
+            <p>Geen muziek die om aandacht vraagt, maar muziek die het moment optilt. Verfijnd in timing, zacht in présence, sterk in sfeer.</p>
           </div>
 
           <div class="presence-grid">
@@ -2695,37 +2640,53 @@
         <div class="musicians-grid">
           <article class="musician-card reveal-copy">
             <span class="musician-rule" aria-hidden="true"></span>
-            <div class="musician-frame reveal-visual" aria-hidden="true"></div>
+            <div class="musician-frame reveal-visual">
+              <img src="./assets/photos/robin-sax-portret.webp" width="760" height="940"
+                   loading="lazy" decoding="async"
+                   alt="Robin Crauwels zingt aan de microfoon met zijn saxofoon in de hand, in warm rood-oranje podiumlicht.">
+            </div>
             <p class="musician-name">Robin Crauwels</p>
             <p class="musician-role">Saxofoon &amp; zang</p>
-            <p class="musician-bio">Robin begon op zijn achtste met de saxofoon en stopte er nooit meer mee. Als finalist van The Voice van Vlaanderen 2021 en als zanger op podia als de Koningin Elisabethzaal — met de Radio 2 Ratpack en de VRT Bigband — brengt hij een niveau mee dat u hoort van de eerste noot.</p>
+            <p class="musician-bio">Finalist van The Voice van Vlaanderen 2021. Zanger in zalen als de Koningin Elisabethzaal, met de Radio 2 Ratpack en de VRT Bigband. U hoort het niveau vanaf de eerste noot.</p>
             <a class="musician-ig" href="https://www.instagram.com/robin_crauwels/" target="_blank" rel="noopener noreferrer">@robin_crauwels</a>
           </article>
 
           <article class="musician-card reveal-copy" style="transition-delay: 0.08s;">
             <span class="musician-rule" aria-hidden="true"></span>
-            <div class="musician-frame reveal-visual" aria-hidden="true"></div>
+            <div class="musician-frame reveal-visual">
+              <img src="./assets/photos/lorenzo-piano-portret.webp" width="760" height="940"
+                   loading="lazy" decoding="async"
+                   alt="Lorenzo Nsumbi lacht in pak achter zijn Roland-keyboard in zacht avondlicht.">
+            </div>
             <p class="musician-name">Lorenzo Nsumbi</p>
             <p class="musician-role">Piano</p>
-            <p class="musician-bio">Lorenzo studeerde aan Codarts Rotterdam en is er van bij het eerste uur bij. Zijn pianospel is de reden dat Relovation ooit begon.</p>
+            <p class="musician-bio">Studeerde aan Codarts Rotterdam en is erbij van het eerste uur. Zijn pianospel is de reden dat Relovation begon.</p>
             <a class="musician-ig" href="https://www.instagram.com/lorenzo_on_keys/" target="_blank" rel="noopener noreferrer">@lorenzo_on_keys</a>
           </article>
 
           <article class="musician-card reveal-copy" style="transition-delay: 0.16s;">
             <span class="musician-rule" aria-hidden="true"></span>
-            <div class="musician-frame reveal-visual" aria-hidden="true"></div>
+            <div class="musician-frame reveal-visual">
+              <img src="./assets/photos/joppe-drums-portret.webp" width="760" height="940"
+                   loading="lazy" decoding="async"
+                   alt="Joppe Van Noten slaat in achter zijn drumstel tijdens een buitenoptreden.">
+            </div>
             <p class="musician-name">Joppe Van Noten</p>
             <p class="musician-role">Drums</p>
-            <p class="musician-bio">Joppe groeide op in Antwerpen en studeerde aan Codarts Rotterdam. Als leider van zijn eigen kwartet weet hij precies hoe hij een ruimte in beweging brengt.</p>
+            <p class="musician-bio">Groeide op in Antwerpen, studeerde aan Codarts Rotterdam. Leidt zijn eigen kwartet en weet precies hoe hij een ruimte in beweging brengt.</p>
             <a class="musician-ig" href="https://www.instagram.com/jv_ondrums/" target="_blank" rel="noopener noreferrer">@jv_ondrums</a>
           </article>
 
           <article class="musician-card reveal-copy" style="transition-delay: 0.24s;">
             <span class="musician-rule" aria-hidden="true"></span>
-            <div class="musician-frame reveal-visual" aria-hidden="true"></div>
+            <div class="musician-frame reveal-visual">
+              <img src="./assets/photos/tim-bas-portret.webp" width="760" height="940"
+                   loading="lazy" decoding="async"
+                   alt="Tim Pensaert speelt lachend zijn witte basgitaar in een festivaltent.">
+            </div>
             <p class="musician-name">Tim Pensaert</p>
             <p class="musician-role">Bas</p>
-            <p class="musician-bio">Tim legt de muzikale basis waar alles op rust. Als bassist van Meltheads — finalist De Nieuwe Lichting, tweede op Humo's Rock Rally, Pukkelpop — weet hij wat het is om een zaal te bewegen.</p>
+            <p class="musician-bio">Legt de muzikale basis waar alles op rust. Bassist van Meltheads — finalist De Nieuwe Lichting, tweede op Humo's Rock Rally, Pukkelpop — en weet wat het is om een zaal te bewegen.</p>
             <a class="musician-ig" href="https://www.instagram.com/timpensaert/" target="_blank" rel="noopener noreferrer">@timpensaert</a>
           </article>
         </div>
@@ -2745,10 +2706,10 @@
             <span class="reveal-word" style="animation-delay: 0.16s;">voor uw event.</span>
           </span>
         </h2>
-        <p class="cta-copy reveal-copy">Vertel ons welk moment u wil neerzetten en we werken een muzikale invulling uit die aansluit bij de sfeer, de ruimte en het ritme van uw event.</p>
+        <p class="cta-copy reveal-copy">Vertel ons welk moment u wil neerzetten. Wij stemmen de muzikale invulling af op de sfeer, de ruimte en het ritme van uw event.</p>
         <div class="cta-actions reveal-actions">
-          <a class="button button-primary" href="./aanvraag.html">Vertel ons over uw event</a>
-          <a class="button" href="mailto:relovation@robinmusic.be">Vraag uw voorstel aan</a>
+          <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
+          <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
         </div>
       </div>
     </section>
@@ -2805,26 +2766,22 @@
 
       const updateHeroScene = () => {
         if (!heroScene) return;
-        const rect = heroScene.getBoundingClientRect();
         const introProgress = clamp((performance.now() - introStart) / 1180, 0, 1);
         const scrollProgress = clamp(window.scrollY / Math.max(window.innerHeight * 0.92, 1), 0, 1);
         const heroProgress = Math.max(scrollProgress, introProgress);
         const p = easeOutCubic(heroProgress);
         const frontReveal = easeInOut(clamp((heroProgress - 0.08) / 0.72, 0, 1));
 
+        // De eindwaarden zijn 0: de rustpositie staat nu volledig in de CSS
+        // (bottom/left op de kaart), niet in een transform-offset.
         heroScene.style.setProperty("--hero-back-opacity", `${lerp(0, 1, easeOutCubic(clamp(heroProgress / 0.62, 0, 1)))}`);
-        heroScene.style.setProperty("--hero-back-y", `${lerp(28, -18, p)}px`);
+        heroScene.style.setProperty("--hero-back-y", `${lerp(28, 0, p)}px`);
         heroScene.style.setProperty("--hero-back-scale", `${lerp(0.975, 1, p)}`);
         heroScene.style.setProperty("--hero-front-opacity", `${lerp(0, 1, frontReveal)}`);
-        heroScene.style.setProperty("--hero-front-x", `${lerp(34, -8, frontReveal)}px`);
-        heroScene.style.setProperty("--hero-front-y", `${lerp(92, -46, frontReveal)}px`);
+        heroScene.style.setProperty("--hero-front-x", `${lerp(24, 0, frontReveal)}px`);
+        heroScene.style.setProperty("--hero-front-y", `${lerp(64, 0, frontReveal)}px`);
         heroScene.style.setProperty("--hero-front-scale", `${lerp(0.94, 1, frontReveal)}`);
         heroScene.style.setProperty("--hero-front-clip", `inset(${lerp(22, 0, frontReveal)}% 0 0 0 round 0)`);
-
-        if (rect.bottom < window.innerHeight * 0.45) {
-          heroScene.style.setProperty("--hero-back-y", "-24px");
-          heroScene.style.setProperty("--hero-front-y", "-54px");
-        }
       };
 
       const updateStoryScene = () => {
@@ -2832,11 +2789,10 @@
         const rect = storyScene.getBoundingClientRect();
         const progress = progressFromRect(rect, window.innerHeight, 1.02, -0.06);
 
+        // Twee kaarten i.p.v. vier: de collage onthult zich in twee tijden.
         const segments = [
-          { start: 0.12, end: 0.48, xFrom: -16, yFrom: 38, scaleFrom: 0.94 },
-          { start: 0.26, end: 0.62, xFrom: -24, yFrom: 52, scaleFrom: 0.92 },
-          { start: 0.42, end: 0.8, xFrom: -18, yFrom: 44, scaleFrom: 0.92 },
-          { start: 0.58, end: 0.96, xFrom: 12, yFrom: 40, scaleFrom: 0.9 }
+          { start: 0.12, end: 0.56, xFrom: -16, yFrom: 38, scaleFrom: 0.94 },
+          { start: 0.34, end: 0.82, xFrom: -24, yFrom: 52, scaleFrom: 0.92 }
         ];
 
         segments.forEach((segment, index) => {

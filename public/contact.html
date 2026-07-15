@@ -28,13 +28,13 @@
       /* Spacing — Figma "Spacing" (4pt): 4·8·12·16·24·32·48·64·96·128.
          Clamp-max = een echte Figma-stap, clamp-min = de stap eronder (vault §7).
          Boven 128 loopt de schaal door met dezelfde ratio: 128 -> 192 -> 256. */
-      --space-1: clamp(12px, 1vw, 16px); /* md 16 */
-      --space-2: clamp(16px, 1.5vw, 24px); /* lg 24 */
-      --space-3: clamp(32px, 2.4vw, 48px); /* 2xl 48 */
-      --space-4: clamp(48px, 3.8vw, 64px); /* 3xl 64 */
-      --space-5: clamp(64px, 6vw, 96px); /* 4xl 96 */
-      --space-6: clamp(128px, 9vw, 192px); /* 5xl 128 -> 192 */
-      --space-7: clamp(192px, 14vw, 256px); /* 192 -> 256 */
+      --space-1: clamp(12px, 1vw, 16px); /* sm 12 -> md 16 */
+      --space-2: clamp(16px, 1.5vw, 24px); /* md 16 -> lg 24 */
+      --space-3: clamp(32px, 2.4vw, 48px); /* xl 32 -> 2xl 48 */
+      --space-4: clamp(48px, 3.8vw, 64px); /* 2xl 48 -> 3xl 64 */
+      --space-5: clamp(64px, 6vw, 96px); /* 3xl 64 -> 4xl 96 */
+      --space-6: clamp(96px, 9vw, 128px); /* 4xl 96 -> 5xl 128 */
+      --space-7: clamp(128px, 14vw, 192px); /* 5xl 128 -> 192 (6xl) */
       --section-gap: var(--space-5);
       --section-gap-lg: var(--space-6);
       --title-gap: var(--space-4);
@@ -43,9 +43,10 @@
       --stack-copy: var(--space-2);
       --stack-actions: var(--space-3);
 
-      /* Type — DS-schaal, bewust LOS van de kopmaten (Body/L 26 · M 24 · S 16). */
-      --body-l: clamp(19px, 1.45vw, 26px);
-      --body-m: clamp(17px, 1.3vw, 24px);
+      /* Type — DS-schaal, bewust LOS van de kopmaten (Body/L 26 · M 24 · S 16).
+         Waarden identiek aan index.html: één schaal over alle pagina's. */
+      --body-l: clamp(19px, 2.2vw, 26px);
+      --body-m: clamp(18px, 1.55vw, 24px);
       --body-s: clamp(14px, 0.9vw, 16px);
       --label-size: 13px;
 
@@ -258,7 +259,8 @@
     }
 
     .hero-title em,
-    .form-title em {
+    .form-title em,
+    .social-title em {
       font-style: italic;
       font-weight: 500;
     }
@@ -519,9 +521,11 @@
       background: rgba(168, 74, 58, 0.05);
     }
 
+    /* Was rgba(168,74,58,0.95) -> 4.42:1 op cream, net onder AA. Nu dezelfde
+       fout-inkt als .form-status--error (7.82:1) — één foutkleur op de pagina. */
     .field-error {
       margin: 8px 0 0 24px;
-      color: rgba(168, 74, 58, 0.95);
+      color: rgba(120, 50, 38, 1);
       font-size: 14px;
       line-height: 1.5;
     }
@@ -609,12 +613,21 @@
       max-width: 600px;
     }
 
+    /* white-space: nowrap stond hier op de kop zelf. Dat blies de min-content
+       van de grid-kolom op tot de volle tekstbreedte, waardoor de hele
+       social-sectie onder 375px buiten de shell viel (op 320px 64px eraf,
+       weggeknipt door overflow-x: hidden). De woorden blijven heel via
+       .reveal-word, de regel mag wikkelen. */
     .social-title {
       font-size: clamp(58px, 4.6vw, 88px);
       color: var(--ink);
-      white-space: nowrap;
       overflow: visible;
       padding-right: 0.08em;
+    }
+
+    .social-copy,
+    .social-visual {
+      min-width: 0;
     }
 
     .social-title.reveal-title,
@@ -1304,7 +1317,8 @@
             <div class="social-copy">
               <h2 class="section-title social-title reveal-title" aria-label="Vind ons online">
                 <span class="reveal-line">
-                  <span class="reveal-word" style="animation-delay: 0.04s;">Vind ons <em>online</em></span>
+                  <span class="reveal-word" style="animation-delay: 0.04s;">Vind ons</span>
+                  <span class="reveal-word" style="animation-delay: 0.1s;"><em>online</em></span>
                 </span>
               </h2>
               <p class="social-support reveal-copy">Volg Relovation voor sfeerbeelden, live fragmenten en nieuwe momenten.</p>
