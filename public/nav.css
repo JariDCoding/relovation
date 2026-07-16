@@ -269,14 +269,6 @@ body { padding-top: var(--nav-h); }
 }
 .r-nav__ovl-list a:hover .r-nav__ovl-title { transform: translateX(10px); }
 
-.r-nav__ovl-list a.r-active .r-nav__ovl-title::after {
-  content: " →";
-  color: var(--nav-gold);
-  font-family: "DM Sans", sans-serif;
-  font-size: 0.36em;
-  vertical-align: middle;
-}
-
 /* Foot */
 .r-nav__ovl-foot { display: flex; flex-direction: column; gap: 14px; }
 .r-nav__ovl-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
