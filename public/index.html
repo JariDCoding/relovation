@@ -63,7 +63,9 @@
       --body-l: clamp(19px, 2.2vw, 26px);
       --body-m: clamp(18px, 1.55vw, 24px);
       --body-s: clamp(14px, 0.9vw, 16px);
-      --subtitle-size: var(--body-m);
+      /* Eigen (grotere) maat i.p.v. Body/M: de hero-subtekst mag iets zwaarder
+         wegen onder de vergrote editorial-kop. Was var(--body-m) = 18-24. */
+      --subtitle-size: clamp(20px, 1.95vw, 28px);
       /* H2 68 uit het design system; ramp i.p.v. de oude phi-afleiding van 176. */
       --about-title-size: clamp(32px, 6.4vw, 68px);
       --promo-title-size: clamp(28px, 4.2vw, 68px);
@@ -188,12 +190,14 @@
       /* clamp-min 38 i.p.v. 30 — vault §12: "Hero blijft groot, schaal display
          niet te ver terug". Op 390 hield 30px de kop niet overeind naast de
          18px subtitle (ratio 1.7); 38px geeft ook mobiel weer hiërarchie. */
-      font-size: clamp(38px, 4.4vw, 72px);
+      /* Kortere kop (2 regels i.p.v. 4) mag groter voor de editorial-luxury vibe.
+         Was clamp(38, 4.4vw, 72). */
+      font-size: clamp(44px, 5.6vw, 92px);
       max-width: 100%;
       /* Bewuste afwijking van de 150%-huisregel uit het design system: die geldt
-         voor koppen van één of twee woorden. Een kop van vier regels valt bij
+         voor koppen van één of twee woorden. Een kop van twee regels valt bij
          150% uit elkaar — zeker op mobiel. */
-      line-height: 1.24;
+      line-height: 1.18;
     }
 
     /* Het wordmark animeerde per LETTER, dus stond de gap op 0. Deze kop
@@ -201,6 +205,13 @@
        moet .title.reveal-title .reveal-line (0,3,0) overtreffen. */
     .title.title--promise .reveal-line {
       gap: 0.26em;
+      /* De reveal-animatie klipt elke regel (overflow:hidden op .reveal-line),
+         waardoor de staarten van g/p onderaan werden afgesneden. Padding geeft
+         de descenders ruimte BINNEN de klipbox (overflow klipt tot de padding-
+         box, dus padding-inhoud blijft zichtbaar); de negatieve marge vangt het
+         grootste deel op zodat de regelafstand nagenoeg gelijk blijft. */
+      padding-bottom: 0.24em;
+      margin-bottom: -0.16em;
     }
 
     /* ── Logobalk: infinite marquee ──────────────────────────────────────────
@@ -295,6 +306,7 @@
     .logo-mark--showtex { -webkit-mask-image: url("./assets/logos/showtex-mark.svg"); mask-image: url("./assets/logos/showtex-mark.svg"); }
     .logo-mark--suspicious { -webkit-mask-image: url("./assets/logos/suspicious.png"); mask-image: url("./assets/logos/suspicious.png"); }
     .logo-mark--tlooks { -webkit-mask-image: url("./assets/logos/tlooks-mark.png"); mask-image: url("./assets/logos/tlooks-mark.png"); }
+    .logo-mark--maene { -webkit-mask-image: url("./assets/logos/maene.svg"); mask-image: url("./assets/logos/maene.svg"); }
 
     /* Schuift exact één groepsbreedte op; --group-w wordt door JS gemeten.
        Van -1 groep naar 0 = beweging van links naar rechts.
@@ -3979,24 +3991,22 @@
     <section class="hero-inner">
       <div class="content">
         <p class="hero-eyebrow reveal-copy">Live muziek</p>
-        <h1 class="title title--promise reveal-title" aria-label="Muziek die u ziet, niet alleen hoort.">
+        <h1 class="title title--promise reveal-title" aria-label="Live gespeeld voor uw moment.">
           <span class="reveal-line" aria-hidden="true">
-            <span class="reveal-word" style="animation-delay: 0.04s;">Muziek</span>
-            <span class="reveal-word" style="animation-delay: 0.1s;">die</span>
-            <span class="reveal-word" style="animation-delay: 0.16s;">u</span>
-            <span class="reveal-word" style="animation-delay: 0.22s;">ziet,</span>
+            <span class="reveal-word" style="animation-delay: 0.04s;">Live</span>
+            <span class="reveal-word" style="animation-delay: 0.1s;">gespeeld</span>
           </span>
           <span class="reveal-line" aria-hidden="true">
-            <span class="reveal-word" style="animation-delay: 0.28s;">niet</span>
-            <span class="reveal-word" style="animation-delay: 0.34s;">alleen</span>
-            <span class="reveal-word reveal-word-italic" style="animation-delay: 0.4s;"><em>hoort.</em></span>
+            <span class="reveal-word" style="animation-delay: 0.16s;">voor</span>
+            <span class="reveal-word" style="animation-delay: 0.22s;">uw</span>
+            <span class="reveal-word reveal-word-italic" style="animation-delay: 0.28s;"><em>moment.</em></span>
           </span>
         </h1>
-        <p class="subtitle reveal-copy">Live muziek voor trouwfeesten, bedrijfsevents en recepties — volledig verzorgd, op maat.</p>
+        <p class="subtitle reveal-copy">Live muzikanten die de dansvloer vullen op uw trouwfeest, bedrijfsevent of privéfeest. Volledig verzorgd, op maat.</p>
 
         <div class="actions reveal-actions">
           <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
-          <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
+          <a class="button" href="./contact.html">Contacteer ons</a>
         </div>
       </div>
 
@@ -4042,6 +4052,7 @@
           <li class="logos-item"><span class="logo-mark logo-mark--showtex" style="--ratio: 5.01; --hf: 0.8;" role="img" aria-label="ShowTex"></span></li>
           <li class="logos-item"><span class="logo-mark logo-mark--suspicious" style="--ratio: 6.88; --hf: 0.6;" role="img" aria-label="Suspicious"></span></li>
           <li class="logos-item"><span class="logo-mark logo-mark--tlooks" style="--ratio: 1.03; --hf: 1.42;" role="img" aria-label="&rsquo;t Looks Buurtwerking"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--maene" style="--ratio: 1.02; --hf: 1.15;" role="img" aria-label="Maene"></span></li>
         </ul>
         <!-- Exacte kopie: de animatie schuift precies één groep op, dus de naad
              valt nooit zichtbaar. aria-hidden zodat een screenreader niet dubbelt. -->
@@ -4053,6 +4064,7 @@
           <li class="logos-item"><span class="logo-mark logo-mark--showtex" style="--ratio: 5.01; --hf: 0.8;"></span></li>
           <li class="logos-item"><span class="logo-mark logo-mark--suspicious" style="--ratio: 6.88; --hf: 0.6;"></span></li>
           <li class="logos-item"><span class="logo-mark logo-mark--tlooks" style="--ratio: 1.03; --hf: 1.42;"></span></li>
+          <li class="logos-item"><span class="logo-mark logo-mark--maene" style="--ratio: 1.02; --hf: 1.15;"></span></li>
         </ul>
       </div>
     </div>
@@ -4089,7 +4101,7 @@
               <span class="reveal-word" style="animation-delay: 0.16s;">Relovation?</span>
             </span>
           </h2>
-            <p class="about-text" data-node-id="99:36">Relovation is een flexibel live muziekconcept voor stijlvolle events. Geen vaste formule, maar muziek die meebeweegt met het moment — afgestemd op uw publiek, locatie en programma. Wij nemen de volledige muzikale omkadering op ons en denken met u mee.</p>
+            <p class="about-text" data-node-id="99:36">Relovation is een flexibel live muziekconcept voor stijlvolle events. Geen vaste formule, maar muziek die meebeweegt met het moment, afgestemd op uw publiek, locatie en programma. Wij nemen de volledige muzikale omkadering op ons en denken met u mee.</p>
 
             <div class="about-actions">
               <a class="button button-light" href="./over.html" data-node-id="100:30">Meer over ons →</a>
@@ -4151,27 +4163,30 @@
     <p class="arch-hint" aria-hidden="true">Sleep om te ontdekken</p>
 
     <div class="quote-motion-copy">
-      <h2 class="quote-motion-title" aria-label="Verfijnde live jazz die uw event naar een hoger niveau tilt.">
+      <h2 class="quote-motion-title" aria-label="Live muziek die de sfeer draagt, zonder het moment over te nemen.">
         <span class="quote-line">
-          <span class="quote-word" style="animation-delay: 0.04s;">Verfijnde</span>
-          <span class="quote-word" style="animation-delay: 0.1s;">live</span>
-          <span class="quote-word" style="animation-delay: 0.16s;">jazz</span>
-          <span class="quote-word" style="animation-delay: 0.22s;">die</span>
+          <span class="quote-word" style="animation-delay: 0.04s;">Live</span>
+          <span class="quote-word" style="animation-delay: 0.1s;">muziek</span>
         </span>
         <span class="quote-line">
-          <span class="quote-inline-asset is-fragment" style="animation-delay: 0.28s;" aria-hidden="true">
+          <span class="quote-inline-asset is-fragment" style="animation-delay: 0.16s;" aria-hidden="true">
             <img src="./assets/photos/home-duo-kaarslicht-zaal.webp" alt="" width="1600" height="1067" loading="lazy" decoding="async">
           </span>
-          <span class="quote-word" style="animation-delay: 0.34s;">uw</span>
-          <span class="quote-word" style="animation-delay: 0.4s;">event</span>
-          <span class="quote-word" style="animation-delay: 0.46s;">naar</span>
-          <span class="quote-word" style="animation-delay: 0.52s;">een</span>
+          <span class="quote-word" style="animation-delay: 0.22s;">die</span>
+          <span class="quote-word" style="animation-delay: 0.28s;">de</span>
+          <span class="quote-word" style="animation-delay: 0.34s;">sfeer</span>
+          <span class="quote-word" style="animation-delay: 0.4s;">draagt,</span>
         </span>
         <span class="quote-line">
-          <span class="quote-word" style="animation-delay: 0.58s;">hoger</span>
-          <span class="quote-word" style="animation-delay: 0.64s;">niveau</span>
-          <span class="quote-word" style="animation-delay: 0.7s;">tilt.</span>
-          <span class="quote-inline-asset is-note" style="animation-delay: 0.76s;" aria-hidden="true">
+          <span class="quote-word" style="animation-delay: 0.46s;">zonder</span>
+          <span class="quote-word" style="animation-delay: 0.52s;">het</span>
+          <span class="quote-word" style="animation-delay: 0.58s;">moment</span>
+        </span>
+        <span class="quote-line">
+          <span class="quote-word" style="animation-delay: 0.64s;">over</span>
+          <span class="quote-word" style="animation-delay: 0.7s;">te</span>
+          <span class="quote-word" style="animation-delay: 0.76s;">nemen.</span>
+          <span class="quote-inline-asset is-note" style="animation-delay: 0.82s;" aria-hidden="true">
             <span class="note-draw note-quotedance"></span>
           </span>
         </span>
@@ -4223,7 +4238,7 @@
 
         <div class="feature-actions">
           <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
-          <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
+          <a class="button" href="./contact.html">Contacteer ons</a>
         </div>
       </div>
 
@@ -4285,7 +4300,7 @@
       <p class="reveal-copy">Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat.</p>
       <div class="cta-actions reveal-actions">
         <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
-        <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
+        <a class="button" href="./contact.html">Contacteer ons</a>
       </div>
     </div>
   </section>
