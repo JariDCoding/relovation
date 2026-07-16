@@ -183,7 +183,10 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: var(--space-3);
-      min-height: 30vh;
+      /* Definiete hoogte (Figma ~786px op 1440): breekt de circulaire hoogte van
+         het portret-beeld, dat anders op z'n natuurlijke portret-hoogte rendert
+         en de hele hero te lang maakt. Kolommen croppen met object-fit: cover. */
+      height: clamp(480px, 52vw, 760px);
       align-items: stretch;
     }
 
@@ -198,7 +201,7 @@
 
     .hero-portrait-frame {
       width: 100%;
-      height: 94%;
+      height: 100%;
       border-radius: var(--radius-arch);
       overflow: hidden;
       background: #d9cfaa;
@@ -214,8 +217,8 @@
     .hero-contact-panel {
       position: relative;
       width: 100%;
-      aspect-ratio: 984.455 / 1415.826;
-      min-height: 60vh;
+      height: 100%;
+      /* Vult de grid-rijhoogte (Figma-verhouding) i.p.v. een te-hoog portret. */
       /* Was #56735f (los getal, buiten de tokens). Cream-tekst haalde daarop
          geen AA (copy 3.67:1, labels 3.14:1). Op var(--ink) — dezelfde groen
          als de footer — haalt alle tekst op 0.96 alpha 4.84:1. */
@@ -228,13 +231,15 @@
       padding: 0;
     }
 
+    /* Gebrande boog-uitsnede onderaan het paneel: een brede, ondiepe cream-veeg
+       die de bodem laat opkrullen (DS section-divider arch). */
     .hero-contact-panel::after {
       content: "";
       position: absolute;
       left: 50%;
       bottom: -1px;
-      width: 1080px;
-      height: 108px;
+      width: 128%;
+      height: clamp(72px, 8vw, 132px);
       transform: translateX(-50%);
       background: var(--bg);
       border-radius: 50% 50% 0 0 / 100% 100% 0 0;
@@ -733,7 +738,7 @@
       bottom: 0;
       width: 64%;
       aspect-ratio: 1.5; /* bron 1600x1067 -> geen crop */
-      border-radius: var(--radius-card);
+      border-radius: var(--radius-arch);
       overflow: hidden;
       box-shadow: 0 24px 44px rgba(56, 72, 60, 0.12);
       background: var(--bg-deep);
@@ -817,6 +822,12 @@
       .hero-contact-grid,
       .social-grid {
         grid-template-columns: 1fr;
+      }
+
+      /* Definiete desktop-hoogte terug naar auto: op 1 kolom stapelen beeld en
+         paneel en bepalen ze zelf hun hoogte. */
+      .hero-contact-grid {
+        height: auto;
       }
 
       .hero-portrait {

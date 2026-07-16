@@ -309,10 +309,20 @@
       white-space: nowrap;
     }
 
+    /* Editorial italic-accent op "ons" (bookend met de homepage-koppen). */
+    .hero-title .reveal-word-italic em {
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    /* Intro als italic serif pull-quote -> luxe editorial i.p.v. platte body. */
     .hero-copy .lead {
-      max-width: 31ch;
-      font-size: 26px;
-      line-height: 1.52;
+      max-width: 30ch;
+      font-family: "EB Garamond", serif;
+      font-style: italic;
+      font-size: clamp(23px, 1.9vw, 30px);
+      line-height: 1.5;
+      color: var(--ink-soft);
       margin-top: calc(var(--stack-actions) * 2);
     }
 
@@ -345,12 +355,13 @@
       color: var(--ink-muted);
     }
 
+    /* Gouden hairline i.p.v. groen -> luxe editorial accent. */
     .hero-eyebrow::before {
       content: "";
       flex-shrink: 0;
-      width: 36px;
+      width: 44px;
       height: 1px;
-      background: rgba(76, 106, 87, 0.28);
+      background: #af8f48;
     }
 
     /* HERONTWERP hero-beeld. De oude compositie was een 0.65-boog (434x670) met
@@ -391,17 +402,20 @@
       object-fit: cover;
     }
 
-    /* Bandbeeld — dominant, radius 20px (design system: kaarten/beelden). */
+    /* Bandbeeld — dominant, gebrande arch met een gouden hairline-frame (luxe). */
     .hero-card--back {
       top: 0;
       right: 0;
       width: 100%;
       aspect-ratio: 3 / 2;
-      border-radius: 20px;
+      border-radius: var(--radius-arch);
       opacity: var(--hero-back-opacity);
       transform: translate3d(0, var(--hero-back-y), 0) scale(var(--hero-back-scale));
       filter: blur(calc((1 - var(--hero-back-opacity)) * 8px));
       transition: filter 200ms linear;
+      box-shadow:
+        0 34px 80px -30px rgba(76, 106, 87, 0.28),
+        inset 0 0 0 1.5px rgba(175, 143, 72, 0.5);
       z-index: 1;
     }
 
@@ -481,37 +495,37 @@
        twee 3:2-beelden uit dezelfde straatreeks (vault §14.3), dominant beeld
        rechtsboven, tweede beeld overlappend linksonder (§5 overlap).
        Geometrie is puur proportioneel — één regel, alle breakpoints. */
+    /* HERONTWERP 'ons verhaal' — editorial diagonale cascade van vier
+       RECHTHOEKIGE foto's die trapsgewijs naar linksonder zakken en één voor één
+       inkomen op scroll (staggered reveal). Geometrie puur proportioneel. */
     .story-media {
       position: relative;
       align-self: start;
-      width: min(100%, 620px);
-      /* card1 h = 0.56W (84% breed, 3:2), card2 top = 0.46W, h = 0.40W
-         -> containerhoogte 0.86W. */
-      aspect-ratio: 100 / 86;
-      --card-1-opacity: 0;
-      --card-1-x: -16px;
-      --card-1-y: 38px;
-      --card-1-scale: 0.94;
-      --card-1-clip: inset(18% 0 0 0 round 0);
-      --card-2-opacity: 0;
-      --card-2-x: -24px;
-      --card-2-y: 52px;
-      --card-2-scale: 0.92;
-      --card-2-clip: inset(22% 0 0 0 round 0);
+      width: min(100%, 540px);
+      /* Portret-vlak dat de volledige diagonaal draagt: card top 0..66% + hoogte. */
+      aspect-ratio: 62 / 82;
     }
 
-    .story-notes {
-      display: none;
-    }
+    .story-notes { display: none; }
 
     .story-card {
       position: absolute;
       margin: 0;
+      width: 60%;
+      aspect-ratio: 4 / 3;
       overflow: hidden;
-      border-radius: 20px;
-      box-shadow: 0 22px 52px rgba(76, 106, 87, 0.12);
-      transition: filter 180ms linear;
+      border-radius: 6px;
+      box-shadow: 0 24px 48px rgba(76, 106, 87, 0.18);
+      opacity: 0;
+      transform: translateY(32px) scale(0.98);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
     }
+
+    .story-media.is-visible .story-card { opacity: 1; transform: none; }
+    .story-media.is-visible .story-card--1 { transition-delay: 0.05s; }
+    .story-media.is-visible .story-card--2 { transition-delay: 0.2s; }
+    .story-media.is-visible .story-card--3 { transition-delay: 0.35s; }
+    .story-media.is-visible .story-card--4 { transition-delay: 0.5s; }
 
     .story-card img {
       width: 100%;
@@ -519,37 +533,10 @@
       object-fit: cover;
     }
 
-    .story-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 42%);
-      pointer-events: none;
-    }
-
-    .story-card--1 {
-      top: 0;
-      right: 0;
-      width: 84%;
-      aspect-ratio: 3 / 2;
-      opacity: var(--card-1-opacity);
-      clip-path: var(--card-1-clip);
-      transform: translate3d(var(--card-1-x), var(--card-1-y), 0) scale(var(--card-1-scale));
-      filter: blur(calc((1 - var(--card-1-opacity)) * 8px));
-      z-index: 1;
-    }
-
-    .story-card--2 {
-      top: 53.5%;
-      left: 0;
-      width: 60%;
-      aspect-ratio: 3 / 2;
-      opacity: var(--card-2-opacity);
-      clip-path: var(--card-2-clip);
-      transform: translate3d(var(--card-2-x), var(--card-2-y), 0) scale(var(--card-2-scale));
-      filter: blur(calc((1 - var(--card-2-opacity)) * 8px));
-      z-index: 2;
-    }
+    .story-card--1 { top: 0;   right: 0;   z-index: 4; }
+    .story-card--2 { top: 22%; right: 13%; z-index: 3; }
+    .story-card--3 { top: 44%; right: 26%; z-index: 2; }
+    .story-card--4 { top: 66%; right: 39%; z-index: 1; }
 
     .story-copy {
       display: grid;
@@ -2463,11 +2450,11 @@
     <section class="page-section over-hero" id="top">
       <div class="section-shell hero-shell">
         <div class="hero-copy reveal-copy">
-          <p class="hero-eyebrow reveal-copy" aria-hidden="true">Live muziek</p>
+          <p class="hero-eyebrow reveal-copy" aria-hidden="true">Live muziek · sinds 2018</p>
           <h1 class="section-title hero-title reveal-title" aria-label="Over ons">
             <span class="reveal-line">
               <span class="reveal-word" style="animation-delay: 0.04s;">Over</span>
-              <span class="reveal-word" style="animation-delay: 0.1s;">ons</span>
+              <span class="reveal-word reveal-word-italic" style="animation-delay: 0.1s;"><em>ons</em></span>
             </span>
           </h1>
           <p class="lead">Relovation ontstond uit een gedeelde passie voor muziek en de overtuiging dat live spelen altijd het verschil maakt.</p>
@@ -2496,11 +2483,7 @@
 
     <section class="page-section story-section" id="verhaal">
       <div class="section-shell story-shell">
-        <div class="story-media reveal-visual" data-scroll-scene="story">
-          <div class="story-notes" aria-hidden="true">
-            <img src="./note%20relovtion.svg" alt="">
-            <img src="./note%20relovtion.svg" alt="">
-          </div>
+        <div class="story-media reveal-visual">
           <figure class="story-card story-card--1">
             <img src="./assets/photos/over-verhaal-straatfestival.webp" width="1600" height="1067"
                  loading="lazy" decoding="async"
@@ -2508,6 +2491,14 @@
           </figure>
           <figure class="story-card story-card--2" aria-hidden="true">
             <img src="./assets/photos/sfeer-openingen-straat-kind.webp" width="1600" height="1067"
+                 loading="lazy" decoding="async" alt="">
+          </figure>
+          <figure class="story-card story-card--3" aria-hidden="true">
+            <img src="./assets/photos/home-duo-kaarslicht-zaal.webp" width="1600" height="1067"
+                 loading="lazy" decoding="async" alt="">
+          </figure>
+          <figure class="story-card story-card--4" aria-hidden="true">
+            <img src="./assets/photos/sfeer-keys-kaarslicht-starburst.webp" width="1600" height="1067"
                  loading="lazy" decoding="async" alt="">
           </figure>
         </div>

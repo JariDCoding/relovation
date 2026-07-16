@@ -385,14 +385,93 @@
       margin-bottom: var(--space-xs);
     }
 
+    /* Maand-label = knop die de maand/jaar-kiezer opent. */
     .kal__maand {
       margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border: 0;
+      border-radius: 10px;
+      background: none;
       font-family: "EB Garamond", serif;
       font-size: 20px;
       font-weight: 500;
       color: var(--text-primary);
       text-transform: capitalize;
+      cursor: pointer;
+      transition: background-color 160ms var(--ease);
     }
+
+    .kal__maand::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-right: 1.6px solid currentColor;
+      border-bottom: 1.6px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
+      opacity: 0.5;
+      transition: transform 180ms var(--ease);
+    }
+
+    .kal__maand[aria-expanded="true"]::after { transform: translateY(1px) rotate(-135deg); }
+    .kal__maand:hover { background: var(--bg-page); }
+    .kal__maand:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+
+    /* Maand/jaar-kiezer — vervangt de dag-grid zolang hij open staat. */
+    .kal__kiezer[hidden] { display: none; }
+
+    .kal__kiezer {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      padding: var(--space-2xs) 0;
+    }
+
+    .kal.is-kiezer .kal__dagen,
+    .kal.is-kiezer .kal__grid { display: none; }
+
+    .kal__kiezer-kop {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+    }
+
+    .kal__kiezer-jaar {
+      min-width: 4ch;
+      text-align: center;
+      font-family: "EB Garamond", serif;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kal__maanden {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .kal__maand-chip {
+      padding: 12px 4px;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font: inherit;
+      font-size: 14px;
+      text-transform: capitalize;
+      cursor: pointer;
+      transition: border-color 160ms var(--ease), background-color 160ms var(--ease), color 160ms var(--ease);
+    }
+
+    .kal__maand-chip:hover:not(:disabled) { border-color: var(--text-primary); background: var(--bg-surface); }
+    .kal__maand-chip:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+    .kal__maand-chip:disabled { opacity: 0.3; cursor: not-allowed; }
+    .kal__maand-chip.is-actief { background: var(--text-primary); color: var(--bg-page); border-color: var(--text-primary); }
 
     .kal__nav {
       display: grid;
@@ -957,8 +1036,16 @@
               <div class="kal" id="kalender" hidden>
                 <div class="kal__kop">
                   <button class="kal__nav" type="button" data-kal-vorige aria-label="Vorige maand">‹</button>
-                  <p class="kal__maand" data-kal-maand aria-live="polite"></p>
+                  <button class="kal__maand" type="button" data-kal-maand data-kal-toggle aria-haspopup="true" aria-expanded="false" aria-live="polite"></button>
                   <button class="kal__nav" type="button" data-kal-volgende aria-label="Volgende maand">›</button>
+                </div>
+                <div class="kal__kiezer" data-kal-kiezer hidden>
+                  <div class="kal__kiezer-kop">
+                    <button class="kal__nav" type="button" data-kal-jaar-vorige aria-label="Vorig jaar">‹</button>
+                    <span class="kal__kiezer-jaar" data-kal-jaar aria-live="polite"></span>
+                    <button class="kal__nav" type="button" data-kal-jaar-volgende aria-label="Volgend jaar">›</button>
+                  </div>
+                  <div class="kal__maanden" data-kal-maanden role="group" aria-label="Kies maand en jaar"></div>
                 </div>
                 <div class="kal__dagen" aria-hidden="true">
                   <span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span>

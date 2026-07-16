@@ -130,7 +130,11 @@
       position: relative;
       width: var(--hero-width);
       max-width: var(--hero-max-width);
-      min-height: max(100vh, var(--hero-height));
+      /* De player ("beluister een fragment") is absoluut gepositioneerd en schaalt
+         met --hero-scale; op brede/korte viewports zakt z'n onderkant onder een
+         100vh-hero en botste met de logobalk. De hoogte volgt nu de geschaalde
+         player mee zodat de hero 'm altijd omvat (geen overlap meer). */
+      min-height: max(100vh, var(--hero-height), calc(600px + 300px * var(--hero-scale)));
       margin: 0 auto;
       padding: 0;
     }
@@ -229,11 +233,6 @@
       padding: var(--space-4) 0;
       background: var(--bg);
       overflow: hidden;
-      /* De hero is 100vh met een lege staart onder de player; die maakte de
-         ruimte BOVEN de logobalk (tot de player) veel groter dan de ruimte
-         eronder (tot de about-sectie), en erger op hoge schermen. We trekken de
-         balk die staart in zodat boven ≈ onder — schaalt mee met de viewport. */
-      margin-top: clamp(-180px, calc(240px - 37vh), -30px);
     }
 
     .logos-label {
@@ -1307,6 +1306,9 @@
 
     .features-title.reveal-title { align-items: flex-start; }
     .features-title.reveal-title .reveal-line { justify-content: flex-start; }
+    /* De cursieve "?" steekt buiten z'n letterbox; de reveal-regel klipt met
+       overflow:hidden -> geef het italic-woord wat rechter-ruimte binnen de clip. */
+    .features-title .reveal-word-italic { padding-right: 0.16em; }
 
     .features-sub {
       margin: var(--space-3) 0 0;
@@ -4499,7 +4501,6 @@
   <section class="waarom-section" id="over-ons">
     <div class="features-inner">
       <div class="features-head reveal-copy">
-        <p class="features-eyebrow">Live jazz · Volledig verzorgd</p>
         <h2 class="features-title reveal-title" aria-label="Waarom Relovation?">
           <span class="reveal-line">
             <span class="reveal-word" style="animation-delay: 0.04s;">Waarom</span>

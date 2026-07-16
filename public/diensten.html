@@ -499,6 +499,119 @@
       background: var(--bg);
     }
 
+    /* ── Finale CTA — donkergroen "invitatie"-paneel (gedeeld met de homepage) ── */
+    .cta-banner {
+      text-align: center;
+      background: var(--bg);
+      padding: clamp(64px, 9vh, 132px) 0 clamp(76px, 10vh, 152px);
+    }
+
+    .cta-panel {
+      position: relative;
+      width: min(100% - clamp(32px, 6vw, 112px), 1180px);
+      margin: 0 auto;
+      padding: clamp(72px, 10vw, 150px) clamp(28px, 7vw, 104px) clamp(56px, 8vw, 112px);
+      background: #3d5645;
+      color: #f4edcf;
+      border-radius: 50% 50% clamp(24px, 3vw, 44px) clamp(24px, 3vw, 44px) / 42% 42% clamp(24px, 3vw, 44px) clamp(24px, 3vw, 44px);
+      overflow: hidden;
+      box-shadow: 0 44px 90px -34px rgba(35, 50, 40, 0.55);
+    }
+
+    .cta-panel::before {
+      content: "";
+      position: absolute;
+      inset: clamp(13px, 1.4vw, 22px);
+      border: 1px solid rgba(197, 165, 96, 0.5);
+      border-radius: 50% 50% clamp(18px, 2.2vw, 32px) clamp(18px, 2.2vw, 32px) / 42% 42% clamp(18px, 2.2vw, 32px) clamp(18px, 2.2vw, 32px);
+      pointer-events: none;
+    }
+
+    .cta-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 clamp(18px, 2vw, 30px);
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(12px, 0.85vw, 14px);
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(244, 237, 207, 0.74);
+    }
+
+    .cta-eyebrow::before,
+    .cta-eyebrow::after {
+      content: "";
+      width: clamp(22px, 3vw, 42px);
+      height: 1px;
+      background: rgba(197, 165, 96, 0.85);
+    }
+
+    .cta-panel .cta-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: clamp(46px, 5.4vw, 88px);
+      line-height: 1.08;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: #f6f0d9;
+    }
+
+    .cta-panel .cta-title.reveal-title { align-items: center; }
+    .cta-panel .cta-title.reveal-title .reveal-line { justify-content: center; gap: 0.28em; }
+
+    .cta-title .reveal-word-italic { padding-right: 0.16em; }
+    .cta-title .reveal-word-italic em {
+      font-style: italic;
+      font-weight: 400;
+      color: #cbaa61;
+    }
+
+    .cta-sub {
+      width: min(560px, 100%);
+      margin: clamp(20px, 2.4vw, 32px) auto clamp(34px, 3.8vw, 50px);
+      font-size: clamp(16px, 1.05vw, 18px);
+      line-height: 1.6;
+      color: rgba(244, 237, 207, 0.8);
+    }
+
+    .cta-actions {
+      display: inline-flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .cta-actions .button {
+      min-width: 210px;
+      height: 62px;
+      font-size: 16px;
+    }
+
+    .cta-actions .cta-btn-primary {
+      background: #f4edcf;
+      color: #3d5645;
+      border: 1.6px solid #f4edcf;
+      box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.35);
+    }
+
+    .cta-actions .cta-btn-primary:hover {
+      background: #fffdf3;
+      border-color: #fffdf3;
+    }
+
+    .cta-actions .cta-btn-ghost {
+      background: transparent;
+      color: #f4edcf;
+      border: 1.5px solid rgba(244, 237, 207, 0.45);
+    }
+
+    .cta-actions .cta-btn-ghost:hover {
+      border-color: #f4edcf;
+      background: rgba(244, 237, 207, 0.06);
+    }
+
     .services-cta-panel {
       display: grid;
       justify-items: center;
@@ -978,25 +1091,24 @@
         </div>
       </section>
 
-      <section class="services-cta-section" id="cta">
-        <div class="section-shell">
-          <div class="services-cta-panel">
-            <h2 class="services-cta-title reveal-title" aria-label="Bespreek uw event met ons.">
-              <span class="reveal-line">
-                <span class="reveal-word" style="animation-delay: 0.04s;">Bespreek</span>
-                <span class="reveal-word" style="animation-delay: 0.1s;">uw</span>
-              </span>
-              <span class="reveal-line">
-                <span class="reveal-word" style="animation-delay: 0.16s;"><em>event</em></span>
-                <span class="reveal-word" style="animation-delay: 0.22s;">met</span>
-                <span class="reveal-word" style="animation-delay: 0.28s;">ons.</span>
-              </span>
-            </h2>
-            <p class="services-cta-copy reveal-copy">Vertel ons welk moment u wil neerzetten. Wij denken mee over de muzikale invulling.</p>
-            <div class="services-cta-actions reveal-actions">
-              <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
-              <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
-            </div>
+      <section class="cta-banner" id="cta">
+        <div class="cta-panel">
+          <p class="cta-eyebrow reveal-copy">Klaar voor live muziek</p>
+          <h2 class="cta-title reveal-title" aria-label="Vertel ons over uw moment.">
+            <span class="reveal-line" aria-hidden="true">
+              <span class="reveal-word" style="animation-delay: 0.04s;">Vertel</span>
+              <span class="reveal-word" style="animation-delay: 0.1s;">ons</span>
+              <span class="reveal-word" style="animation-delay: 0.16s;">over</span>
+            </span>
+            <span class="reveal-line" aria-hidden="true">
+              <span class="reveal-word" style="animation-delay: 0.22s;">uw</span>
+              <span class="reveal-word reveal-word-italic" style="animation-delay: 0.28s;"><em>moment.</em></span>
+            </span>
+          </h2>
+          <p class="cta-sub reveal-copy">Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat.</p>
+          <div class="cta-actions reveal-actions">
+            <a class="button cta-btn-primary" href="./aanvraag.html">Plan uw event</a>
+            <a class="button cta-btn-ghost" href="./contact.html">Contacteer ons</a>
           </div>
         </div>
       </section>
