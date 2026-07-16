@@ -35,15 +35,79 @@ async function handleApi(request, env, url, ctx) {
     if (request.method !== "POST") {
       return json({ ok: false, error: "method_not_allowed" }, 405);
     }
+    const blok = botGuard(request);
+    if (blok) return blok;
     return handleContact(request, env, ctx);
   }
   if (url.pathname === "/api/aanvraag") {
     if (request.method !== "POST") {
       return json({ ok: false, error: "method_not_allowed" }, 405);
     }
+    const blok = botGuard(request);
+    if (blok) return blok;
     return handleAanvraag(request, env, ctx);
   }
   return json({ ok: false, error: "not_found" }, 404);
+}
+
+/**
+ * Eerste verdedigingslinie voor de form-endpoints.
+ *
+ * 1. Origin-allowlist: browsers sturen bij een POST altijd een Origin-header
+ *    mee. Directe bot-POSTs (curl, scripts) zonder of met een vreemde Origin
+ *    krijgen 403 en bereiken Resend nooit.
+ * 2. Rate limit: max 5 inzendingen per minuut per IP, in-memory per isolate.
+ *    Bewust geen "unsafe" ratelimit-binding: die is experimenteel en liet
+ *    wrangler dev crashen. Per-isolate is zacht (meerdere colo's = meerdere
+ *    tellers), maar spam-runs komen in bursts vanaf één IP en raken dan
+ *    dezelfde isolate — precies wat we willen stoppen.
+ *
+ * Geeft een Response terug om te blokkeren, of null om door te laten.
+ */
+const RATE_LIMIET = 5; // inzendingen
+const RATE_VENSTER = 60_000; // per minuut
+const rateTellers = new Map(); // ip -> [timestamps]
+
+function botGuard(request) {
+  const origin = request.headers.get("origin") || "";
+  const toegestaan = [
+    "https://relovation.be",
+    "https://www.relovation.be",
+    "https://relovation.jdcreations.workers.dev",
+  ];
+  const isDev =
+    origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1");
+  if (!toegestaan.includes(origin) && !isDev) {
+    return json({ ok: false, error: "forbidden" }, 403);
+  }
+
+  const ip = request.headers.get("cf-connecting-ip") || "onbekend";
+  const nu = Date.now();
+  const recent = (rateTellers.get(ip) || []).filter((t) => nu - t < RATE_VENSTER);
+  if (recent.length >= RATE_LIMIET) {
+    return json({ ok: false, error: "too_many_requests" }, 429);
+  }
+  recent.push(nu);
+  rateTellers.set(ip, recent);
+  // Hou de map klein: gooi af en toe verlopen IP's weg.
+  if (rateTellers.size > 1000) {
+    for (const [k, ts] of rateTellers) {
+      if (ts.every((t) => nu - t >= RATE_VENSTER)) rateTellers.delete(k);
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Tijdsval naast de honeypot: onze form-JS stuurt in `_t` mee hoeveel
+ * milliseconden de bezoeker op de pagina stond. Sneller dan 3 seconden
+ * invullen is geen mens. Net als bij de honeypot doen we dan alsof het
+ * lukte, zodat de bot niets leert. De no-JS fallback stuurt geen `_t`
+ * mee en wordt hier bewust niet geblokkeerd.
+ */
+function teSnel(data) {
+  return data._t !== undefined && !(Number(data._t) >= 3000);
 }
 
 async function handleContact(request, env, ctx) {
@@ -56,7 +120,7 @@ async function handleContact(request, env, ctx) {
 
   // Honeypot: een verborgen veld dat mensen nooit zien, maar bots wel invullen.
   // Stil een 200 teruggeven, zodat de bot denkt dat het gelukt is.
-  if (str(data.website)) {
+  if (str(data.website) || teSnel(data)) {
     return json({ ok: true });
   }
 
@@ -153,7 +217,7 @@ async function handleAanvraag(request, env, ctx) {
     return json({ ok: false, error: "bad_request" }, 400);
   }
 
-  if (str(data.website)) {
+  if (str(data.website) || teSnel(data)) {
     return json({ ok: true });
   }
 

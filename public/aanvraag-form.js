@@ -18,6 +18,10 @@
   var form = document.getElementById("aanvraag-form");
   if (!form) return;
 
+  // Tijdsval (anti-bot): de server negeert inzendingen die minder dan een
+  // paar seconden na het laden binnenkomen. _t = ms op de pagina.
+  var LAADTIJD = Date.now();
+
   var OPSLAG = "relovation-aanvraag";
   var AUTO_MS = 400; // even je vinkje zien voor het scherm doorspringt
 
@@ -469,13 +473,89 @@
   });
 
   kalVorige.addEventListener("click", function () {
+    sluitKiezer();
     toonMaand = new Date(toonMaand.getFullYear(), toonMaand.getMonth() - 1, 1);
     tekenKalender();
   });
 
   kalVolgende.addEventListener("click", function () {
+    sluitKiezer();
     toonMaand = new Date(toonMaand.getFullYear(), toonMaand.getMonth() + 1, 1);
     tekenKalender();
+  });
+
+  // ── Maand/jaar-kiezer ───────────────────────────────────
+  // Het maand-label opent een snelkiezer: jaar-steppers + 12 maand-chips, zodat
+  // je in enkele klikken naar elk toekomstig jaar/maand springt (i.p.v. de maand
+  // twaalf keer vooruit te klikken).
+  var kalMaandBtn = kalEl.querySelector("[data-kal-toggle]");
+  var kalKiezer = kalEl.querySelector("[data-kal-kiezer]");
+  var kalKiezerJaar = kalEl.querySelector("[data-kal-jaar]");
+  var kalMaandenGrid = kalEl.querySelector("[data-kal-maanden]");
+  var kalJaarVorige = kalEl.querySelector("[data-kal-jaar-vorige]");
+  var kalJaarVolgende = kalEl.querySelector("[data-kal-jaar-volgende]");
+  var kiezerJaar = toonMaand.getFullYear();
+
+  function tekenKiezer() {
+    kalKiezerJaar.textContent = kiezerJaar;
+    kalJaarVorige.disabled = kiezerJaar <= vandaag.getFullYear();
+    kalMaandenGrid.textContent = "";
+
+    MAANDEN.forEach(function (naam, idx) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "kal__maand-chip";
+      chip.textContent = naam.slice(0, 3);
+      chip.setAttribute("aria-label", naam + " " + kiezerJaar);
+
+      // Verleden maanden in het huidige jaar liggen niet in de toekomst.
+      if (kiezerJaar === vandaag.getFullYear() && idx < vandaag.getMonth()) {
+        chip.disabled = true;
+      }
+      if (kiezerJaar === toonMaand.getFullYear() && idx === toonMaand.getMonth()) {
+        chip.classList.add("is-actief");
+        chip.setAttribute("aria-current", "true");
+      }
+
+      chip.addEventListener("click", function () {
+        toonMaand = new Date(kiezerJaar, idx, 1);
+        sluitKiezer();
+        tekenKalender();
+      });
+
+      kalMaandenGrid.appendChild(chip);
+    });
+  }
+
+  function openKiezer() {
+    kiezerJaar = toonMaand.getFullYear();
+    kalEl.classList.add("is-kiezer");
+    kalKiezer.hidden = false;
+    kalMaandBtn.setAttribute("aria-expanded", "true");
+    tekenKiezer();
+  }
+
+  function sluitKiezer() {
+    kalEl.classList.remove("is-kiezer");
+    kalKiezer.hidden = true;
+    kalMaandBtn.setAttribute("aria-expanded", "false");
+  }
+
+  kalMaandBtn.addEventListener("click", function () {
+    if (kalKiezer.hidden) openKiezer();
+    else sluitKiezer();
+  });
+
+  kalJaarVorige.addEventListener("click", function () {
+    if (kiezerJaar > vandaag.getFullYear()) {
+      kiezerJaar--;
+      tekenKiezer();
+    }
+  });
+
+  kalJaarVolgende.addEventListener("click", function () {
+    kiezerJaar++;
+    tekenKiezer();
   });
 
   /** Zet de kalender in de plaats van het native veld. */
@@ -640,6 +720,7 @@
       if (payload[k] === undefined) payload[k] = v;
       else payload[k] = [].concat(payload[k], v).join(", ");
     });
+    payload._t = Date.now() - LAADTIJD;
 
     fetch(form.getAttribute("action") || "/api/aanvraag", {
       method: "POST",

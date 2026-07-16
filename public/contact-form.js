@@ -11,6 +11,10 @@
   var form = document.querySelector(".contact-form");
   if (!form) return;
 
+  // Tijdsval (anti-bot): de server negeert inzendingen die minder dan een
+  // paar seconden na het laden binnenkomen. _t = ms op de pagina.
+  var LAADTIJD = Date.now();
+
   var status = form.querySelector(".form-status");
   var button = form.querySelector('button[type="submit"]');
   var buttonLabel = button ? button.textContent : "Verstuur";
@@ -76,6 +80,7 @@
     new FormData(form).forEach(function (waarde, sleutel) {
       payload[sleutel] = waarde;
     });
+    payload._t = Date.now() - LAADTIJD;
 
     fetch(form.getAttribute("action") || "/api/contact", {
       method: "POST",
