@@ -17,11 +17,11 @@ const MAX_MESSAGE = 5000;
 const MAX_FIELD = 200;
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     if (url.pathname.startsWith("/api/")) {
-      return handleApi(request, env, url);
+      return handleApi(request, env, url, ctx);
     }
 
     // Geen /api-route: laat de asset-laag beslissen (levert een echte 404
@@ -30,23 +30,23 @@ export default {
   },
 };
 
-async function handleApi(request, env, url) {
+async function handleApi(request, env, url, ctx) {
   if (url.pathname === "/api/contact") {
     if (request.method !== "POST") {
       return json({ ok: false, error: "method_not_allowed" }, 405);
     }
-    return handleContact(request, env);
+    return handleContact(request, env, ctx);
   }
   if (url.pathname === "/api/aanvraag") {
     if (request.method !== "POST") {
       return json({ ok: false, error: "method_not_allowed" }, 405);
     }
-    return handleAanvraag(request, env);
+    return handleAanvraag(request, env, ctx);
   }
   return json({ ok: false, error: "not_found" }, 404);
 }
 
-async function handleContact(request, env) {
+async function handleContact(request, env, ctx) {
   let data;
   try {
     data = await parseBody(request);
@@ -80,6 +80,9 @@ async function handleContact(request, env) {
 
   const naam = [first, last].filter(Boolean).join(" ");
   const tel = [country, phone].filter(Boolean).join(" ").trim();
+
+  // Ook wegschrijven naar de Google Sheet (naast de mail).
+  toSheet(env, ctx, "contact", { naam, email, tel, message });
 
   const text = [
     `Nieuwe aanvraag via relovation.be`,
@@ -142,7 +145,7 @@ async function handleContact(request, env) {
  * Aanvraagflow (/aanvraag) — drie stappen, elf vragen.
  * Velden en volgorde van de mail volgen de developer briefing v2, hoofdstuk 06.
  */
-async function handleAanvraag(request, env) {
+async function handleAanvraag(request, env, ctx) {
   let data;
   try {
     data = await parseBody(request);
@@ -198,6 +201,12 @@ async function handleAanvraag(request, env) {
 
   const wanneer = datumFlexibel ? periode : formatDatum(datum);
   const subject = `Nieuwe aanvraag – ${eventType} – ${wanneer} – ${locatie}`;
+
+  // Ook wegschrijven naar de Google Sheet (naast de mail).
+  toSheet(env, ctx, "aanvraag", {
+    eventType, moment, sfeer, wanneer, locatie, gasten,
+    naam, email, telefoon, voorkeur: voorkeur || "", bericht,
+  });
 
   const blokken = [
     ["Event & muziek", [
@@ -264,6 +273,26 @@ async function handleAanvraag(request, env) {
 function formatDatum(iso) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
   return m ? `${m[3]}/${m[2]}/${m[1]}` : iso;
+}
+
+/**
+ * Schrijft een inzending naar de Google Sheet via de Apps Script-webhook.
+ * Niet-blokkerend (ctx.waitUntil): de mail blijft de betrouwbare weg, de sheet
+ * is een overzicht. Doet niets als SHEETS_WEBHOOK_URL niet gezet is.
+ */
+function toSheet(env, ctx, form, fields) {
+  const url = env.SHEETS_WEBHOOK_URL;
+  if (!url) return;
+  const p = fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ _form: form, ...fields }),
+  })
+    .then((r) => {
+      if (!r.ok) console.error("sheet_error", r.status);
+    })
+    .catch((err) => console.error("sheet_unreachable", err && err.message));
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(p);
 }
 
 /** Verstuurt via Resend. Deelt de configuratie met het contactformulier. */
