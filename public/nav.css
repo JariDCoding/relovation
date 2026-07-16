@@ -14,6 +14,8 @@
   --nav-surface: #f7f2d5;
   --nav-gold: #cca735;
   --nav-line: rgba(76, 106, 87, 0.18);
+  --nav-gutter: clamp(20px, 5vw, 72px);
+  --nav-max: 1360px;
   --nav-ease: cubic-bezier(0.22, 0.88, 0.2, 1);
   --nav-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -51,10 +53,12 @@ body { padding-top: var(--nav-h); }
 
 .r-nav__inner {
   height: 100%;
+  max-width: calc(var(--nav-max) + 2 * var(--nav-gutter));
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 clamp(20px, 4vw, 60px);
+  padding: 0 var(--nav-gutter);
 }
 
 /* Brand */
@@ -195,7 +199,7 @@ body { padding-top: var(--nav-h); }
   inset: 0;
   z-index: 85;
   background: var(--nav-surface);
-  padding: calc(var(--nav-h) + 12px) clamp(24px, 5vw, 72px) clamp(28px, 4vw, 52px);
+  padding: calc(var(--nav-h) + 12px) var(--nav-gutter) clamp(28px, 4vw, 52px);
   pointer-events: none;
   clip-path: inset(0 0 100% 0);
   transition: clip-path 0.72s var(--nav-ease-out);
@@ -205,7 +209,7 @@ body { padding-top: var(--nav-h); }
 
 .r-nav__ovl-grid {
   width: 100%;
-  max-width: 1360px;
+  max-width: var(--nav-max);
   margin: 0 auto;
   min-height: calc(100vh - var(--nav-h) - clamp(40px, 8vw, 96px));
   display: grid;
@@ -414,8 +418,6 @@ body { padding-top: var(--nav-h); }
 
 @media (max-width: 900px) {
   :root { --nav-h: 72px; }
-
-  .r-nav__inner { padding: 0 22px; }
 
   /* single column, media hidden */
   .r-nav__ovl-grid { grid-template-columns: 1fr; gap: 0; min-height: auto; }
