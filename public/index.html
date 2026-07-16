@@ -227,8 +227,6 @@
       --logo-base: clamp(30px, 2.8vw, 44px);
       --logo-gap: clamp(52px, 5.4vw, 104px);
       padding: var(--space-4) 0;
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
       background: var(--bg);
       overflow: hidden;
     }
@@ -800,7 +798,9 @@
 
     .quote-motion-copy {
       position: relative;
-      max-width: 1100px;
+      /* Volle sectiebreedte i.p.v. 1100px-kolom: de statement-quote hoort breed
+         over de pagina te lopen, niet als smalle blok in het midden. */
+      max-width: 100%;
       /* Extra stap bovenop --section-gap: de bogen zakken trapsgewijs weg
          (--arch-offset), dus kolom 03 eindigt lager dan de sectie-marge. */
       margin: calc(var(--section-gap) + var(--space-5)) auto 0;
@@ -826,8 +826,11 @@
     .quote-motion-copy h2 {
       margin: 0;
       font-family: "EB Garamond", serif;
-      font-size: 82px;
-      line-height: 1.5;
+      /* Fluïde i.p.v. vast 82px: groeit mee met de viewport zodat de twee brede
+         regels de pagina vullen (en op smallere desktops nog binnen de sectie
+         passen). Onder 1120px neemt de wrap-breakpoint het over. */
+      font-size: clamp(64px, 5.9vw, 128px);
+      line-height: 1.4;
       font-weight: 400;
       color: var(--ink);
       font-style: italic;
@@ -1250,13 +1253,202 @@
       transition-delay: 0.22s;
     }
 
-    .features-section {
+    /* ── Waarom Relovation — editorial "poster" (Figma Design H · Ritme) ────────
+       Header linksboven, SVG-tekening rechtsboven, 4 verspreide items in een
+       staggered rij (2 & 4 opgetild), zwevende noten, CTA's linksonder.
+       Nieuwe class-namen: de oude sticky-2-koloms regels hieronder matchen niets
+       meer en vallen vanzelf weg. */
+    .waarom-section {
       position: relative;
       width: 100%;
       background: var(--bg);
-      min-height: 100vh;
-      margin-top: -4%;
+      padding: clamp(88px, 11vh, 156px) 0 clamp(72px, 9vh, 128px);
     }
+
+    .features-inner {
+      position: relative;
+      width: min(100% - clamp(48px, 13.3vw, 192px), 1248px);
+      margin: 0 auto;
+    }
+
+    .features-head {
+      max-width: 620px;
+    }
+
+    .features-eyebrow {
+      margin: 0 0 var(--space-2);
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(12px, 0.9vw, 14px);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .features-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: clamp(44px, 4.6vw, 72px);
+      line-height: 1.1;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    .features-title.reveal-title { align-items: flex-start; }
+    .features-title.reveal-title .reveal-line { justify-content: flex-start; }
+
+    .features-sub {
+      margin: var(--space-3) 0 0;
+      max-width: 30ch;
+      font-family: "EB Garamond", serif;
+      font-style: italic;
+      font-size: clamp(19px, 1.55vw, 24px);
+      line-height: 1.5;
+      color: var(--ink-soft);
+    }
+
+    /* SVG-tekening rechtsboven — zelfde ratio als het Figma-vak (448×286). */
+    .features-art {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: min(448px, 40%);
+      aspect-ratio: 448 / 286;
+    }
+
+    .waarom-draw {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      /* Teken-reveal: een veeg van links naar rechts alsof de tekening ontstaat. */
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.5s cubic-bezier(0.33, 0, 0.2, 1);
+    }
+
+    .waarom-draw.is-drawn { clip-path: inset(0 0 0 0); }
+
+    .waarom-draw svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    /* Staggered rij van 4 — kolommen 96/400/704/1008 in Figma = 4 gelijke kolommen. */
+    .features-grid {
+      list-style: none;
+      margin: clamp(220px, 24vw, 300px) 0 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: clamp(24px, 2.4vw, 40px);
+      row-gap: 48px;
+      align-items: start;
+    }
+
+    /* Items 2 & 4 opgetild -> het "ritme" uit de Figma (y460 vs y560 = ~100px). */
+    .features-grid .feature-cell:nth-child(2n) {
+      transform: translateY(clamp(-104px, -7vw, -72px));
+    }
+
+    .feature-cell {
+      margin: 0;
+    }
+
+    /* Vervangt de gouden stip: een korte groene accentstreep. */
+    .feature-mark {
+      display: block;
+      width: 26px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--ink);
+      margin: 0 0 clamp(14px, 1.2vw, 18px);
+    }
+
+    .feature-cell h3 {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: clamp(21px, 1.5vw, 24px);
+      line-height: 1.3;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .feature-cell p {
+      margin: 10px 0 0;
+      font-size: var(--body-s, 15px);
+      line-height: 1.5;
+      color: var(--ink-soft);
+    }
+
+    .features-cta {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: clamp(48px, 6vh, 80px);
+    }
+
+    /* Zwevende noten — decoratief tussen header en items. */
+    .features-notes {
+      position: absolute;
+      top: clamp(300px, 27vw, 360px);
+      left: 44%;
+      width: clamp(140px, 14vw, 200px);
+      height: clamp(120px, 12vw, 170px);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .features-notes .fnote {
+      position: absolute;
+      width: clamp(52px, 5vw, 72px);
+      height: clamp(52px, 5vw, 72px);
+      filter: drop-shadow(0 10px 14px rgba(76, 106, 87, 0.12));
+    }
+
+    .features-notes .fnote-1 { left: 0; top: 36%; }
+    .features-notes .fnote-2 { left: 42%; top: 0; }
+
+    /* ── Tablet: art onder de header, 2-koloms, geen stagger ─────────────────── */
+    @media (max-width: 1024px) {
+      .features-art {
+        position: static;
+        width: min(448px, 100%);
+        margin: clamp(28px, 4vw, 44px) 0 0;
+      }
+
+      .features-grid {
+        margin-top: clamp(48px, 7vw, 72px);
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: clamp(28px, 5vw, 56px);
+        row-gap: clamp(40px, 6vw, 56px);
+      }
+
+      .features-grid .feature-cell:nth-child(2n) { transform: none; }
+
+      .features-notes { display: none; }
+    }
+
+    /* ── Mobiel: alles gestapeld ─────────────────────────────────────────────── */
+    @media (max-width: 620px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+        row-gap: clamp(30px, 8vw, 40px);
+      }
+
+      .features-cta {
+        flex-wrap: wrap;
+      }
+
+      .features-cta .button {
+        flex: 1 1 auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .waarom-draw { transition: none; }
+    }
+
 
     .features-sticky {
       position: sticky;
@@ -2577,7 +2769,10 @@
       }
 
       .quote-motion-copy h2 {
-        font-size: clamp(36px, 10vw, 56px);
+        /* Kleiner dan voorheen (was 10vw): de quote loopt nu in twee lange
+           logische regels die op mobiel wrappen; een rustiger maat houdt marge
+           aan de randen en voorkomt losse woorden tegen de rand. */
+        font-size: clamp(30px, 7.6vw, 48px);
       }
 
       .feature-actions,
@@ -3828,21 +4023,25 @@
         width: min(100% - 112px, 1600px);
       }
 
+      /* Compositie iets hoger op desktop + player opgetrokken: op een 900px-
+         viewport liep de player (top 720 + 200px ring = 920) onder de vouw.
+         Nu ~55px hoger, met de player extra opgetrokken zodat de ruimte ONDER
+         de "beluister een fragment"-cirkel de lucht BOVEN de video-kader spiegelt. */
       .content {
-        top: calc(230px * var(--hero-scale));
+        top: calc(178px * var(--hero-scale));
       }
 
       .visual {
-        top: calc(275px * var(--hero-scale));
+        top: calc(223px * var(--hero-scale));
       }
 
       .notes {
-        top: calc(585px * var(--hero-scale));
+        top: calc(520px * var(--hero-scale));
       }
 
       .player-wrap {
         left: calc(520px * var(--hero-scale));
-        top: calc(720px * var(--hero-scale));
+        top: calc(632px * var(--hero-scale));
       }
 
       .about-panel-inner {
@@ -4166,91 +4365,72 @@
       <h2 class="quote-motion-title" aria-label="Live muziek die de sfeer draagt, zonder het moment over te nemen.">
         <span class="quote-line">
           <span class="quote-word" style="animation-delay: 0.04s;">Live</span>
-          <span class="quote-word" style="animation-delay: 0.1s;">muziek</span>
+          <span class="quote-word" style="animation-delay: 0.09s;">muziek</span>
+          <span class="quote-word" style="animation-delay: 0.14s;">die</span>
+          <span class="quote-word" style="animation-delay: 0.19s;">de</span>
+          <span class="quote-word" style="animation-delay: 0.24s;">sfeer</span>
+          <span class="quote-word" style="animation-delay: 0.29s;">draagt,</span>
         </span>
         <span class="quote-line">
-          <span class="quote-inline-asset is-fragment" style="animation-delay: 0.16s;" aria-hidden="true">
-            <img src="./assets/photos/home-duo-kaarslicht-zaal.webp" alt="" width="1600" height="1067" loading="lazy" decoding="async">
-          </span>
-          <span class="quote-word" style="animation-delay: 0.22s;">die</span>
-          <span class="quote-word" style="animation-delay: 0.28s;">de</span>
-          <span class="quote-word" style="animation-delay: 0.34s;">sfeer</span>
-          <span class="quote-word" style="animation-delay: 0.4s;">draagt,</span>
-        </span>
-        <span class="quote-line">
-          <span class="quote-word" style="animation-delay: 0.46s;">zonder</span>
-          <span class="quote-word" style="animation-delay: 0.52s;">het</span>
-          <span class="quote-word" style="animation-delay: 0.58s;">moment</span>
-        </span>
-        <span class="quote-line">
-          <span class="quote-word" style="animation-delay: 0.64s;">over</span>
-          <span class="quote-word" style="animation-delay: 0.7s;">te</span>
-          <span class="quote-word" style="animation-delay: 0.76s;">nemen.</span>
-          <span class="quote-inline-asset is-note" style="animation-delay: 0.82s;" aria-hidden="true">
-            <span class="note-draw note-quotedance"></span>
-          </span>
+          <span class="quote-word" style="animation-delay: 0.34s;">zonder</span>
+          <span class="quote-word" style="animation-delay: 0.39s;">het</span>
+          <span class="quote-word" style="animation-delay: 0.44s;">moment</span>
+          <span class="quote-word" style="animation-delay: 0.49s;">over</span>
+          <span class="quote-word" style="animation-delay: 0.54s;">te</span>
+          <span class="quote-word" style="animation-delay: 0.59s;">nemen.</span>
         </span>
       </h2>
     </div>
   </section>
 
-  <section class="features-section" id="over-ons">
-    <div class="features-sticky">
-      <div class="feature-list reveal-copy">
-        <h2 class="about-heading feature-heading reveal-title" aria-label="Waarom Relovation">
+  <section class="waarom-section" id="over-ons">
+    <div class="features-inner">
+      <div class="features-head reveal-copy">
+        <p class="features-eyebrow">Live jazz · Volledig verzorgd</p>
+        <h2 class="features-title reveal-title" aria-label="Waarom Relovation">
           <span class="reveal-line">
             <span class="reveal-word" style="animation-delay: 0.04s;">Waarom</span>
-            <span class="reveal-word" style="animation-delay: 0.1s;">Relovation</span>
+            <span class="reveal-word reveal-word-italic" style="animation-delay: 0.1s;"><em>Relovation</em></span>
           </span>
         </h2>
-
-        <article class="feature-item">
-          <span class="feature-check" aria-hidden="true"></span>
-          <div>
-            <h3>Professionele muzikanten</h3>
-            <p>Ervaren, conservatoriumgeschoolde muzikanten die op elk event het juiste niveau én de juiste rust brengen.</p>
-          </div>
-        </article>
-
-        <article class="feature-item">
-          <span class="feature-check" aria-hidden="true"></span>
-          <div>
-            <h3>Volledig afgestemd</h3>
-            <p>Repertoire, bezetting en volume afgestemd op uw sfeer, locatie en programma. U hoeft niets te regelen.</p>
-          </div>
-        </article>
-
-        <article class="feature-item">
-          <span class="feature-check" aria-hidden="true"></span>
-          <div>
-            <h3>Eigen geluidsinstallatie</h3>
-            <p>Voor events tot ±250 gasten — inbegrepen, zonder extra gedoe.</p>
-          </div>
-        </article>
-
-        <article class="feature-item">
-          <span class="feature-check" aria-hidden="true"></span>
-          <div>
-            <h3>Zorgeloos geregeld</h3>
-            <p>Heldere afspraken, stipt aanwezig, professioneel ter plaatse. Wij adviseren over bezetting, repertoire en timing — zodat de muziek klopt met uw moment.</p>
-          </div>
-        </article>
-
-        <div class="feature-actions">
-          <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
-          <a class="button" href="./contact.html">Contacteer ons</a>
-        </div>
+        <p class="features-sub">Elke reden een eigen maat, samen één ritme dat uw avond draagt.</p>
       </div>
 
-      <div class="feature-visual">
-        <div class="svg-draw-frame" aria-label="Saxofonist en pianist van Relovation in motion"></div>
-        <div class="feature-visual-blend" aria-hidden="true"></div>
-        <div class="edge-fade-top" aria-hidden="true"></div>
-        <div class="edge-fade-bottom" aria-hidden="true"></div>
-        <div class="feature-notes" aria-hidden="true">
-          <span class="note-a note-draw note-jiggle" aria-hidden="true"></span>
-          <span class="note-b note-draw note-jiggle" aria-hidden="true"></span>
-        </div>
+      <div class="features-art">
+        <div class="waarom-draw" role="img" aria-label="Gasten op een netwerkevent met live muziek van Relovation"></div>
+      </div>
+
+      <div class="features-notes" aria-hidden="true">
+        <span class="fnote fnote-1 note-draw note-jiggle" aria-hidden="true"></span>
+        <span class="fnote fnote-2 note-draw note-jiggle" aria-hidden="true"></span>
+      </div>
+
+      <ul class="features-grid reveal-copy">
+        <li class="feature-cell">
+          <span class="feature-mark" aria-hidden="true"></span>
+          <h3>Professionele muzikanten</h3>
+          <p>Ervaren, conservatoriumgeschoolde muzikanten met het juiste niveau én de juiste rust.</p>
+        </li>
+        <li class="feature-cell">
+          <span class="feature-mark" aria-hidden="true"></span>
+          <h3>Volledig afgestemd</h3>
+          <p>Repertoire, bezetting en volume afgestemd op uw sfeer en programma.</p>
+        </li>
+        <li class="feature-cell">
+          <span class="feature-mark" aria-hidden="true"></span>
+          <h3>Eigen geluidsinstallatie</h3>
+          <p>Voor events tot ±250 gasten, inbegrepen zonder extra gedoe.</p>
+        </li>
+        <li class="feature-cell">
+          <span class="feature-mark" aria-hidden="true"></span>
+          <h3>Zorgeloos geregeld</h3>
+          <p>Heldere afspraken, stipt aanwezig, professioneel ter plaatse.</p>
+        </li>
+      </ul>
+
+      <div class="features-cta">
+        <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
+        <a class="button" href="./contact.html">Contacteer ons</a>
       </div>
     </div>
   </section>
@@ -5046,24 +5226,29 @@
       aboutObserver.observe(aboutDrawFrame);
     }
 
-    const featureVisual = document.querySelector(".feature-visual");
-    const featureDrawing = document.querySelector(".feature-visual .svg-draw-frame");
+    // "Waarom Relovation" — de groene menigte-tekening laadt lazy en tekent
+    // zichzelf via een clip-path-veeg (links -> rechts) zodra ze in beeld komt.
+    const waaromDraw = document.querySelector(".waarom-draw");
+    // Observeer het NIET-geclipte ouder-vak: .waarom-draw draagt de reveal-clip
+    // (0px zichtbaar tot ze getekend is), en IntersectionObserver telt clip-path
+    // mee -> het geclipte element wordt anders nooit "intersecting".
+    const waaromArt = document.querySelector(".features-art");
 
-    if (featureVisual && featureDrawing) {
-      const featureReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      let featureDrawLoaded = false;
+    if (waaromDraw && waaromArt) {
+      const waaromReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let waaromLoaded = false;
 
-      const loadFeatureDrawing = async () => {
-        if (featureDrawLoaded) {
+      const loadWaaromDrawing = async () => {
+        if (waaromLoaded) {
           return;
         }
-        featureDrawLoaded = true;
+        waaromLoaded = true;
 
-        const response = await fetch("./usp-band.svg");
+        const response = await fetch("./assets/waarom-crowd.svg");
         const svgMarkup = await response.text();
-        featureDrawing.innerHTML = svgMarkup;
+        waaromDraw.innerHTML = svgMarkup;
 
-        const svgElement = featureDrawing.querySelector("svg");
+        const svgElement = waaromDraw.querySelector("svg");
         if (!svgElement) {
           return;
         }
@@ -5072,28 +5257,29 @@
         svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
         svgElement.setAttribute("aria-hidden", "true");
 
-        // Frame tonen (reveal-mask nog leeg), dan volgende frame "go" -> tekent van 0,
-        // zelfde self-draw als de hero/about band.
-        featureVisual.classList.add("is-video-ready");
-        if (!featureReducedMotion.matches) {
-          window.requestAnimationFrame(() => {
-            window.requestAnimationFrame(() => {
-              svgElement.classList.add("go");
-            });
-          });
+        if (waaromReducedMotion.matches) {
+          waaromDraw.classList.add("is-drawn");
+          return;
         }
+        // Twee frames zodat de clip-startstaat (0% zichtbaar) eerst paint,
+        // daarna de veeg naar volledig zichtbaar.
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            waaromDraw.classList.add("is-drawn");
+          });
+        });
       };
 
-      const featureObserver = new IntersectionObserver((entries, observer) => {
+      const waaromObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            observer.unobserve(featureVisual);
-            loadFeatureDrawing().catch(() => { featureDrawing.textContent = ""; });
+            observer.unobserve(waaromArt);
+            loadWaaromDrawing().catch(() => { waaromDraw.textContent = ""; });
           }
         });
-      }, { threshold: 0.7 });
+      }, { threshold: 0.25 });
 
-      featureObserver.observe(featureVisual);
+      waaromObserver.observe(waaromArt);
     }
 
     // --- Self-drawing music notes: draw in (1.2s) on view, then start the dance ---

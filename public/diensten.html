@@ -297,18 +297,15 @@
       order: 1;
     }
 
-    /* Beeld is een geregisseerd object (§4), geen vulling. Het frame volgt nu de
-       bronratio van de fotografie (3:2) en vult met `cover`.
-       Was: 815×428 (1.9:1) + `object-fit: contain` + een vlakke vulkleur — dat is
-       een frame dat om een LEGE placeholder is gebouwd. Met een echte foto erin
-       letterboxt `contain` (kleurbalken links/rechts) en snijdt de 999px-koepel op
-       een 1.9:1-vlak de onderwerpen de kop af. De boog blijft het idioom voor
-       PORTRET-frames (over.html, contact.html); voor een liggend beeld hoort de
-       kaartradius van het design system: 20px. */
+    /* Beeld is een geregisseerd object (§4), geen vulling. Frame en boog-vorm
+       volgen de Figma-branding: liggende 815×428 (1.9:1) met de gebrande arch —
+       dezelfde ondiepe koepel als de "gelegenheden" op de homepage
+       (50% 50% horizontaal, 40.5% verticaal = ondiepe dome; onderhoeken 20px).
+       De dome is ondiep genoeg om op 1.9:1 geen koppen af te snijden. */
     .service-media {
       width: 100%;
-      aspect-ratio: 3 / 2;
-      border-radius: var(--radius-card);
+      aspect-ratio: 815 / 428;
+      border-radius: 50% 50% 20px 20px / 40.5% 40.5% 20px 20px;
       overflow: hidden;
       background: var(--bg-deep);
       /* DS Effect — Elevation/Card = 0 4 4 #000 10%; hairline-kader per §6. */
