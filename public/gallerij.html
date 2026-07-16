@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+  <title>Gallerij — Relovation</title>
+  <meta name="description" content="Beeld en geluid van Relovation — live jazz voor trouwfeesten, bedrijfsevents en recepties.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: #f4edcf;
+      color: #4c6a57;
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .gallerij-hero {
+      min-height: calc(100vh - var(--nav-h));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(48px, 10vw, 120px) 24px;
+    }
+
+    .gallerij-eyebrow {
+      font-family: "DM Sans", sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #4f5f49;
+      margin: 0 0 20px;
+    }
+
+    .gallerij-eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 34px;
+      height: 1px;
+      background: #cca735;
+      vertical-align: middle;
+      margin-right: 12px;
+    }
+
+    .gallerij-title {
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(44px, 7vw, 92px);
+      line-height: 1.04;
+      color: #4c6a57;
+      margin: 0 0 22px;
+    }
+
+    .gallerij-title em {
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .gallerij-sub {
+      font-family: "EB Garamond", serif;
+      font-style: italic;
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.5;
+      color: #55715e;
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+
+    .gallerij-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    .gallerij-btn {
+      display: inline-flex;
+      align-items: center;
+      height: 54px;
+      padding: 0 30px;
+      border-radius: 999px;
+      font-family: "DM Sans", sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.28s, transform 0.28s, border-color 0.28s, color 0.28s;
+    }
+
+    .gallerij-btn--primary { background: #4c6a57; color: #f4edcf; }
+    .gallerij-btn--primary:hover { background: #567d5c; transform: translateY(-1px); }
+
+    .gallerij-btn--ghost { border: 1px solid #4c6a57; color: #4c6a57; }
+    .gallerij-btn--ghost:hover { background: rgba(76, 106, 87, 0.07); }
+  </style>
+  <link rel="stylesheet" href="./nav.css">
+</head>
+<body>
+
+<header class="r-nav" id="r-nav" aria-label="Hoofdnavigatie">
+  <div class="r-nav__inner">
+    <!-- Brand = Home -->
+    <a class="r-nav__brand" href="./index.html" aria-label="Relovation — home">
+      <span class="r-nav__note"><img src="./note%20relovtion.svg" alt=""></span>
+      <span class="r-nav__wordmark">Relovation</span>
+    </a>
+
+    <!-- Capsule nav -->
+    <nav class="r-nav__capsule" aria-label="Primaire navigatie">
+      <ul class="r-nav__links">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./diensten.html">Diensten</a></li>
+        <li><a href="./gallerij.html">Gallerij</a></li>
+        <li><a href="./over.html">Over ons</a></li>
+        <li><a href="./contact.html">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Actions -->
+    <div class="r-nav__actions">
+      <a class="r-nav__cta" href="./aanvraag.html">Plan uw event <span class="r-nav__cta-arrow" aria-hidden="true">→</span></a>
+      <button class="r-nav__burger" id="r-nav-burger"
+        aria-expanded="false" aria-controls="r-nav-overlay" aria-label="Menu openen">
+        <span class="r-nav__burger-lines" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="r-nav__overlay" id="r-nav-overlay" aria-hidden="true">
+  <nav aria-label="Mobiele navigatie">
+    <ul class="r-nav__ovl-list">
+      <li><a href="./index.html"><span class="r-nav__ovl-title">Home</span><span class="r-nav__ovl-desc">Welkom bij Relovation</span></a></li>
+      <li><a href="./diensten.html"><span class="r-nav__ovl-title">Diensten</span><span class="r-nav__ovl-desc">Duo, trio &amp; full band</span></a></li>
+      <li><a href="./gallerij.html"><span class="r-nav__ovl-title">Gallerij</span><span class="r-nav__ovl-desc">Beeld &amp; geluid</span></a></li>
+      <li><a href="./over.html"><span class="r-nav__ovl-title">Over ons</span><span class="r-nav__ovl-desc">Het ensemble</span></a></li>
+      <li><a href="./contact.html"><span class="r-nav__ovl-title">Contact</span><span class="r-nav__ovl-desc">Plan of stel een vraag</span></a></li>
+    </ul>
+  </nav>
+  <div class="r-nav__ovl-bottom">
+    <a class="r-nav__cta-ovl r-nav__cta-ovl--primary" href="./aanvraag.html">Plan uw event</a>
+    <a class="r-nav__cta-ovl r-nav__cta-ovl--ghost" href="./contact.html">Contacteer ons</a>
+    <p class="r-nav__ovl-contact"><a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a></p>
+    <p class="r-nav__ovl-social">INSTAGRAM · YOUTUBE · SPOTIFY</p>
+  </div>
+</div>
+
+<main class="gallerij-hero">
+  <p class="gallerij-eyebrow">Beeld &amp; geluid</p>
+  <h1 class="gallerij-title">Binnenkort <em>in beeld.</em></h1>
+  <p class="gallerij-sub">We verzamelen de mooiste beelden en fragmenten van onze optredens. Benieuwd hoe wij uw avond kunnen dragen?</p>
+  <div class="gallerij-actions">
+    <a class="gallerij-btn gallerij-btn--primary" href="./aanvraag.html">Plan uw event</a>
+    <a class="gallerij-btn gallerij-btn--ghost" href="./diensten.html">Bekijk onze diensten</a>
+  </div>
+</main>
+
+<footer class="r-footer">
+  <div class="r-footer__inner">
+    <a class="r-footer__brand" href="./index.html">
+      <span class="r-footer__brand-note"><img src="./note%20relovtion.svg" alt=""></span>
+      Relovation
+    </a>
+    <nav class="r-footer__nav" aria-label="Footer navigatie">
+      <a href="./index.html">Home</a>
+      <a href="./diensten.html">Diensten</a>
+      <a href="./gallerij.html">Gallerij</a>
+      <a href="./over.html">Over ons</a>
+      <a href="./contact.html">Contact</a>
+    </nav>
+    <div class="r-footer__contact">
+      <a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a>
+    </div>
+  </div>
+  <div class="r-footer__bottom">
+    <p class="r-footer__copy">&copy; 2025 Relovation &mdash; Alle rechten voorbehouden</p>
+    <p class="r-footer__copy">Made by <a href="https://www.jdcreations.co" target="_blank" rel="noopener noreferrer">JDCreations</a></p>
+  </div>
+</footer>
+
+<script src="./nav.js"></script>
+</body>
+</html>

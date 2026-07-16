@@ -4,19 +4,25 @@
   var overlay = document.getElementById('r-nav-overlay');
   if (!nav || !burger || !overlay) return;
 
-  // ── Active link ──
-  var links = nav.querySelectorAll('.r-nav__links a');
-  var page = location.pathname.split('/').filter(Boolean).pop() || 'index.html';
-  links.forEach(function (a) {
-    var href = (a.getAttribute('href') || '').split('/').pop();
-    if (href === page || (!page && href === 'index.html') || (page === '' && href === 'index.html')) {
+  // ── Active link (capsule + overlay) ──
+  // Normalise so clean URLs (/diensten) match hrefs (./diensten.html) and
+  // "/" / "/index.html" both resolve to the home page.
+  function norm(u) {
+    var s = (u || '').split(/[?#]/)[0].split('/').filter(Boolean).pop() || '';
+    s = s.replace(/\.html$/, '');
+    return s === '' || s === 'index' ? 'index' : s;
+  }
+  var page = norm(location.pathname);
+  var allLinks = document.querySelectorAll('.r-nav__links a, .r-nav__ovl-list a');
+  allLinks.forEach(function (a) {
+    if (norm(a.getAttribute('href')) === page) {
       a.classList.add('r-active');
     }
   });
 
   // ── Scroll ──
   function tick() {
-    if (window.scrollY > 58) {
+    if (window.scrollY > 24) {
       nav.classList.add('is-scrolled');
     } else {
       nav.classList.remove('is-scrolled');

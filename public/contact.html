@@ -1143,35 +1143,29 @@
 <!-- ── Navigation ── -->
 <header class="r-nav" id="r-nav" aria-label="Hoofdnavigatie">
   <div class="r-nav__inner">
-    <!-- Brand -->
+    <!-- Brand = Home -->
     <a class="r-nav__brand" href="./index.html" aria-label="Relovation — home">
-      <span class="r-nav__genre">Live jazz</span>
-      <span class="r-nav__wordmark">
-        <span class="r-nav__note"><img src="./note%20relovtion.svg" alt=""></span>
-        Relovation
-      </span>
+      <span class="r-nav__note"><img src="./note%20relovtion.svg" alt=""></span>
+      <span class="r-nav__wordmark">Relovation</span>
     </a>
 
-    <!-- Desktop links -->
-    <nav aria-label="Primaire navigatie">
+    <!-- Capsule nav -->
+    <nav class="r-nav__capsule" aria-label="Primaire navigatie">
       <ul class="r-nav__links">
         <li><a href="./index.html">Home</a></li>
         <li><a href="./diensten.html">Diensten</a></li>
-        <li><a href="./over.html">Over</a></li>
+        <li><a href="./gallerij.html">Gallerij</a></li>
+        <li><a href="./over.html">Over ons</a></li>
         <li><a href="./contact.html">Contact</a></li>
       </ul>
     </nav>
 
     <!-- Actions -->
     <div class="r-nav__actions">
-      <a class="r-nav__cta" href="./aanvraag.html">
-        Vertel ons over uw event <span class="r-nav__cta-arrow" aria-hidden="true">→</span>
-      </a>
+      <a class="r-nav__cta" href="./aanvraag.html">Plan uw event <span class="r-nav__cta-arrow" aria-hidden="true">→</span></a>
       <button class="r-nav__burger" id="r-nav-burger"
-        aria-expanded="false" aria-controls="r-nav-overlay"
-        aria-label="Menu openen">
-        <span class="r-nav__burger-open" aria-hidden="true">Menu</span>
-        <span class="r-nav__burger-close" aria-hidden="true">×</span>
+        aria-expanded="false" aria-controls="r-nav-overlay" aria-label="Menu openen">
+        <span class="r-nav__burger-lines" aria-hidden="true"><i></i><i></i></span>
       </button>
     </div>
   </div>
@@ -1179,16 +1173,19 @@
 
 <div class="r-nav__overlay" id="r-nav-overlay" aria-hidden="true">
   <nav aria-label="Mobiele navigatie">
-    <ol class="r-nav__ovl-list">
-      <li><a href="./index.html"><span class="r-nav__ovl-num">01</span><span class="r-nav__ovl-title">Home</span></a></li>
-      <li><a href="./diensten.html"><span class="r-nav__ovl-num">02</span><span class="r-nav__ovl-title">Diensten</span></a></li>
-      <li><a href="./over.html"><span class="r-nav__ovl-num">03</span><span class="r-nav__ovl-title">Over</span></a></li>
-      <li><a href="./contact.html"><span class="r-nav__ovl-num">04</span><span class="r-nav__ovl-title">Contact</span></a></li>
-    </ol>
+    <ul class="r-nav__ovl-list">
+      <li><a href="./index.html"><span class="r-nav__ovl-title">Home</span><span class="r-nav__ovl-desc">Welkom bij Relovation</span></a></li>
+      <li><a href="./diensten.html"><span class="r-nav__ovl-title">Diensten</span><span class="r-nav__ovl-desc">Duo, trio &amp; full band</span></a></li>
+      <li><a href="./gallerij.html"><span class="r-nav__ovl-title">Gallerij</span><span class="r-nav__ovl-desc">Beeld &amp; geluid</span></a></li>
+      <li><a href="./over.html"><span class="r-nav__ovl-title">Over ons</span><span class="r-nav__ovl-desc">Het ensemble</span></a></li>
+      <li><a href="./contact.html"><span class="r-nav__ovl-title">Contact</span><span class="r-nav__ovl-desc">Plan of stel een vraag</span></a></li>
+    </ul>
   </nav>
   <div class="r-nav__ovl-bottom">
-    <a class="r-nav__cta-ovl" href="./aanvraag.html">Vertel ons over uw event</a>
+    <a class="r-nav__cta-ovl r-nav__cta-ovl--primary" href="./aanvraag.html">Plan uw event</a>
+    <a class="r-nav__cta-ovl r-nav__cta-ovl--ghost" href="./contact.html">Contacteer ons</a>
     <p class="r-nav__ovl-contact"><a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a></p>
+    <p class="r-nav__ovl-social">INSTAGRAM · YOUTUBE · SPOTIFY</p>
   </div>
 </div>
 
@@ -1383,7 +1380,8 @@
     <nav class="r-footer__nav" aria-label="Footer navigatie">
       <a href="./index.html">Home</a>
       <a href="./diensten.html">Diensten</a>
-      <a href="./over.html">Over</a>
+      <a href="./gallerij.html">Gallerij</a>
+      <a href="./over.html">Over ons</a>
       <a href="./contact.html">Contact</a>
     </nav>
     <div class="r-footer__contact">
