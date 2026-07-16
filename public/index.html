@@ -229,6 +229,11 @@
       padding: var(--space-4) 0;
       background: var(--bg);
       overflow: hidden;
+      /* De hero is 100vh met een lege staart onder de player; die maakte de
+         ruimte BOVEN de logobalk (tot de player) veel groter dan de ruimte
+         eronder (tot de about-sectie), en erger op hoge schermen. We trekken de
+         balk die staart in zodat boven ≈ onder — schaalt mee met de viewport. */
+      margin-top: clamp(-180px, calc(240px - 37vh), -30px);
     }
 
     .logos-label {
@@ -1267,12 +1272,17 @@
 
     .features-inner {
       position: relative;
-      width: min(100% - clamp(48px, 13.3vw, 192px), 1248px);
+      /* Zelfde content-band als de hero (hero-width + 70px * scale): Waarom lijnt
+         links uit met de sax-tekening en schaalt mee als één systeem op grote
+         schermen. Onder 1024px neemt een normale gutter het over (zie media). */
+      width: var(--hero-width);
+      max-width: var(--hero-max-width);
       margin: 0 auto;
+      padding-inline: calc(70px * var(--hero-scale));
     }
 
     .features-head {
-      max-width: 620px;
+      max-width: min(760px, 60%);
     }
 
     .features-eyebrow {
@@ -1308,25 +1318,22 @@
       color: var(--ink-soft);
     }
 
-    /* SVG-tekening rechtsboven — zelfde ratio als het Figma-vak (448×286). */
+    /* SVG-tekening rechtsboven — schaalt mee met het hero-systeem (scale). */
     .features-art {
       position: absolute;
       top: 0;
       right: 0;
-      width: min(448px, 40%);
+      width: min(calc(448px * var(--hero-scale)), 44%);
       aspect-ratio: 448 / 286;
     }
 
+    /* De menigte-tekening tekent zichzelf via dezelfde pen-logica als de hero
+       (JS: stroke-dashoffset contour + inkt), niet via een clip-veeg. */
     .waarom-draw {
       position: relative;
       width: 100%;
       height: 100%;
-      /* Teken-reveal: een veeg van links naar rechts alsof de tekening ontstaat. */
-      clip-path: inset(0 100% 0 0);
-      transition: clip-path 1.5s cubic-bezier(0.33, 0, 0.2, 1);
     }
-
-    .waarom-draw.is-drawn { clip-path: inset(0 0 0 0); }
 
     .waarom-draw svg {
       width: 100%;
@@ -1409,8 +1416,15 @@
     .features-notes .fnote-1 { left: 0; top: 36%; }
     .features-notes .fnote-2 { left: 42%; top: 0; }
 
-    /* ── Tablet: art onder de header, 2-koloms, geen stagger ─────────────────── */
+    /* ── Tablet: normale gutter, art onder de header, 2-koloms, geen stagger ─── */
     @media (max-width: 1024px) {
+      .features-inner {
+        width: min(100% - clamp(48px, 9vw, 112px), 1040px);
+        padding-inline: 0;
+      }
+
+      .features-head { max-width: 620px; }
+
       .features-art {
         position: static;
         width: min(448px, 100%);
@@ -1445,9 +1459,6 @@
       }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .waarom-draw { transition: none; }
-    }
 
 
     .features-sticky {
@@ -2116,24 +2127,120 @@
 
     }
 
+    /* ── Finale CTA — donkergroen "invitatie"-paneel met gouden hairline-frame ──
+       Zweeft op de cream (marge scheidt het van de groene footer). Diepgroen
+       #3d5645 (rijker dan de footer), ivoor type, gouden accenten. */
     .cta-banner {
       text-align: center;
-      padding: var(--section-gap-lg) 0 calc(var(--section-gap-lg) + var(--space-2));
+      background: var(--bg);
+      padding: clamp(64px, 9vh, 132px) 0 clamp(76px, 10vh, 152px);
     }
 
-    .cta-banner p {
-      width: min(575px, 100%);
-      margin: var(--stack-tight) auto var(--stack-actions);
+    .cta-panel {
+      position: relative;
+      width: min(100% - clamp(32px, 6vw, 112px), 1180px);
+      margin: 0 auto;
+      padding: clamp(56px, 8vw, 116px) clamp(28px, 7vw, 104px);
+      background: #3d5645;
+      color: #f4edcf;
+      border-radius: clamp(28px, 3vw, 46px);
+      overflow: hidden;
+      box-shadow: 0 44px 90px -34px rgba(35, 50, 40, 0.55);
+    }
+
+    /* Gouden hairline-frame binnenin -> invitatie/luxe. */
+    .cta-panel::before {
+      content: "";
+      position: absolute;
+      inset: clamp(13px, 1.4vw, 22px);
+      border: 1px solid rgba(197, 165, 96, 0.5);
+      border-radius: clamp(18px, 2.2vw, 34px);
+      pointer-events: none;
+    }
+
+    .cta-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 clamp(18px, 2vw, 30px);
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(12px, 0.85vw, 14px);
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(244, 237, 207, 0.74);
+    }
+
+    .cta-eyebrow::before,
+    .cta-eyebrow::after {
+      content: "";
+      width: clamp(22px, 3vw, 42px);
+      height: 1px;
+      background: rgba(197, 165, 96, 0.85);
+    }
+
+    .cta-panel .cta-title {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-size: clamp(46px, 5.4vw, 88px);
+      line-height: 1.08;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: #f6f0d9;
+    }
+
+    .cta-panel .cta-title.reveal-title { align-items: center; }
+    .cta-panel .cta-title.reveal-title .reveal-line { justify-content: center; gap: 0.28em; }
+
+    /* Gouden italic accent op "moment" — bookend met de hero. */
+    .cta-title .reveal-word-italic em {
+      font-style: italic;
+      font-weight: 400;
+      color: #cbaa61;
+    }
+
+    .cta-sub {
+      width: min(560px, 100%);
+      margin: clamp(20px, 2.4vw, 32px) auto clamp(34px, 3.8vw, 50px);
+      font-size: clamp(16px, 1.05vw, 18px);
       line-height: 1.6;
-      /* Was rgba(76,106,87,0.88) = 4.01:1 op cream — onder AA op 16px. */
-      color: var(--ink-soft);
+      color: rgba(244, 237, 207, 0.8);
     }
 
     .cta-actions {
       display: inline-flex;
-      gap: var(--space-1);
+      gap: var(--space-2);
       flex-wrap: wrap;
       justify-content: center;
+    }
+
+    .cta-actions .button {
+      min-width: 210px;
+      height: 62px;
+      font-size: 16px;
+    }
+
+    .cta-actions .cta-btn-primary {
+      background: #f4edcf;
+      color: #3d5645;
+      border: 1.6px solid #f4edcf;
+      box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.35);
+    }
+
+    .cta-actions .cta-btn-primary:hover {
+      background: #fffdf3;
+      border-color: #fffdf3;
+    }
+
+    .cta-actions .cta-btn-ghost {
+      background: transparent;
+      color: #f4edcf;
+      border: 1.5px solid rgba(244, 237, 207, 0.45);
+    }
+
+    .cta-actions .cta-btn-ghost:hover {
+      border-color: #f4edcf;
+      background: rgba(244, 237, 207, 0.06);
     }
 
     .site-footer {
@@ -4387,10 +4494,10 @@
     <div class="features-inner">
       <div class="features-head reveal-copy">
         <p class="features-eyebrow">Live jazz · Volledig verzorgd</p>
-        <h2 class="features-title reveal-title" aria-label="Waarom Relovation">
+        <h2 class="features-title reveal-title" aria-label="Waarom Relovation?">
           <span class="reveal-line">
             <span class="reveal-word" style="animation-delay: 0.04s;">Waarom</span>
-            <span class="reveal-word reveal-word-italic" style="animation-delay: 0.1s;"><em>Relovation</em></span>
+            <span class="reveal-word reveal-word-italic" style="animation-delay: 0.1s;"><em>Relovation?</em></span>
           </span>
         </h2>
         <p class="features-sub">Elke reden een eigen maat, samen één ritme dat uw avond draagt.</p>
@@ -4467,20 +4574,23 @@
   </section>
 
   <section class="cta-banner" id="contact">
-    <div class="cta-shell">
-      <h2 class="reveal-title" aria-label="Vertel ons over uw event.">
+    <div class="cta-panel">
+      <p class="cta-eyebrow reveal-copy">Klaar voor live muziek</p>
+      <h2 class="cta-title reveal-title" aria-label="Vertel ons over uw moment.">
         <span class="reveal-line" aria-hidden="true">
           <span class="reveal-word" style="animation-delay: 0.04s;">Vertel</span>
           <span class="reveal-word" style="animation-delay: 0.1s;">ons</span>
           <span class="reveal-word" style="animation-delay: 0.16s;">over</span>
+        </span>
+        <span class="reveal-line" aria-hidden="true">
           <span class="reveal-word" style="animation-delay: 0.22s;">uw</span>
-          <span class="reveal-word" style="animation-delay: 0.28s;">event.</span>
+          <span class="reveal-word reveal-word-italic" style="animation-delay: 0.28s;"><em>moment.</em></span>
         </span>
       </h2>
-      <p class="reveal-copy">Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat.</p>
+      <p class="cta-sub reveal-copy">Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat.</p>
       <div class="cta-actions reveal-actions">
-        <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
-        <a class="button" href="./contact.html">Contacteer ons</a>
+        <a class="button cta-btn-primary" href="./aanvraag.html">Plan uw event</a>
+        <a class="button cta-btn-ghost" href="./contact.html">Contacteer ons</a>
       </div>
     </div>
   </section>
@@ -5226,12 +5336,14 @@
       aboutObserver.observe(aboutDrawFrame);
     }
 
-    // "Waarom Relovation" — de groene menigte-tekening laadt lazy en tekent
-    // zichzelf via een clip-path-veeg (links -> rechts) zodra ze in beeld komt.
+    // "Waarom Relovation" — de groene menigte-tekening gebruikt EXACT dezelfde
+    // methode als de hero-band: een geprepareerde SVG met een <mask> vol witte
+    // reveal-strokes (.wln, pathLength=1, willekeurige animation-delay) die de
+    // gevulde inkt onthullen. De SVG tekent zichzelf via ingebouwde CSS zodra de
+    // klasse "go" erop staat — geen JS-per-frame.
     const waaromDraw = document.querySelector(".waarom-draw");
-    // Observeer het NIET-geclipte ouder-vak: .waarom-draw draagt de reveal-clip
-    // (0px zichtbaar tot ze getekend is), en IntersectionObserver telt clip-path
-    // mee -> het geclipte element wordt anders nooit "intersecting".
+    // Observeer het ouder-vak (.features-art): de tekening start onzichtbaar
+    // (mask volledig zwart), dus heeft zelf geen meetbaar oppervlak voor de IO.
     const waaromArt = document.querySelector(".features-art");
 
     if (waaromDraw && waaromArt) {
@@ -5244,7 +5356,7 @@
         }
         waaromLoaded = true;
 
-        const response = await fetch("./assets/waarom-crowd.svg");
+        const response = await fetch("./assets/waarom-band.svg");
         const svgMarkup = await response.text();
         waaromDraw.innerHTML = svgMarkup;
 
@@ -5257,17 +5369,15 @@
         svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
         svgElement.setAttribute("aria-hidden", "true");
 
-        if (waaromReducedMotion.matches) {
-          waaromDraw.classList.add("is-drawn");
-          return;
-        }
-        // Twee frames zodat de clip-startstaat (0% zichtbaar) eerst paint,
-        // daarna de veeg naar volledig zichtbaar.
-        window.requestAnimationFrame(() => {
+        // Zelfde self-draw als de hero: "go" start de ingebouwde CSS-animatie.
+        // Bij prefers-reduced-motion toont de @media-regel in de SVG meteen alles.
+        if (!waaromReducedMotion.matches) {
           window.requestAnimationFrame(() => {
-            waaromDraw.classList.add("is-drawn");
+            window.requestAnimationFrame(() => {
+              svgElement.classList.add("go");
+            });
           });
-        });
+        }
       };
 
       const waaromObserver = new IntersectionObserver((entries, observer) => {
