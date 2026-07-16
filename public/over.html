@@ -2376,6 +2376,315 @@
         height: 198px;
       }
     }
+    /* ════════════════════════════════════════════════════════════════════════
+       OVER ONS — tekst-editorial herontwerp (Figma 123:186 "De Index").
+       Eigen ov-* systeem; de oude sectie-CSS hierboven matcht niets meer.
+       ════════════════════════════════════════════════════════════════════════ */
+    .ov-page { background: var(--bg); }
+
+    .ov-shell {
+      width: min(100% - clamp(40px, 8vw, 192px), 1248px);
+      margin: 0 auto;
+    }
+
+    /* ── Hero ─────────────────────────────────────────────────────────────── */
+    .ov-hero { padding: clamp(96px, 12vh, 172px) 0 clamp(56px, 7vw, 96px); }
+
+    .ov-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin: 0 0 clamp(24px, 3vw, 40px);
+    }
+
+    .ov-hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) clamp(200px, 20vw, 280px);
+      gap: clamp(32px, 5vw, 88px);
+      align-items: end;
+    }
+
+    .ov-h1 {
+      margin: 0;
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(72px, 10vw, 148px);
+      line-height: 0.92;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+    }
+    .ov-h1 em { font-style: italic; }
+
+    .ov-lede {
+      margin: clamp(28px, 3vw, 44px) 0 0;
+      max-width: 42ch;
+      font-family: "EB Garamond", serif;
+      font-style: italic;
+      font-size: clamp(20px, 1.7vw, 27px);
+      line-height: 1.5;
+      color: var(--ink-soft);
+    }
+
+    .ov-hero-img {
+      width: 100%;
+      aspect-ratio: 250 / 330;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg-deep);
+    }
+    .ov-hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ── Index / inhoudstafel ─────────────────────────────────────────────── */
+    .ov-index { margin: clamp(56px, 7vw, 104px) 0 0; border-top: 1px solid var(--line); }
+
+    .ov-index-row {
+      display: grid;
+      grid-template-columns: 66px minmax(0, 1fr) minmax(0, 300px);
+      align-items: center;
+      gap: clamp(16px, 3vw, 48px);
+      padding: clamp(20px, 2.2vw, 30px) 0;
+      border-bottom: 1px solid var(--line);
+      color: inherit;
+      transition: color 200ms ease;
+    }
+    .ov-index-row:hover { color: var(--ink); }
+    .ov-index-num {
+      font-family: "DM Sans", sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      color: var(--gold);
+    }
+    .ov-index-title {
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(28px, 3.4vw, 50px);
+      line-height: 1;
+      color: var(--ink);
+    }
+    .ov-index-title em { font-style: italic; }
+    .ov-index-desc {
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(13px, 1vw, 15px);
+      color: var(--ink-muted);
+      text-align: right;
+    }
+    .ov-index-row:hover .ov-index-title { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+
+    .ov-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+      margin: clamp(36px, 4vw, 56px) 0 0;
+    }
+    .ov-actions .button { height: 64px; padding: 0 34px; font-size: 16px; }
+
+    /* ── Genummerde sectie ────────────────────────────────────────────────── */
+    .ov-section { padding: clamp(64px, 8vw, 128px) 0 0; }
+
+    .ov-sec-eyebrow {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding-top: clamp(20px, 2.2vw, 28px);
+      border-top: 1px solid var(--line);
+      font-family: "DM Sans", sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .ov-sec-eyebrow .n { color: var(--gold); }
+
+    .ov-sec-title {
+      margin: clamp(20px, 2.4vw, 34px) 0 0;
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(40px, 5.4vw, 76px);
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    .ov-sec-title em { font-style: italic; }
+
+    .ov-sec-intro {
+      margin: clamp(20px, 2vw, 28px) 0 0;
+      max-width: 60ch;
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(16px, 1.15vw, 19px);
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+
+    /* ── 01 Ons verhaal: tekst + groot portret + caption ──────────────────── */
+    .ov-story-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) clamp(320px, 34vw, 470px);
+      gap: clamp(40px, 5vw, 96px);
+      align-items: start;
+      margin: clamp(32px, 4vw, 56px) 0 0;
+    }
+    .ov-story-body {
+      max-width: 56ch;
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(16px, 1.15vw, 19px);
+      line-height: 1.72;
+      color: var(--ink-soft);
+    }
+    .ov-story-body p { margin: 0 0 1.1em; }
+    .ov-story-body p:last-child { margin-bottom: 0; }
+    .ov-figure { margin: 0; }
+    .ov-figure-img {
+      width: 100%;
+      aspect-ratio: 470 / 640;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-deep);
+    }
+    .ov-figure-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ov-figure figcaption {
+      margin: clamp(14px, 1.4vw, 20px) 0 0;
+      font-family: "DM Sans", sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      color: var(--ink-muted);
+    }
+
+    /* ── Pull-quote ───────────────────────────────────────────────────────── */
+    .ov-quote {
+      margin: clamp(72px, 9vw, 148px) 0;
+      font-family: "EB Garamond", serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: clamp(28px, 3.6vw, 50px);
+      line-height: 1.24;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      max-width: 22ch;
+    }
+
+    /* ── Kolommen (aanwezigheid + hoe wij werken) ─────────────────────────── */
+    .ov-cols {
+      display: grid;
+      gap: clamp(28px, 3vw, 48px) clamp(32px, 4vw, 40px);
+      margin: clamp(40px, 5vw, 72px) 0 clamp(56px, 7vw, 96px);
+    }
+    .ov-cols--3 { grid-template-columns: repeat(3, 1fr); }
+    .ov-cols--4 { grid-template-columns: repeat(2, 1fr); max-width: 1040px; }
+
+    .ov-point-num {
+      font-family: "EB Garamond", serif;
+      font-size: clamp(26px, 2.2vw, 34px);
+      color: var(--gold);
+      line-height: 1;
+    }
+    .ov-point-title {
+      margin: clamp(12px, 1.2vw, 18px) 0 clamp(8px, 0.8vw, 12px);
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(20px, 1.6vw, 25px);
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    .ov-point-desc {
+      margin: 0;
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(14px, 1vw, 16px);
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+
+    /* ── 03 Onze muzikanten: 4 portret-kaarten ────────────────────────────── */
+    .ov-musicians {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(24px, 2.4vw, 32px);
+      margin: clamp(40px, 5vw, 72px) 0 0;
+      align-items: start;
+    }
+    .ov-muso-img {
+      width: 100%;
+      aspect-ratio: 288 / 384;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg-deep);
+    }
+    .ov-muso-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ov-muso-name {
+      margin: clamp(14px, 1.4vw, 20px) 0 0;
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(20px, 1.5vw, 25px);
+      color: var(--ink);
+    }
+    .ov-muso-role {
+      margin: 6px 0 0;
+      font-family: "DM Sans", sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .ov-muso-bio {
+      margin: clamp(12px, 1.2vw, 16px) 0 0;
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(13px, 0.95vw, 15px);
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+    .ov-muso-handle {
+      display: inline-block;
+      margin: clamp(12px, 1.2vw, 16px) 0 0;
+      font-family: "DM Sans", sans-serif;
+      font-size: 13px;
+      color: var(--ink-muted);
+    }
+
+    .ov-note {
+      margin: clamp(40px, 5vw, 64px) 0 0;
+      padding-top: clamp(28px, 3vw, 40px);
+      border-top: 1px solid var(--line);
+      max-width: 80ch;
+      font-family: "EB Garamond", serif;
+      font-style: italic;
+      font-size: clamp(18px, 1.5vw, 24px);
+      line-height: 1.5;
+      color: var(--ink-soft);
+    }
+
+    .ov-end-rule { height: 1px; background: var(--line); margin: clamp(64px, 8vw, 120px) 0 0; }
+
+    /* ── Responsive ───────────────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .ov-hero-grid { grid-template-columns: 1fr; align-items: start; }
+      .ov-hero-img { max-width: 300px; margin-top: clamp(28px, 5vw, 44px); }
+      .ov-index-row { grid-template-columns: 52px minmax(0, 1fr); }
+      .ov-index-desc { display: none; }
+      .ov-story-grid { grid-template-columns: 1fr; }
+      .ov-figure { max-width: 470px; }
+      .ov-cols--3 { grid-template-columns: repeat(3, 1fr); }
+      .ov-musicians { grid-template-columns: repeat(2, 1fr); gap: clamp(28px, 5vw, 44px); }
+    }
+
+    @media (max-width: 680px) {
+      .ov-cols--3, .ov-cols--4 { grid-template-columns: 1fr; }
+      .ov-musicians { grid-template-columns: 1fr 1fr; }
+      .ov-actions .button { flex: 1 1 auto; }
+    }
+
+    @media (max-width: 440px) {
+      .ov-musicians { grid-template-columns: 1fr; }
+      .ov-muso-img { aspect-ratio: 4 / 3; }
+    }
   </style>
   <link rel="stylesheet" href="./nav.css">
   <link rel="stylesheet" href="./loader.css">
@@ -2446,264 +2755,118 @@
   </div>
 </div>
 
-  <main class="about-page">
-    <section class="page-section over-hero" id="top">
-      <div class="section-shell hero-shell">
-        <div class="hero-copy reveal-copy">
-          <p class="hero-eyebrow reveal-copy" aria-hidden="true">Live muziek · sinds 2018</p>
-          <h1 class="section-title hero-title reveal-title" aria-label="Over ons">
-            <span class="reveal-line">
-              <span class="reveal-word" style="animation-delay: 0.04s;">Over</span>
-              <span class="reveal-word reveal-word-italic" style="animation-delay: 0.1s;"><em>ons</em></span>
-            </span>
-          </h1>
-          <p class="lead">Relovation ontstond uit een gedeelde passie voor muziek en de overtuiging dat live spelen altijd het verschil maakt.</p>
-          <div class="hero-actions reveal-actions">
-            <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
+  <main class="about-page ov-page">
+    <section class="ov-hero">
+      <div class="ov-shell">
+        <p class="ov-topbar reveal-copy"><span>Live muziek</span><span>Sinds 2018 · Antwerpen</span></p>
+        <div class="ov-hero-grid">
+          <div class="reveal-copy">
+            <h1 class="ov-h1">Over <em>ons</em></h1>
+            <p class="ov-lede">Wij spelen live. Dat klinkt vanzelfsprekend, maar het is de hele reden waarom Relovation bestaat: een moment dat u ziet gebeuren, blijft langer hangen dan een moment dat u enkel hoort.</p>
+          </div>
+          <div class="ov-hero-img reveal-visual">
+            <img src="./assets/photos/over-hero-band-podium.webp" width="1600" height="1066" loading="lazy" decoding="async" alt="De muzikanten van Relovation op het podium.">
           </div>
         </div>
 
-        <div class="hero-media reveal-visual" data-scroll-scene="hero">
-          <figure class="hero-card hero-card--back">
-            <img src="./assets/photos/over-hero-band-podium.webp" width="1600" height="1066"
-                 loading="lazy" decoding="async"
-                 alt="De vier muzikanten van Relovation staan gearmd op het podium en buigen na hun optreden.">
-          </figure>
-          <figure class="hero-card hero-card--front" aria-hidden="true">
-            <img src="./assets/photos/detail-drumpedaal-tapijt.webp" width="1600" height="1067"
-                 loading="lazy" decoding="async" alt="">
-          </figure>
-        </div>
-      </div>
+        <nav class="ov-index reveal-copy" aria-label="Inhoud van deze pagina">
+          <a class="ov-index-row" href="#verhaal"><span class="ov-index-num">Nº 01</span><span class="ov-index-title">Ons verhaal</span><span class="ov-index-desc">Hoe Relovation begon</span></a>
+          <a class="ov-index-row" href="#aanwezigheid"><span class="ov-index-num">Nº 02</span><span class="ov-index-title">De kunst van <em>aanwezigheid</em></span><span class="ov-index-desc">Onze manier van spelen</span></a>
+          <a class="ov-index-row" href="#muzikanten"><span class="ov-index-num">Nº 03</span><span class="ov-index-title">Onze muzikanten</span><span class="ov-index-desc">Robin · Lorenzo · Tim · Joppe</span></a>
+          <a class="ov-index-row" href="#werken"><span class="ov-index-num">Nº 04</span><span class="ov-index-title">Hoe wij werken</span><span class="ov-index-desc">Alles rond de muziek</span></a>
+        </nav>
 
-      <a class="scroll-cue reveal-visual" href="#verhaal" aria-label="Ga naar Ons verhaal">
-        <img src="./note%20relovtion.svg" alt="">
-      </a>
-    </section>
-
-    <section class="page-section story-section" id="verhaal">
-      <div class="section-shell story-shell">
-        <div class="story-media reveal-visual">
-          <figure class="story-card story-card--1">
-            <img src="./assets/photos/over-verhaal-straatfestival.webp" width="1600" height="1067"
-                 loading="lazy" decoding="async"
-                 alt="Een saxofonist van Relovation speelt zittend tussen het publiek op een zonnig straatfestival.">
-          </figure>
-          <figure class="story-card story-card--2" aria-hidden="true">
-            <img src="./assets/photos/sfeer-openingen-straat-kind.webp" width="1600" height="1067"
-                 loading="lazy" decoding="async" alt="">
-          </figure>
-          <figure class="story-card story-card--3" aria-hidden="true">
-            <img src="./assets/photos/home-duo-kaarslicht-zaal.webp" width="1600" height="1067"
-                 loading="lazy" decoding="async" alt="">
-          </figure>
-          <figure class="story-card story-card--4" aria-hidden="true">
-            <img src="./assets/photos/sfeer-keys-kaarslicht-starburst.webp" width="1600" height="1067"
-                 loading="lazy" decoding="async" alt="">
-          </figure>
-        </div>
-
-        <div class="story-copy reveal-copy">
-          <h2 class="story-title reveal-title" aria-label="Ons verhaal">
-            <span class="reveal-line">
-              <span class="reveal-word" style="animation-delay: 0.04s;">Ons</span>
-              <span class="reveal-word" style="animation-delay: 0.1s;"><em>verhaal</em></span>
-            </span>
-          </h2>
-          <p>Robin startte op zijn achtste met de saxofoon en stopte nooit meer. In 2016 leerde hij Lorenzo kennen — een pianist die hem vanaf de eerste repetitie versteld deed staan. Na die repetitie vroeg hij hem om samen te spelen. Zo begon het.</p>
-          <p>Ze repeteerden, speelden hier en daar, en organiseerden in 2018 hun eerste eigen concert. Het jaar nadien opnieuw. Relovation groeide van daaruit organisch — niet gepland, maar gedragen door de muziek en de mensen errond. Lorenzo is sindsdien een vaste waarde én een goede vriend, en dat hoor je.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="page-section vision-section" id="visie">
-      <div class="section-shell vision-shell">
-        <div class="vision-notes" aria-hidden="true">
-          <img src="./note%20relovtion.svg" alt="">
-          <img src="./note%20relovtion.svg" alt="">
-        </div>
-
-        <div class="vision-copy reveal-copy">
-          <h2 class="section-title reveal-title" aria-label="Onze visie">
-            <span class="reveal-line">
-              <span class="reveal-word" style="animation-delay: 0.04s;">Onze</span>
-              <span class="reveal-word" style="animation-delay: 0.1s;"><em>visie</em></span>
-            </span>
-          </h2>
-          <p class="vision-body">Live muziek verandert een moment. Ze maakt een ontvangst warmer, een diner intiemer, een feest onvergetelijk.</p>
-          <p class="vision-specs-label">Bij elk event voorop</p>
-          <dl class="vision-specs">
-            <div class="vision-spec">
-              <dt>Passie</dt>
-              <dd>voor de muziek</dd>
-            </div>
-            <div class="vision-spec">
-              <dt>Plezier</dt>
-              <dd>in het spelen</dd>
-            </div>
-            <div class="vision-spec">
-              <dt>Professionaliteit</dt>
-              <dd>alles verloopt foutloos</dd>
-            </div>
-          </dl>
-          <p class="vision-body-close">Dat is waar Relovation voor staat — en wat u hoort zodra we beginnen.</p>
-          <div class="vision-cta reveal-actions">
-            <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
-          </div>
-        </div>
-
-        <div class="vision-visual reveal-visual">
-          <figure class="vision-figure vision-figure--back">
-            <img src="./assets/photos/over-visie-sax-goudlicht.webp" width="1600" height="1067"
-                 loading="lazy" decoding="async"
-                 alt="Een saxofonist in gilet en das speelt solo in warm goudkleurig podiumlicht.">
-          </figure>
-        </div>
-
-        <div class="vision-quote">
-          <p class="vision-statement reveal-title" aria-label="Live muziek die met het moment mee ademt">
-            <span class="reveal-line">
-              <span class="reveal-word" style="animation-delay: 0.04s;">Live muziek die</span>
-            </span>
-            <span class="reveal-line">
-              <span class="reveal-word" style="animation-delay: 0.1s;">met het moment</span>
-            </span>
-            <span class="reveal-line">
-              <span class="reveal-word" style="animation-delay: 0.16s;"><em>mee ademt</em></span>
-            </span>
-          </p>
-          <div class="vision-rule reveal-visual" aria-hidden="true"></div>
-          <p class="vision-note-text reveal-copy">Subtiel aanwezig, muzikaal verfijnd en volledig in dienst van de sfeer</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="page-section presence-section" id="presence">
-      <div class="section-shell presence-shell">
-        <div class="presence-line presence-line-reveal" aria-hidden="true"></div>
-
-        <div class="presence-row">
-          <div class="presence-intro presence-reveal">
-            <h2 class="presence-title reveal-title" aria-label="De kunst van aanwezigheid">
-              <span class="reveal-line">
-                <span class="reveal-word" style="animation-delay: 0.04s;">De kunst van</span>
-              </span>
-              <span class="reveal-line">
-                <span class="reveal-word" style="animation-delay: 0.1s;"><em>aanwezigheid</em></span>
-              </span>
-            </h2>
-            <p>Geen muziek die om aandacht vraagt, maar muziek die het moment optilt. Verfijnd in timing, zacht in présence, sterk in sfeer.</p>
-          </div>
-
-          <div class="presence-grid">
-            <article class="presence-item presence-col" style="--presence-delay: 0.04s;">
-              <p class="presence-number">01</p>
-              <h3 class="presence-item-title presence-item-title--nowrap">Subtiel aanwezig</h3>
-              <p>Nooit te veel, altijd precies genoeg.</p>
-            </article>
-
-            <article class="presence-item presence-col" style="--presence-delay: 0.14s;">
-              <p class="presence-number">02</p>
-              <h3 class="presence-item-title">In dienst van het moment</h3>
-              <p>We volgen de ruimte, het ritme en het publiek.</p>
-            </article>
-
-            <article class="presence-item presence-col" style="--presence-delay: 0.24s;">
-              <p class="presence-number">03</p>
-              <h3 class="presence-item-title presence-item-title--nowrap">Warm en elegant</h3>
-              <p>Tijdloze muziek die klasse toevoegt zonder afstandelijk te worden.</p>
-            </article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page-section musicians-section" id="muzikanten">
-      <div class="musicians-green-base" aria-hidden="true"></div>
-      <div class="musicians-curve" aria-hidden="true"></div>
-
-      <div class="section-shell musicians-shell">
-        <h2 class="musicians-title reveal-title" aria-label="Onze muzikanten">
-          <span class="reveal-line">
-            <span class="reveal-word" style="animation-delay: 0.04s;">Onze</span>
-            <span class="reveal-word" style="animation-delay: 0.1s;"><em>muzikanten</em></span>
-          </span>
-        </h2>
-
-        <div class="musicians-grid">
-          <article class="musician-card reveal-copy">
-            <span class="musician-rule" aria-hidden="true"></span>
-            <div class="musician-frame reveal-visual">
-              <img src="./assets/photos/robin-sax-portret.webp" width="760" height="940"
-                   loading="lazy" decoding="async"
-                   alt="Robin Crauwels zingt aan de microfoon met zijn saxofoon in de hand, in warm rood-oranje podiumlicht.">
-            </div>
-            <p class="musician-name">Robin Crauwels</p>
-            <p class="musician-role">Saxofoon &amp; zang</p>
-            <p class="musician-bio">Finalist van The Voice van Vlaanderen 2021. Zanger in zalen als de Koningin Elisabethzaal, met de Radio 2 Ratpack en de VRT Bigband. U hoort het niveau vanaf de eerste noot.</p>
-            <a class="musician-ig" href="https://www.instagram.com/robin_crauwels/" target="_blank" rel="noopener noreferrer">@robin_crauwels</a>
-          </article>
-
-          <article class="musician-card reveal-copy" style="transition-delay: 0.08s;">
-            <span class="musician-rule" aria-hidden="true"></span>
-            <div class="musician-frame reveal-visual">
-              <img src="./assets/photos/lorenzo-piano-portret.webp" width="760" height="940"
-                   loading="lazy" decoding="async"
-                   alt="Lorenzo Nsumbi lacht in pak achter zijn Roland-keyboard in zacht avondlicht.">
-            </div>
-            <p class="musician-name">Lorenzo Nsumbi</p>
-            <p class="musician-role">Piano</p>
-            <p class="musician-bio">Studeerde aan Codarts Rotterdam en is erbij van het eerste uur. Zijn pianospel is de reden dat Relovation begon.</p>
-            <a class="musician-ig" href="https://www.instagram.com/lorenzo_on_keys/" target="_blank" rel="noopener noreferrer">@lorenzo_on_keys</a>
-          </article>
-
-          <article class="musician-card reveal-copy" style="transition-delay: 0.16s;">
-            <span class="musician-rule" aria-hidden="true"></span>
-            <div class="musician-frame reveal-visual">
-              <img src="./assets/photos/joppe-drums-portret.webp" width="760" height="940"
-                   loading="lazy" decoding="async"
-                   alt="Joppe Van Noten slaat in achter zijn drumstel tijdens een buitenoptreden.">
-            </div>
-            <p class="musician-name">Joppe Van Noten</p>
-            <p class="musician-role">Drums</p>
-            <p class="musician-bio">Groeide op in Antwerpen, studeerde aan Codarts Rotterdam. Leidt zijn eigen kwartet en weet precies hoe hij een ruimte in beweging brengt.</p>
-            <a class="musician-ig" href="https://www.instagram.com/jv_ondrums/" target="_blank" rel="noopener noreferrer">@jv_ondrums</a>
-          </article>
-
-          <article class="musician-card reveal-copy" style="transition-delay: 0.24s;">
-            <span class="musician-rule" aria-hidden="true"></span>
-            <div class="musician-frame reveal-visual">
-              <img src="./assets/photos/tim-bas-portret.webp" width="760" height="940"
-                   loading="lazy" decoding="async"
-                   alt="Tim Pensaert speelt lachend zijn witte basgitaar in een festivaltent.">
-            </div>
-            <p class="musician-name">Tim Pensaert</p>
-            <p class="musician-role">Bas</p>
-            <p class="musician-bio">Legt de muzikale basis waar alles op rust. Bassist van Meltheads — finalist De Nieuwe Lichting, tweede op Humo's Rock Rally, Pukkelpop — en weet wat het is om een zaal te bewegen.</p>
-            <a class="musician-ig" href="https://www.instagram.com/timpensaert/" target="_blank" rel="noopener noreferrer">@timpensaert</a>
-          </article>
-        </div>
-
-        <p class="musicians-note reveal-copy">De bezetting wordt per event afgestemd op uw wensen en de beschikbaarheid van onze muzikanten.</p>
-      </div>
-    </section>
-
-    <section class="page-section cta-banner" id="contact">
-      <div class="section-shell cta-shell">
-        <h2 class="section-title cta-title reveal-title" aria-label="Boek Relovation voor uw event.">
-          <span class="reveal-line">
-            <span class="reveal-word" style="animation-delay: 0.04s;">Boek</span>
-            <span class="reveal-word" style="animation-delay: 0.1s;"><em>Relovation</em></span>
-          </span>
-          <span class="reveal-line">
-            <span class="reveal-word" style="animation-delay: 0.16s;">voor uw event.</span>
-          </span>
-        </h2>
-        <p class="cta-copy reveal-copy">Vertel ons welk moment u wil neerzetten. Wij stemmen de muzikale invulling af op de sfeer, de ruimte en het ritme van uw event.</p>
-        <div class="cta-actions reveal-actions">
+        <div class="ov-actions reveal-actions">
           <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
-          <a class="button" href="mailto:relovation@robinmusic.be">Mail ons</a>
+          <a class="button" href="./contact.html">Contacteer ons</a>
         </div>
+      </div>
+    </section>
+
+    <section class="ov-section" id="verhaal">
+      <div class="ov-shell">
+        <p class="ov-sec-eyebrow reveal-copy"><span class="n">Nº 01</span><span>Ons verhaal</span></p>
+        <h2 class="ov-sec-title reveal-copy">Ons verhaal</h2>
+        <div class="ov-story-grid">
+          <div class="ov-story-body reveal-copy">
+            <p>Robin startte op zijn achtste met de saxofoon en is er nooit meer mee gestopt. In 2016 leerde hij Lorenzo kennen op een ensemblerepetitie, een pianist die hem vanaf de eerste noot versteld deed staan. Na afloop vroeg Robin hem om samen te spelen. Zo begon het.</p>
+            <p>Ze repeteerden in Lier, speelden hier en daar, en organiseerden in 2018 hun eerste eigen concert. Het jaar nadien opnieuw. Relovation groeide van daaruit organisch, niet vanuit een plan, maar vanuit de muziek en de mensen errond.</p>
+            <p>Dat is nog altijd het verschil. Wij spelen samen omdat we dat willen, niet omdat we samengezet zijn. Een zaal hoort dat verschil, ook al kan niemand er de vinger op leggen.</p>
+          </div>
+          <figure class="ov-figure reveal-visual">
+            <div class="ov-figure-img"><img src="./assets/photos/robin-sax-portret.webp" width="1067" height="1600" loading="lazy" decoding="async" alt="Robin Crauwels met saxofoon."></div>
+            <figcaption>Robin Crauwels — oprichter Relovation</figcaption>
+          </figure>
+        </div>
+
+        <blockquote class="ov-quote reveal-copy">&ldquo;Wij spelen samen omdat we dat willen, niet omdat we samengezet zijn.&rdquo;</blockquote>
+      </div>
+    </section>
+
+    <section class="ov-section" id="aanwezigheid">
+      <div class="ov-shell">
+        <p class="ov-sec-eyebrow reveal-copy"><span class="n">Nº 02</span><span>De kunst van aanwezigheid</span></p>
+        <h2 class="ov-sec-title reveal-copy">De kunst van <em>aanwezigheid</em></h2>
+        <p class="ov-sec-intro reveal-copy">Relovation brengt geen muziek die om aandacht vraagt, maar muziek die het moment optilt. Verfijnd in timing, rustig in présence, sterk in sfeer.</p>
+        <div class="ov-cols ov-cols--3 reveal-copy">
+          <div class="ov-point"><div class="ov-point-num">01</div><h3 class="ov-point-title">Subtiel aanwezig</h3><p class="ov-point-desc">Nooit te veel, altijd precies genoeg. We lezen de ruimte en spelen ernaar.</p></div>
+          <div class="ov-point"><div class="ov-point-num">02</div><h3 class="ov-point-title">In dienst van het moment</h3><p class="ov-point-desc">Uw programma bepaalt de muziek, niet omgekeerd. Wij volgen het ritme van uw avond.</p></div>
+          <div class="ov-point"><div class="ov-point-num">03</div><h3 class="ov-point-title">Warm en tijdloos</h3><p class="ov-point-desc">Een repertoire dat niet veroudert, gebracht met klasse en zonder afstand.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ov-section" id="muzikanten">
+      <div class="ov-shell">
+        <p class="ov-sec-eyebrow reveal-copy"><span class="n">Nº 03</span><span>Onze muzikanten</span></p>
+        <h2 class="ov-sec-title reveal-copy">Onze muzikanten</h2>
+        <p class="ov-sec-intro reveal-copy">Vier muzikanten, elk met een eigen podium buiten Relovation. Samen vormen zij het geluid waar Relovation voor staat.</p>
+        <div class="ov-musicians reveal-copy">
+          <article class="ov-muso">
+            <div class="ov-muso-img"><img src="./assets/photos/robin-sax-portret.webp" width="1067" height="1600" loading="lazy" decoding="async" alt="Robin Crauwels"></div>
+            <h3 class="ov-muso-name">Robin Crauwels</h3>
+            <p class="ov-muso-role">Zang &amp; saxofoon</p>
+            <p class="ov-muso-bio">Robin begon op zijn achtste met de saxofoon en stopte er nooit meer mee. Als finalist van The Voice van Vlaanderen 2021 en als zanger op podia als de Koningin Elisabethzaal, met de Radio 2 Ratpack en de VRT Bigband, brengt hij een niveau mee dat u hoort vanaf de eerste noot.</p>
+            <a class="ov-muso-handle" href="https://instagram.com/robin_crauwels" target="_blank" rel="noopener">@robin_crauwels</a>
+          </article>
+          <article class="ov-muso">
+            <div class="ov-muso-img"><img src="./assets/photos/lorenzo-piano-portret.webp" width="1067" height="1600" loading="lazy" decoding="async" alt="Lorenzo Nsumbi"></div>
+            <h3 class="ov-muso-name">Lorenzo Nsumbi</h3>
+            <p class="ov-muso-role">Piano</p>
+            <p class="ov-muso-bio">Lorenzo studeerde aan Codarts Rotterdam en is erbij van het eerste uur. Zijn pianospel is de reden dat Relovation ooit begon.</p>
+            <a class="ov-muso-handle" href="https://instagram.com/lorenzo_on_keys" target="_blank" rel="noopener">@lorenzo_on_keys</a>
+          </article>
+          <article class="ov-muso">
+            <div class="ov-muso-img"><img src="./assets/photos/tim-bas-portret.webp" width="1067" height="1600" loading="lazy" decoding="async" alt="Tim Pensaert"></div>
+            <h3 class="ov-muso-name">Tim Pensaert</h3>
+            <p class="ov-muso-role">Bas</p>
+            <p class="ov-muso-bio">Tim legt de basis waar alles op rust. Als bassist van Meltheads, finalist De Nieuwe Lichting, tweede op Humo&rsquo;s Rock Rally, Pukkelpop, weet hij wat het is om een zaal in beweging te krijgen.</p>
+            <a class="ov-muso-handle" href="https://instagram.com/timpensaert" target="_blank" rel="noopener">@timpensaert</a>
+          </article>
+          <article class="ov-muso">
+            <div class="ov-muso-img"><img src="./assets/photos/joppe-drums-portret.webp" width="1067" height="1600" loading="lazy" decoding="async" alt="Joppe Van Noten"></div>
+            <h3 class="ov-muso-name">Joppe Van Noten</h3>
+            <p class="ov-muso-role">Drums</p>
+            <p class="ov-muso-bio">Joppe studeerde aan Codarts Rotterdam en leidt zijn eigen kwartet. Hij weet precies wanneer een ruimte een duw nodig heeft, en wanneer net niet.</p>
+            <a class="ov-muso-handle" href="https://instagram.com/jv_ondrums" target="_blank" rel="noopener">@jv_ondrums</a>
+          </article>
+        </div>
+        <p class="ov-note reveal-copy">Afhankelijk van uw event spelen we in duo, trio of full band. Elke bezetting is een keuze, geen compromis, wij adviseren u graag welke past bij uw moment.</p>
+      </div>
+    </section>
+
+    <section class="ov-section" id="werken">
+      <div class="ov-shell">
+        <p class="ov-sec-eyebrow reveal-copy"><span class="n">Nº 04</span><span>Hoe wij werken</span></p>
+        <h2 class="ov-sec-title reveal-copy">Hoe wij werken</h2>
+        <p class="ov-sec-intro reveal-copy">Muzikaal niveau is het begin. De rest is even belangrijk, en daar merkt u ons het minst van.</p>
+        <div class="ov-cols ov-cols--4 reveal-copy">
+          <div class="ov-point"><div class="ov-point-num">01</div><h3 class="ov-point-title">Vooraf afgestemd</h3><p class="ov-point-desc">Repertoire, bezetting, volume en timing bespreken we voor de dag zelf. Geen verrassingen.</p></div>
+          <div class="ov-point"><div class="ov-point-num">02</div><h3 class="ov-point-title">Eigen geluidsinstallatie</h3><p class="ov-point-desc">Professionele installatie voor events tot ±250 gasten, inbegrepen.</p></div>
+          <div class="ov-point"><div class="ov-point-num">03</div><h3 class="ov-point-title">Stipt en voorbereid</h3><p class="ov-point-desc">Wij zijn op tijd, de soundcheck verloopt zonder gedoe, en uw locatie merkt het nauwelijks.</p></div>
+          <div class="ov-point"><div class="ov-point-num">04</div><h3 class="ov-point-title">Wij denken mee</h3><p class="ov-point-desc">Vanuit ervaring adviseren we over wat werkt op welk moment. U hoeft de muziek niet uit te vinden.</p></div>
+        </div>
+        <div class="ov-end-rule" aria-hidden="true"></div>
       </div>
     </section>
   </main>
