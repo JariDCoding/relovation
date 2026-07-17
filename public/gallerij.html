@@ -3,100 +3,396 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-  <title>Gallerij — Relovation</title>
-  <meta name="description" content="Beeld en geluid van Relovation — live jazz voor trouwfeesten, bedrijfsevents en recepties.">
+  <title>Gallerij — Relovation live jazz in beeld</title>
+  <meta name="description" content="Een avond Relovation, vastgelegd. Beeld en geluid van onze optredens — live jazz voor trouwfeesten, bedrijfsevents en privéfeesten.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #f4edcf;
+      --bg-deep: #ece2bc;
+      --ink: #4c6a57;
+      --ink-deep: #3f5645;
+      --ink-soft: #4f5f49;   /* 5.83:1 op cream — AA */
+      --ink-muted: #55715e;  /* 4.57:1 op cream */
+      --cream-on-dark: rgba(244, 237, 207, 0.96);
+      --gold: #af8f48;       /* DECORATIEF — enkel dunne regels + grote cijfer-ornamenten */
+      --line: rgba(76, 106, 87, 0.20);
+      --line-on-dark: rgba(244, 237, 207, 0.30);
+      --radius-arch: 999px 999px 0 0;
+      --radius-card: 4px;
+
+      /* Editorial ruimte-schaal (magazine ademt) */
+      --gutter: clamp(40px, 8vw, 160px);
+      --plate-gap: clamp(48px, 7vw, 120px);
+      --stack: clamp(16px, 1.6vw, 24px);
+
+      --shell: min(100% - var(--gutter), 1360px);
+      --ease: cubic-bezier(0.18, 0.88, 0.18, 1);
+    }
+
     * { box-sizing: border-box; }
-    html, body { margin: 0; }
+    html, body { margin: 0; min-height: 100%; overflow-x: hidden; }
+    html { scroll-behavior: smooth; }
     body {
-      background: #f4edcf;
-      color: #4c6a57;
+      background: var(--bg);
+      color: var(--ink);
       font-family: "DM Sans", sans-serif;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    .shell { width: var(--shell); margin: 0 auto; }
+
+    /* Full-bleed helper */
+    .bleed {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
     }
 
-    .gallerij-hero {
-      min-height: calc(100vh - var(--nav-h));
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: clamp(48px, 10vw, 120px) 24px;
-    }
-
-    .gallerij-eyebrow {
-      font-family: "DM Sans", sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: #4f5f49;
-      margin: 0 0 20px;
-    }
-
-    .gallerij-eyebrow::before {
-      content: "";
-      display: inline-block;
-      width: 34px;
-      height: 1px;
-      background: #cca735;
-      vertical-align: middle;
-      margin-right: 12px;
-    }
-
-    .gallerij-title {
-      font-family: "EB Garamond", serif;
-      font-weight: 500;
-      font-size: clamp(44px, 7vw, 92px);
-      line-height: 1.04;
-      color: #4c6a57;
-      margin: 0 0 22px;
-    }
-
-    .gallerij-title em {
-      font-style: italic;
-      font-weight: 400;
-    }
-
-    .gallerij-sub {
-      font-family: "EB Garamond", serif;
-      font-style: italic;
-      font-size: clamp(18px, 2vw, 23px);
-      line-height: 1.5;
-      color: #55715e;
-      max-width: 560px;
-      margin: 0 auto 40px;
-    }
-
-    .gallerij-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      justify-content: center;
-    }
-
-    .gallerij-btn {
+    /* ── Kicker / labels (getrackt, DM Sans) ───────────────────────────── */
+    .kicker {
       display: inline-flex;
       align-items: center;
-      height: 54px;
-      padding: 0 30px;
+      gap: 14px;
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin: 0;
+    }
+    .kicker::before {
+      content: "";
+      width: clamp(28px, 3vw, 48px);
+      height: 1px;
+      background: var(--gold);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       MASTHEAD
+    ════════════════════════════════════════════════════════════════════ */
+    .mag-open {
+      padding: clamp(72px, 12vh, 172px) 0 clamp(40px, 5vw, 72px);
+    }
+    .mag-open__meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px 32px;
+      padding-bottom: clamp(24px, 3vw, 40px);
+      border-bottom: 1px solid var(--line);
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .mag-open__meta span:nth-child(2) { color: var(--ink-soft); }
+    .mag-open__title {
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(88px, 20vw, 340px);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin: clamp(28px, 4vw, 68px) 0 0;
+      text-indent: -0.03em;
+    }
+    .mag-open__title em { font-style: italic; font-weight: 400; color: var(--ink-muted); }
+    .mag-open__stand {
+      font-family: "EB Garamond", serif;
+      font-size: clamp(20px, 2.1vw, 30px);
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--ink-muted);
+      max-width: 30ch;
+      margin: clamp(28px, 3.5vw, 52px) 0 0 auto;
+      text-align: right;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       FIGURE / CAPTIONS
+    ════════════════════════════════════════════════════════════════════ */
+    .frame { position: relative; overflow: hidden; background: var(--bg-deep); border-radius: var(--radius-card); }
+    .frame img { width: 100%; height: 100%; object-fit: cover; }
+
+    figure { margin: 0; }
+    .figcap {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-top: clamp(14px, 1.4vw, 22px);
+      font-family: "DM Sans", sans-serif;
+    }
+    .figcap__no {
+      flex: none;
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .figcap__txt {
+      font-size: clamp(13px, 1vw, 15px);
+      line-height: 1.5;
+      color: var(--ink-muted);
+      max-width: 46ch;
+    }
+    .figcap--center { justify-content: center; text-align: left; }
+
+    /* Lead spread */
+    .mag-lead { margin-top: clamp(8px, 1vw, 20px); }
+    .mag-lead .frame { aspect-ratio: 16 / 9; }
+    .mag-lead .figcap { width: var(--shell); margin-left: auto; margin-right: auto; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       SECTIE-KOP
+    ════════════════════════════════════════════════════════════════════ */
+    .sec-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+      align-items: end;
+      gap: clamp(20px, 3vw, 56px);
+      margin: clamp(88px, 12vw, 180px) 0 clamp(40px, 5vw, 72px);
+    }
+    .sec-head__title {
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(38px, 5.4vw, 88px);
+      line-height: 1.0;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      margin: clamp(16px, 1.6vw, 24px) 0 0;
+    }
+    .sec-head__title em { font-style: italic; font-weight: 400; color: var(--ink-muted); }
+    .sec-head__lede {
+      font-family: "EB Garamond", serif;
+      font-size: clamp(17px, 1.5vw, 21px);
+      font-style: italic;
+      line-height: 1.55;
+      color: var(--ink-muted);
+      margin: 0;
+      padding-bottom: 6px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       HET ENSEMBLE — de cast
+    ════════════════════════════════════════════════════════════════════ */
+    .ensemble {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(20px, 2.4vw, 40px);
+    }
+    .muso__frame {
+      aspect-ratio: 760 / 940;
+      border-radius: var(--radius-arch);
+      overflow: hidden;
+      background: var(--bg-deep);
+      box-shadow: 0 30px 52px -22px rgba(63, 86, 69, 0.34);
+    }
+    .muso__frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.1s var(--ease); }
+    .muso:hover .muso__frame img { transform: scale(1.045); }
+    .muso__name {
+      font-family: "EB Garamond", serif;
+      font-size: clamp(20px, 1.7vw, 27px);
+      color: var(--ink);
+      margin: clamp(16px, 1.4vw, 22px) 0 4px;
+    }
+    .muso__inst {
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin: 0;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       PLATES — magazine spreads
+    ════════════════════════════════════════════════════════════════════ */
+    .plate { margin-top: var(--plate-gap); }
+
+    /* Full-bleed spread — 16/9 i.p.v. 2/1: minder verticale crop, geen afgesneden
+       hoofden bij staande beelden. */
+    .plate-full .frame { aspect-ratio: 16 / 9; }
+    .plate-full .figcap { width: var(--shell); margin-left: auto; margin-right: auto; }
+    /* Staande band: crop hoger houden zodat de hoofden in beeld blijven. */
+    .plate-full--top img { object-position: center 26%; }
+
+    /* Duo — twee beelden, tweede optisch verlaagd (editorial offset) */
+    .plate-duo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(24px, 4vw, 72px);
+      align-items: start;
+    }
+    .plate-duo__b { margin-top: clamp(48px, 9vw, 148px); }
+    .plate-duo .frame { aspect-ratio: 3 / 2; }
+    .plate-duo__tall .frame { aspect-ratio: 4 / 5; }
+    .plate-duo__portrait .frame { aspect-ratio: 2 / 3; }
+
+    /* Split — beeld + editorial tekst */
+    .plate-split {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(32px, 5vw, 96px);
+      align-items: center;
+    }
+    .plate-split__media .frame { aspect-ratio: 2 / 3; }
+    .plate-split__text .kicker { margin-bottom: clamp(20px, 2vw, 30px); }
+    .plate-split__title {
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(30px, 3.4vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin: 0 0 clamp(18px, 2vw, 28px);
+    }
+    .plate-split__title em { font-style: italic; font-weight: 400; color: var(--ink-muted); }
+    .plate-split__body {
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(15px, 1.15vw, 18px);
+      line-height: 1.72;
+      color: var(--ink-soft);
+      margin: 0;
+      max-width: 46ch;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       PULL QUOTE
+    ════════════════════════════════════════════════════════════════════ */
+    .mag-quote {
+      margin: clamp(96px, 13vw, 200px) 0;
+      text-align: center;
+    }
+    .mag-quote__mark {
+      font-family: "EB Garamond", serif;
+      font-size: clamp(64px, 9vw, 150px);
+      line-height: 0.5;
+      color: var(--gold);
+      display: block;
+      height: clamp(40px, 5vw, 70px);
+    }
+    .mag-quote__text {
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(30px, 4.6vw, 76px);
+      font-style: italic;
+      line-height: 1.14;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin: 0 auto;
+      max-width: 18ch;
+    }
+    .mag-quote__by {
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin: clamp(28px, 3vw, 44px) 0 0;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       CTA — arch-paneel
+    ════════════════════════════════════════════════════════════════════ */
+    .mag-cta { padding: clamp(96px, 12vw, 180px) 0 clamp(72px, 9vw, 128px); }
+    .mag-cta__panel {
+      position: relative;
+      background: var(--ink);
+      color: var(--cream-on-dark);
+      border-radius: var(--radius-arch);
+      padding: clamp(72px, 10vw, 148px) clamp(28px, 6vw, 96px) clamp(64px, 8vw, 120px);
+      text-align: center;
+      overflow: hidden;
+    }
+    .mag-cta__kicker {
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(244, 237, 207, 0.7);
+      margin: 0 0 clamp(20px, 2vw, 30px);
+    }
+    .mag-cta__title {
+      font-family: "EB Garamond", serif;
+      font-weight: 500;
+      font-size: clamp(38px, 5.6vw, 92px);
+      line-height: 1.02;
+      letter-spacing: -0.015em;
+      margin: 0 auto clamp(36px, 4vw, 56px);
+      max-width: 16ch;
+    }
+    .mag-cta__title em { font-style: italic; font-weight: 400; color: rgba(244, 237, 207, 0.82); }
+    .mag-cta__actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      height: 56px;
+      padding: 0 32px;
       border-radius: 999px;
       font-family: "DM Sans", sans-serif;
       font-size: 15px;
       font-weight: 500;
-      text-decoration: none;
       transition: background 0.28s, transform 0.28s, border-color 0.28s, color 0.28s;
     }
+    .btn--light { background: var(--bg); color: var(--ink); }
+    .btn--light:hover { transform: translateY(-2px); }
+    .btn--light span { transition: transform 0.28s var(--ease); }
+    .btn--light:hover span { transform: translateX(4px); }
+    .btn--ghost-light { border: 1px solid rgba(244, 237, 207, 0.42); color: var(--cream-on-dark); }
+    .btn--ghost-light:hover { background: rgba(244, 237, 207, 0.09); border-color: var(--cream-on-dark); }
 
-    .gallerij-btn--primary { background: #4c6a57; color: #f4edcf; }
-    .gallerij-btn--primary:hover { background: #567d5c; transform: translateY(-1px); }
+    /* ════════════════════════════════════════════════════════════════════
+       REVEAL
+    ════════════════════════════════════════════════════════════════════ */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 1.1s var(--ease), transform 1.1s var(--ease); }
+    .reveal.is-in { opacity: 1; transform: none; }
+    .reveal--d1 { transition-delay: 0.08s; }
+    .reveal--d2 { transition-delay: 0.16s; }
+    .reveal--d3 { transition-delay: 0.24s; }
 
-    .gallerij-btn--ghost { border: 1px solid #4c6a57; color: #4c6a57; }
-    .gallerij-btn--ghost:hover { background: rgba(76, 106, 87, 0.07); }
+    /* ════════════════════════════════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .mag-open__stand { text-align: left; margin-left: 0; max-width: 40ch; }
+      .sec-head { grid-template-columns: 1fr; align-items: start; }
+      .ensemble { grid-template-columns: repeat(2, 1fr); gap: clamp(18px, 4vw, 32px) clamp(16px, 4vw, 28px); }
+      .plate-split { grid-template-columns: 1fr; gap: clamp(28px, 6vw, 44px); }
+      .plate-split__media { order: -1; }
+      .plate-split__media .frame { aspect-ratio: 3 / 2; }
+      .plate-full .frame { aspect-ratio: 3 / 2; }
+      .mag-lead .frame { aspect-ratio: 3 / 2; }
+    }
+    @media (max-width: 620px) {
+      .plate-duo { grid-template-columns: 1fr; gap: clamp(28px, 8vw, 44px); }
+      .plate-duo__b { margin-top: 0; }
+      .plate-duo .frame,
+      .plate-duo__tall .frame,
+      .plate-duo__portrait .frame { aspect-ratio: 3 / 2; }
+      .plate-full .frame,
+      .mag-lead .frame { aspect-ratio: 4 / 3; }
+      .mag-quote__text { max-width: 22ch; }
+    }
+    @media (min-width: 1600px) {
+      :root { --shell: min(100% - var(--gutter), clamp(1360px, 82vw, 2040px)); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .muso__frame img, .btn span { transition: none; }
+    }
   </style>
   <link rel="stylesheet" href="./nav.css">
 </head>
@@ -104,12 +400,10 @@
 
 <header class="r-nav" id="r-nav" aria-label="Hoofdnavigatie">
   <div class="r-nav__inner">
-    <!-- Brand = Home -->
     <a class="r-nav__brand" href="./index.html" aria-label="Relovation — home">
       <span class="r-nav__note"><img src="./note%20relovtion.svg" alt=""></span>
       <span class="r-nav__wordmark">Relovation</span>
     </a>
-
     <div class="r-nav__actions">
       <a class="r-nav__cta" href="./aanvraag.html">Plan uw event <span class="r-nav__cta-arrow" aria-hidden="true">&rarr;</span></a>
       <button class="r-nav__menu-btn" id="r-nav-burger"
@@ -149,20 +443,174 @@
       <img class="r-nav__ovl-img" id="r-nav-ovl-img" src="./assets/photos/home-duo-kaarslicht-zaal.webp" alt="" loading="lazy">
       <div class="r-nav__ovl-caption">
         <span class="r-nav__ovl-cap-tag">In beeld</span>
-        <span class="r-nav__ovl-cap-line" id="r-nav-ovl-cap">Live jazz die de sfeer draagt.</span>
+        <span class="r-nav__ovl-cap-line" id="r-nav-ovl-cap">Beeld &amp; geluid van onze avonden.</span>
       </div>
     </aside>
   </div>
 </div>
 
-<main class="gallerij-hero">
-  <p class="gallerij-eyebrow">Beeld &amp; geluid</p>
-  <h1 class="gallerij-title">Binnenkort <em>in beeld.</em></h1>
-  <p class="gallerij-sub">We verzamelen de mooiste beelden en fragmenten van onze optredens. Benieuwd hoe wij uw avond kunnen dragen?</p>
-  <div class="gallerij-actions">
-    <a class="gallerij-btn gallerij-btn--primary" href="./aanvraag.html">Plan uw event</a>
-    <a class="gallerij-btn gallerij-btn--ghost" href="./diensten.html">Bekijk onze diensten</a>
+<main>
+
+  <!-- ══ MASTHEAD ══ -->
+  <section class="mag-open shell">
+    <div class="mag-open__meta reveal">
+      <span>Relovation — Live jazz</span>
+      <span>Beeld &amp; geluid</span>
+      <span>Editie Nº 01 · Lier, sinds 2018</span>
+    </div>
+    <h1 class="mag-open__title reveal reveal--d1">In <em>beeld</em></h1>
+    <p class="mag-open__stand reveal reveal--d2">Een avond Relovation, vastgelegd — van het eerste applaus tot het laatste gedempte akkoord.</p>
+  </section>
+
+  <!-- ══ LEAD SPREAD ══ -->
+  <figure class="mag-lead reveal">
+    <div class="bleed"><div class="frame"><img src="./assets/photos/home-duo-kaarslicht-zaal.webp" alt="Duo van Relovation speelt bij kaarslicht in een besloten zaal" loading="lazy" decoding="async"></div></div>
+    <figcaption class="figcap">
+      <span class="figcap__no">Nº 01</span>
+      <span class="figcap__txt">Duo bij kaarslicht — een besloten zaal draagt de avond, ingetogen en warm.</span>
+    </figcaption>
+  </figure>
+
+  <!-- ══ HET ENSEMBLE ══ -->
+  <section class="shell">
+    <div class="sec-head">
+      <div>
+        <p class="kicker reveal">Nº 02 — De bezetting</p>
+        <h2 class="sec-head__title reveal reveal--d1">Het <em>ensemble</em></h2>
+      </div>
+      <p class="sec-head__lede reveal reveal--d2">Vier muzikanten, één taal. Van intieme achtergrond tot een dansvloer die niet meer stilstaat.</p>
+    </div>
+    <div class="ensemble">
+      <article class="muso reveal">
+        <div class="muso__frame"><img src="./assets/photos/robin-sax-portret.webp" alt="Robin Crauwels met saxofoon" loading="lazy" decoding="async"></div>
+        <h3 class="muso__name">Robin Crauwels</h3>
+        <p class="muso__inst">Saxofoon</p>
+      </article>
+      <article class="muso reveal reveal--d1">
+        <div class="muso__frame"><img src="./assets/photos/lorenzo-piano-portret.webp" alt="Lorenzo Nsumbi achter de piano" loading="lazy" decoding="async"></div>
+        <h3 class="muso__name">Lorenzo Nsumbi</h3>
+        <p class="muso__inst">Piano &amp; keys</p>
+      </article>
+      <article class="muso reveal reveal--d2">
+        <div class="muso__frame"><img src="./assets/photos/tim-bas-portret.webp" alt="Tim Pensaert met contrabas" loading="lazy" decoding="async"></div>
+        <h3 class="muso__name">Tim Pensaert</h3>
+        <p class="muso__inst">Contrabas</p>
+      </article>
+      <article class="muso reveal reveal--d3">
+        <div class="muso__frame"><img src="./assets/photos/joppe-drums-portret.webp" alt="Joppe Van Noten achter het drumstel" loading="lazy" decoding="async"></div>
+        <h3 class="muso__name">Joppe Van Noten</h3>
+        <p class="muso__inst">Drums</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ══ FULL SPREAD — band op podium ══ -->
+  <figure class="plate plate-full plate-full--top reveal">
+    <div class="bleed"><div class="frame"><img src="./assets/photos/over-hero-band-podium.webp" alt="De full band van Relovation op het podium" loading="lazy" decoding="async"></div></div>
+    <figcaption class="figcap">
+      <span class="figcap__no">Nº 03</span>
+      <span class="figcap__txt">De full band op het podium — het volledige geluid, voor de grote momenten.</span>
+    </figcaption>
+  </figure>
+
+  <!-- ══ DUO OFFSET — club moody + raamreflectie ══ -->
+  <div class="plate plate-duo shell">
+    <figure class="plate-duo__a reveal">
+      <div class="frame"><img src="./assets/photos/contact-sax-club-moody.webp" alt="Saxofoon in het gedempte licht van een club" loading="lazy" decoding="async"></div>
+      <figcaption class="figcap"><span class="figcap__no">Nº 04</span><span class="figcap__txt">Saxofoon in het clubdonker.</span></figcaption>
+    </figure>
+    <figure class="plate-duo__b plate-duo__portrait reveal reveal--d1">
+      <div class="frame"><img src="./assets/photos/contact-sax-raamreflectie.webp" alt="Reflectie van de saxofonist in een raam" loading="lazy" decoding="async"></div>
+      <figcaption class="figcap"><span class="figcap__no">Nº 05</span><span class="figcap__txt">Reflectie in het raam, tussen twee sets.</span></figcaption>
+    </figure>
   </div>
+
+  <!-- ══ PULL QUOTE ══ -->
+  <section class="mag-quote shell">
+    <span class="mag-quote__mark" aria-hidden="true">&ldquo;</span>
+    <blockquote class="mag-quote__text reveal">Live is het verschil tussen geluid en een gevoel dat blijft hangen.</blockquote>
+    <p class="mag-quote__by reveal reveal--d1">Relovation</p>
+  </section>
+
+  <!-- ══ DUO — trouw + bedrijf ══ -->
+  <div class="plate plate-duo shell">
+    <figure class="plate-duo__a reveal">
+      <div class="frame"><img src="./assets/photos/diensten-trouwfeesten-bruidspaar.webp" alt="Bruidspaar tijdens de eerste dans op live jazz" loading="lazy" decoding="async"></div>
+      <figcaption class="figcap"><span class="figcap__no">Nº 06</span><span class="figcap__txt">Eerste dans, trouwfeest.</span></figcaption>
+    </figure>
+    <figure class="plate-duo__b reveal reveal--d1">
+      <div class="frame"><img src="./assets/photos/diensten-bedrijfsevents-concertzaal.webp" alt="Relovation tijdens een bedrijfsevent in een concertzaal" loading="lazy" decoding="async"></div>
+      <figcaption class="figcap"><span class="figcap__no">Nº 07</span><span class="figcap__txt">Bedrijfsevent, concertzaal.</span></figcaption>
+    </figure>
+  </div>
+
+  <!-- ══ FULL SPREAD — zaal vanaf podium ══ -->
+  <figure class="plate plate-full reveal">
+    <div class="bleed"><div class="frame"><img src="./assets/photos/contact-podium-zicht-publiek.webp" alt="Zicht vanaf het podium op een volle zaal" loading="lazy" decoding="async"></div></div>
+    <figcaption class="figcap">
+      <span class="figcap__no">Nº 08</span>
+      <span class="figcap__txt">Zicht vanaf het podium — de zaal die meebeweegt.</span>
+    </figcaption>
+  </figure>
+
+  <!-- ══ SPLIT — keys + essay ══ -->
+  <section class="plate plate-split shell">
+    <figure class="plate-split__media reveal">
+      <div class="frame"><img src="./assets/photos/sfeer-keys-kaarslicht-starburst.webp" alt="Handen op de toetsen in kaarslicht met tegenlicht" loading="lazy" decoding="async"></div>
+      <figcaption class="figcap"><span class="figcap__no">Nº 09</span><span class="figcap__txt">Toetsen, kaarslicht, tegenlicht.</span></figcaption>
+    </figure>
+    <div class="plate-split__text reveal reveal--d1">
+      <p class="kicker">Hoe wij spelen</p>
+      <h2 class="plate-split__title">Geen vaste set. <em>Een zaal die ademt.</em></h2>
+      <p class="plate-split__body">Elke avond is anders. De ruimte, de gasten, het uur van de nacht — het bepaalt hoe wij spelen. Geen playlist, geen knop die je omdraait. Wij luisteren naar de zaal en bewegen mee: ingetogen tijdens het diner, los op de dansvloer.</p>
+    </div>
+  </section>
+
+  <!-- ══ DUO — straatfestival + opening ══ -->
+  <div class="plate plate-duo shell">
+    <figure class="plate-duo__a reveal">
+      <div class="frame"><img src="./assets/photos/over-verhaal-straatfestival.webp" alt="Relovation speelt op een straatfestival" loading="lazy" decoding="async"></div>
+      <figcaption class="figcap"><span class="figcap__no">Nº 10</span><span class="figcap__txt">Straatfestival, open lucht.</span></figcaption>
+    </figure>
+    <figure class="plate-duo__b reveal reveal--d1">
+      <div class="frame"><img src="./assets/photos/sfeer-openingen-straat-kind.webp" alt="Sfeerbeeld van een opening op straat" loading="lazy" decoding="async"></div>
+      <figcaption class="figcap"><span class="figcap__no">Nº 11</span><span class="figcap__txt">Een opening op straat.</span></figcaption>
+    </figure>
+  </div>
+
+  <!-- ══ FULL SPREAD — sax goudlicht ══ -->
+  <figure class="plate plate-full reveal">
+    <div class="bleed"><div class="frame"><img src="./assets/photos/over-visie-sax-goudlicht.webp" alt="Saxofonist in warm goud licht" loading="lazy" decoding="async"></div></div>
+    <figcaption class="figcap">
+      <span class="figcap__no">Nº 12</span>
+      <span class="figcap__txt">Saxofoon in goud licht — het uur waarop de avond kantelt.</span>
+    </figcaption>
+  </figure>
+
+  <!-- ══ DUO — privéfeest + detail ══ -->
+  <div class="plate plate-duo shell">
+    <figure class="plate-duo__a reveal">
+      <div class="frame"><img src="./assets/photos/diensten-privefeesten-zaal-warm.webp" alt="Warme zaal tijdens een privéfeest" loading="lazy" decoding="async"></div>
+      <figcaption class="figcap"><span class="figcap__no">Nº 13</span><span class="figcap__txt">Privéfeest, warme zaal.</span></figcaption>
+    </figure>
+    <figure class="plate-duo__b reveal reveal--d1">
+      <div class="frame"><img src="./assets/photos/detail-drumpedaal-tapijt.webp" alt="Detailbeeld van een drumpedaal op een tapijt" loading="lazy" decoding="async"></div>
+      <figcaption class="figcap"><span class="figcap__no">Nº 14</span><span class="figcap__txt">Detail — de puls, van dichtbij.</span></figcaption>
+    </figure>
+  </div>
+
+  <!-- ══ CTA ══ -->
+  <section class="mag-cta shell">
+    <div class="mag-cta__panel reveal">
+      <p class="mag-cta__kicker">Klaar voor uw avond?</p>
+      <h2 class="mag-cta__title">Laat Relovation <em>uw moment</em> dragen.</h2>
+      <div class="mag-cta__actions">
+        <a class="btn btn--light" href="./aanvraag.html">Plan uw event <span aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn--ghost-light" href="./contact.html">Contacteer ons</a>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="r-footer">
@@ -205,5 +653,20 @@
 </footer>
 
 <script src="./nav.js"></script>
+<script>
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach(function (e) { e.classList.add('is-in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+</script>
 </body>
 </html>
