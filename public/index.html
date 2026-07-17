@@ -22,6 +22,7 @@
       var want = coarse && longEdge >= 1000 && longEdge <= 1279 && landscape;
       var next = want ? DESKTOP : DEFAULT;
       if (vp.getAttribute('content') !== next) vp.setAttribute('content', next);
+      document.documentElement.classList.toggle('is-ipad-canvas', want);
     }
     apply();
     window.addEventListener('resize', apply);
@@ -2441,6 +2442,13 @@
       height: var(--player-ring-size);
       display: grid;
       place-items: center;
+    }
+
+    /* iPad mini (geschaalde 1440-modus, class gezet door het viewport-script):
+       zet de "beluister een fragment"-player wat lager. Hogere specificiteit
+       dan alle media queries, dus additief bovenop de geldende top-offset. */
+    html.is-ipad-canvas .player-wrap {
+      margin-top: calc(96px * var(--hero-scale));
     }
 
     .player-ring {
