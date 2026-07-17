@@ -2662,6 +2662,31 @@
     }
 
     .ov-end-rule { height: 1px; background: var(--line); margin: clamp(64px, 8vw, 120px) 0 0; }
+    .ov-cta-sub {
+      margin: clamp(20px, 2vw, 30px) 0 clamp(32px, 3.6vw, 50px);
+      max-width: 54ch;
+      font-family: "DM Sans", sans-serif;
+      font-size: clamp(16px, 1.1vw, 21px);
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+
+    /* Muzikanten-carousel-controls: enkel op mobiel zichtbaar. */
+    .ov-muso-controls { display: none; }
+    .ov-muso-arrow {
+      width: 46px; height: 46px; border-radius: 50%;
+      border: 1px solid var(--line); background: transparent;
+      color: var(--ink); font-size: 17px; cursor: pointer;
+      display: grid; place-items: center; flex: none;
+      transition: border-color 180ms ease, background-color 180ms ease;
+    }
+    .ov-muso-arrow:hover:not(:disabled) { border-color: var(--ink); }
+    .ov-muso-arrow:disabled { opacity: 0.32; cursor: default; }
+    .ov-muso-count { font-family: "DM Sans", sans-serif; font-size: 14px; color: var(--ink-muted); }
+    .ov-muso-count b { color: var(--ink); font-weight: 600; }
+    .ov-muso-dots { display: flex; gap: 8px; margin-left: auto; }
+    .ov-muso-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: background 200ms ease; }
+    .ov-muso-dots span.is-active { background: var(--ink); }
 
     /* ── Responsive ───────────────────────────────────────────────────────── */
     @media (max-width: 1024px) {
@@ -2677,8 +2702,39 @@
 
     @media (max-width: 680px) {
       .ov-cols--3, .ov-cols--4 { grid-template-columns: 1fr; }
-      .ov-musicians { grid-template-columns: 1fr 1fr; }
       .ov-actions .button { flex: 1 1 auto; }
+
+      /* Hero-foto verbergen — de mobiele Figma toont 'm niet. */
+      .ov-hero-img { display: none; }
+
+      /* Ons verhaal: foto tussen kop en tekst (order -1). */
+      .ov-story-grid { display: flex; flex-direction: column; gap: clamp(24px, 6vw, 36px); }
+      .ov-figure { order: -1; max-width: none; }
+
+      /* Punten met scheidingslijn erboven (aanwezigheid + hoe wij werken). */
+      .ov-cols { gap: 0; }
+      .ov-point { padding-top: clamp(20px, 5vw, 28px); border-top: 1px solid var(--line); }
+      .ov-point + .ov-point { margin-top: clamp(24px, 6vw, 34px); }
+
+      /* Muzikanten = swipe-carousel. */
+      .ov-musicians {
+        grid-template-columns: none;
+        display: flex;
+        gap: clamp(16px, 4vw, 22px);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+      }
+      .ov-musicians::-webkit-scrollbar { display: none; }
+      .ov-muso { flex: 0 0 84%; scroll-snap-align: start; }
+
+      .ov-muso-controls {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: clamp(24px, 6vw, 34px);
+      }
     }
 
     @media (max-width: 440px) {
@@ -2851,6 +2907,12 @@
             <a class="ov-muso-handle" href="https://instagram.com/jv_ondrums" target="_blank" rel="noopener">@jv_ondrums</a>
           </article>
         </div>
+        <div class="ov-muso-controls" aria-hidden="true">
+          <button class="ov-muso-arrow" type="button" data-muso-prev aria-label="Vorige muzikant">&larr;</button>
+          <span class="ov-muso-count"><b data-muso-current>01</b> / 04</span>
+          <div class="ov-muso-dots" data-muso-dots></div>
+          <button class="ov-muso-arrow" type="button" data-muso-next aria-label="Volgende muzikant">&rarr;</button>
+        </div>
         <p class="ov-note reveal-copy">Afhankelijk van uw event spelen we in duo, trio of full band. Elke bezetting is een keuze, geen compromis, wij adviseren u graag welke past bij uw moment.</p>
       </div>
     </section>
@@ -2865,6 +2927,18 @@
           <div class="ov-point"><div class="ov-point-num">02</div><h3 class="ov-point-title">Eigen geluidsinstallatie</h3><p class="ov-point-desc">Professionele installatie voor events tot ±250 gasten, inbegrepen.</p></div>
           <div class="ov-point"><div class="ov-point-num">03</div><h3 class="ov-point-title">Stipt en voorbereid</h3><p class="ov-point-desc">Wij zijn op tijd, de soundcheck verloopt zonder gedoe, en uw locatie merkt het nauwelijks.</p></div>
           <div class="ov-point"><div class="ov-point-num">04</div><h3 class="ov-point-title">Wij denken mee</h3><p class="ov-point-desc">Vanuit ervaring adviseren we over wat werkt op welk moment. U hoeft de muziek niet uit te vinden.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ov-section ov-cta-section" id="tot-slot">
+      <div class="ov-shell">
+        <p class="ov-sec-eyebrow reveal-copy"><span class="n">&mdash;</span><span>Tot slot</span></p>
+        <h2 class="ov-sec-title reveal-copy">Vertel ons over uw <em>moment</em>.</h2>
+        <p class="ov-cta-sub reveal-copy">Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat.</p>
+        <div class="ov-actions reveal-actions">
+          <a class="button button-primary" href="./aanvraag.html">Plan uw event</a>
+          <a class="button" href="./contact.html">Contacteer ons</a>
         </div>
         <div class="ov-end-rule" aria-hidden="true"></div>
       </div>
@@ -2886,6 +2960,53 @@
       }, { threshold: 0.18, rootMargin: "0px 0px -10% 0px" });
 
       revealTargets.forEach((target) => revealObserver.observe(target));
+
+      // ── Muzikanten-carousel (mobiel): swipe + pijlen + teller + dots ──
+      const musoTrack = document.querySelector(".ov-musicians");
+      const musoControls = document.querySelector(".ov-muso-controls");
+      if (musoTrack && musoControls) {
+        const cards = Array.prototype.slice.call(musoTrack.querySelectorAll(".ov-muso"));
+        const prevBtn = musoControls.querySelector("[data-muso-prev]");
+        const nextBtn = musoControls.querySelector("[data-muso-next]");
+        const curEl = musoControls.querySelector("[data-muso-current]");
+        const dotsWrap = musoControls.querySelector("[data-muso-dots]");
+        cards.forEach(function (_, i) {
+          const dot = document.createElement("span");
+          if (i === 0) dot.classList.add("is-active");
+          dotsWrap.appendChild(dot);
+        });
+        const dots = Array.prototype.slice.call(dotsWrap.children);
+        const pad = function (n) { return String(n).padStart(2, "0"); };
+        const currentIndex = function () {
+          const trackLeft = musoTrack.getBoundingClientRect().left;
+          let best = 0, bestDist = Infinity;
+          cards.forEach(function (c, i) {
+            const d = Math.abs(c.getBoundingClientRect().left - trackLeft);
+            if (d < bestDist) { bestDist = d; best = i; }
+          });
+          return best;
+        };
+        const sync = function () {
+          const i = currentIndex();
+          curEl.textContent = pad(i + 1);
+          dots.forEach(function (d, j) { d.classList.toggle("is-active", j === i); });
+          prevBtn.disabled = i <= 0;
+          nextBtn.disabled = i >= cards.length - 1;
+        };
+        const goTo = function (i) {
+          const c = cards[Math.max(0, Math.min(cards.length - 1, i))];
+          if (c) c.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+        };
+        prevBtn.addEventListener("click", function () { goTo(currentIndex() - 1); });
+        nextBtn.addEventListener("click", function () { goTo(currentIndex() + 1); });
+        let scrollT;
+        musoTrack.addEventListener("scroll", function () {
+          clearTimeout(scrollT);
+          scrollT = setTimeout(sync, 90);
+        }, { passive: true });
+        window.addEventListener("resize", sync);
+        sync();
+      }
 
       if (reduceMotion) {
         return;
