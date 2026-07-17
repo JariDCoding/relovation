@@ -193,6 +193,10 @@
          krijgen ze exact dezelfde boog — de foto convex bovenaan, de banner
          concaaf onderaan, gespiegeld op dezelfde diepte en angle. */
       --hero-arch-depth: clamp(104px, 12vw, 168px);
+      /* Gedeelde tekstbreedte: copy (max-width) én de hairline/meta (width)
+         gebruiken deze, zodat de streep exact even breed is als de tekst erboven.
+         In px (niet ch) want copy en meta hebben verschillende font-groottes. */
+      --hero-line-max: 620px;
     }
 
     .hero-portrait {
@@ -284,7 +288,7 @@
     }
 
     .hero-copy {
-      max-width: 54ch; /* vault §1: 50-66 tekens per regel */
+      max-width: var(--hero-line-max); /* vault §1: 50-66 tekens per regel */
       margin: 0;
       color: var(--cream-on-dark);
       font-size: var(--body-l);
@@ -295,11 +299,15 @@
 
     .hero-contact-meta {
       margin-top: var(--space-2);
-      width: min(100%, 404px);
+      /* Zelfde breedte als de copy erboven -> de hairline loopt exact even ver. */
+      width: min(100%, var(--hero-line-max));
       padding-top: var(--space-1);
       border-top: 1px solid var(--line-on-dark);
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      /* auto/auto + space-between: TELEFOON tegen de linkerrand, EMAIL tegen de
+         rechterrand van de hairline. */
+      grid-template-columns: auto auto;
+      justify-content: space-between;
       gap: var(--space-2);
     }
 
@@ -307,6 +315,12 @@
       display: grid;
       gap: 8px; /* xs 8 — detailmaat onder de tokenschaal */
       align-content: start;
+    }
+
+    /* EMAIL-blok rechts uitgelijnd met het rechteruiteinde van de hairline. */
+    .hero-contact-meta > .hero-contact-item:last-child {
+      justify-items: end;
+      text-align: right;
     }
 
     /* Getrackt uppercase label — hetzelfde idioom als de andere pagina's (vault §6). */
@@ -859,16 +873,17 @@
         min-height: 0;
         aspect-ratio: auto;
         display: block;
-        padding: 64px 32px 108px;
+        /* Bodem-padding > concave-hoogte (140px) zodat de EMAIL-regel niet onder
+           de cream-uitsnede verdwijnt. */
+        padding: 64px 32px 180px;
       }
 
       .hero-contact-panel::after {
-        width: 122%;
+        width: 100%;
         height: 140px;
       }
 
-      .hero-panel-inner,
-      .hero-contact-meta {
+      .hero-panel-inner {
         width: min(100%, 702px);
       }
 
@@ -876,8 +891,10 @@
         font-size: clamp(58px, 8vw, 82px);
       }
 
-      .hero-copy {
-        max-width: 540px;
+      /* Token-override i.p.v. losse copy-breedte: zo blijven copy én hairline
+         (meta) even breed op deze breakpoint. */
+      .hero-contact-panel {
+        --hero-line-max: 540px;
       }
 
       .form-intro {
@@ -946,7 +963,7 @@
 
       .hero-contact-meta {
         grid-template-columns: 1fr 1fr;
-        width: 100%;
+        width: min(100%, var(--hero-line-max));
         gap: var(--space-1);
         margin-top: var(--space-2);
       }
@@ -1016,6 +1033,12 @@
       .form-grid,
       .form-phone-row {
         grid-template-columns: 1fr;
+      }
+
+      /* Eén kolom: EMAIL weer links uitlijnen (rechts oogt raar op een volle rij). */
+      .hero-contact-meta > .hero-contact-item:last-child {
+        justify-items: start;
+        text-align: left;
       }
 
       /* Op telefoon mag de boog weer staand: de bron is portret (1067x1600). */
