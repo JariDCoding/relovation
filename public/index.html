@@ -3,6 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+  <script>
+  /* Tablet-landscape (iPad mini, 1024 breed liggend): toon de 1440-desktoplayout
+     proportioneel geschaald i.p.v. de reflow-layout. width=1440 laat de browser
+     de volledige 1440-layout naar de schermbreedte passen (≈0,71× op 1024).
+     Telefoon, portrait en echte desktop blijven op de gewone responsive layout. */
+  (function () {
+    var vp = document.querySelector('meta[name="viewport"]');
+    var DESKTOP = 'width=1440, viewport-fit=cover';
+    var DEFAULT = 'initial-scale=1, width=device-width, viewport-fit=cover';
+    var longEdge = Math.max(screen.width || 0, screen.height || 0);
+    var coarse = window.matchMedia('(pointer: coarse)').matches;
+    function apply() {
+      var landscape = window.matchMedia('(orientation: landscape)').matches;
+      var want = coarse && longEdge >= 1000 && longEdge <= 1279 && landscape;
+      var next = want ? DESKTOP : DEFAULT;
+      if (vp.getAttribute('content') !== next) vp.setAttribute('content', next);
+    }
+    apply();
+    window.addEventListener('resize', apply);
+    window.addEventListener('orientationchange', function () { setTimeout(apply, 150); });
+  })();
+  </script>
   <title>Relovation — Live jazz voor uw event</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -5493,24 +5515,40 @@
 
 <!-- ── Footer ── -->
 <footer class="r-footer">
-  <div class="r-footer__inner">
-    <a class="r-footer__brand" href="./index.html">
-      <span class="r-footer__brand-note"><img src="./note%20relovtion.svg" alt=""></span>
-      Relovation
-    </a>
-    <nav class="r-footer__nav" aria-label="Footer navigatie">
+  <div class="r-footer__top">
+    <div class="r-footer__brand-col">
+      <a class="r-footer__brand" href="./index.html">
+        <span class="r-footer__brand-note"><img src="./note%20relovtion.svg" alt=""></span>
+        Relovation
+      </a>
+      <p class="r-footer__tagline">Live muziek die de sfeer draagt &mdash; voor trouwfeesten, bedrijfsevents en priv&eacute;feesten. Volledig verzorgd, op maat.</p>
+      <div class="r-footer__social">
+        <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+        <a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="https://facebook.com" target="_blank" rel="noreferrer">Facebook</a>
+      </div>
+    </div>
+    <nav class="r-footer__col" aria-label="Footer menu">
+      <h3 class="r-footer__col-title">Menu</h3>
       <a href="./index.html">Home</a>
       <a href="./diensten.html">Diensten</a>
       <a href="./gallerij.html">Gallerij</a>
       <a href="./over.html">Over ons</a>
       <a href="./contact.html">Contact</a>
     </nav>
-    <div class="r-footer__contact">
+    <div class="r-footer__col">
+      <h3 class="r-footer__col-title">Contact</h3>
       <a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a>
+      <a href="tel:+32465096280">+32 465 09 62 80</a>
+      <span class="r-footer__meta">Lier &middot; Antwerpen</span>
+    </div>
+    <div class="r-footer__col r-footer__cta-col">
+      <h3 class="r-footer__col-title">Klaar voor live muziek?</h3>
+      <a class="r-footer__cta" href="./aanvraag.html">Plan uw event <span aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
   <div class="r-footer__bottom">
-    <p class="r-footer__copy">&copy; 2025 Relovation &mdash; Alle rechten voorbehouden</p>
+    <p class="r-footer__copy">&copy; 2026 Relovation &middot; Live muziek sinds 2018</p>
     <p class="r-footer__copy">Made by <a href="https://www.jdcreations.co" target="_blank" rel="noopener noreferrer">JDCreations</a></p>
   </div>
 </footer>

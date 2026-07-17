@@ -188,6 +188,11 @@
          en de hele hero te lang maakt. Kolommen croppen met object-fit: cover. */
       height: clamp(480px, 52vw, 760px);
       align-items: stretch;
+      /* Gedeelde boog-kromming voor foto én banner: zelfde verticale diepte.
+         Beide kolommen zijn even breed (1fr/1fr), dus met horizontale radius 50%
+         krijgen ze exact dezelfde boog — de foto convex bovenaan, de banner
+         concaaf onderaan, gespiegeld op dezelfde diepte en angle. */
+      --hero-arch-depth: clamp(104px, 12vw, 168px);
     }
 
     .hero-portrait {
@@ -202,7 +207,9 @@
     .hero-portrait-frame {
       width: 100%;
       height: 100%;
-      border-radius: var(--radius-arch);
+      /* Zelfde kromming als de banner-concave: horizontale radius = halve breedte,
+         verticale radius = --hero-arch-depth (zelfde diepte + angle). */
+      border-radius: 50% 50% 0 0 / var(--hero-arch-depth) var(--hero-arch-depth) 0 0;
       overflow: hidden;
       background: #d9cfaa;
     }
@@ -228,19 +235,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0;
+      /* Onderruimte = boog-diepte: duwt de gecentreerde tekst omhoog, weg van de
+         concave uitsnede zodat niets geclipt wordt. */
+      padding: 0 0 var(--hero-arch-depth);
     }
 
-    /* Gebrande boog-uitsnede onderaan het paneel: een brede, ondiepe cream-veeg
-       die de bodem laat opkrullen (DS section-divider arch). */
+    /* Gebrande boog-uitsnede onderaan het paneel — spiegelt exact de foto-boog:
+       zelfde breedte (100%, dus horizontale radius = halve breedte) en zelfde
+       diepte (--hero-arch-depth). Zo hebben banner en foto zelfde diepte + angle. */
     .hero-contact-panel::after {
       content: "";
       position: absolute;
-      left: 50%;
+      left: 0;
       bottom: -1px;
-      width: 128%;
-      height: clamp(72px, 8vw, 132px);
-      transform: translateX(-50%);
+      width: 100%;
+      height: var(--hero-arch-depth);
       background: var(--bg);
       border-radius: 50% 50% 0 0 / 100% 100% 0 0;
     }
@@ -706,23 +715,27 @@
        gebouwd: met echte foto's overlapten ze elkaar in het midden en bleef
        er rechts een dood gat. Ratio's volgen nu de bronbeelden, de overlap
        is teruggebracht tot één hoek. */
+    /* Editorial half-overlap: twee gelijke portret-arches die diagonaal ~half
+       over elkaar lappen — de voorste (card) linksonder, de achterste (arch)
+       rechtsboven. */
     .social-visual {
       position: relative;
-      aspect-ratio: 620 / 560;
+      aspect-ratio: 10 / 11;
       justify-self: end;
-      width: min(100%, 620px);
+      width: min(100%, 560px);
     }
 
     .social-arch {
       position: absolute;
-      right: 0;
+      left: 32%;
       top: 0;
-      width: 46%;
-      aspect-ratio: 0.72; /* bron 1067x1600 -> minimale crop */
+      width: 60%;
+      aspect-ratio: 0.74;
       border-radius: var(--radius-arch);
       overflow: hidden;
-      box-shadow: 0 22px 38px rgba(76, 106, 87, 0.1);
+      box-shadow: 0 26px 46px -12px rgba(76, 106, 87, 0.22);
       background: var(--bg-deep);
+      z-index: 1;
     }
 
     .social-arch img,
@@ -736,12 +749,15 @@
       position: absolute;
       left: 0;
       bottom: 0;
-      width: 64%;
-      aspect-ratio: 1.5; /* bron 1600x1067 -> geen crop */
+      width: 60%;
+      aspect-ratio: 0.74;
       border-radius: var(--radius-arch);
       overflow: hidden;
-      box-shadow: 0 24px 44px rgba(56, 72, 60, 0.12);
+      /* Cream-ring (volgt de arch-vorm) + zwaardere schaduw -> de voorste zweeft
+         duidelijk boven de achterste (editorial diepte). */
+      box-shadow: 0 0 0 7px var(--bg), 0 34px 60px -16px rgba(56, 72, 60, 0.34);
       background: var(--bg-deep);
+      z-index: 2;
     }
 
     .reveal-copy,
@@ -1388,24 +1404,40 @@
 
 <!-- ── Footer ── -->
 <footer class="r-footer">
-  <div class="r-footer__inner">
-    <a class="r-footer__brand" href="./index.html">
-      <span class="r-footer__brand-note"><img src="./note%20relovtion.svg" alt=""></span>
-      Relovation
-    </a>
-    <nav class="r-footer__nav" aria-label="Footer navigatie">
+  <div class="r-footer__top">
+    <div class="r-footer__brand-col">
+      <a class="r-footer__brand" href="./index.html">
+        <span class="r-footer__brand-note"><img src="./note%20relovtion.svg" alt=""></span>
+        Relovation
+      </a>
+      <p class="r-footer__tagline">Live muziek die de sfeer draagt &mdash; voor trouwfeesten, bedrijfsevents en priv&eacute;feesten. Volledig verzorgd, op maat.</p>
+      <div class="r-footer__social">
+        <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+        <a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="https://facebook.com" target="_blank" rel="noreferrer">Facebook</a>
+      </div>
+    </div>
+    <nav class="r-footer__col" aria-label="Footer menu">
+      <h3 class="r-footer__col-title">Menu</h3>
       <a href="./index.html">Home</a>
       <a href="./diensten.html">Diensten</a>
       <a href="./gallerij.html">Gallerij</a>
       <a href="./over.html">Over ons</a>
       <a href="./contact.html">Contact</a>
     </nav>
-    <div class="r-footer__contact">
+    <div class="r-footer__col">
+      <h3 class="r-footer__col-title">Contact</h3>
       <a href="mailto:relovation@robinmusic.be">relovation@robinmusic.be</a>
+      <a href="tel:+32465096280">+32 465 09 62 80</a>
+      <span class="r-footer__meta">Lier &middot; Antwerpen</span>
+    </div>
+    <div class="r-footer__col r-footer__cta-col">
+      <h3 class="r-footer__col-title">Klaar voor live muziek?</h3>
+      <a class="r-footer__cta" href="./aanvraag.html">Plan uw event <span aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
   <div class="r-footer__bottom">
-    <p class="r-footer__copy">&copy; 2025 Relovation &mdash; Alle rechten voorbehouden</p>
+    <p class="r-footer__copy">&copy; 2026 Relovation &middot; Live muziek sinds 2018</p>
     <p class="r-footer__copy">Made by <a href="https://www.jdcreations.co" target="_blank" rel="noopener noreferrer">JDCreations</a></p>
   </div>
 </footer>
