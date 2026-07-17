@@ -10,10 +10,13 @@
      Telefoon, portrait en echte desktop blijven op de gewone responsive layout. */
   (function () {
     var vp = document.querySelector('meta[name="viewport"]');
-    var DESKTOP = 'width=1440, viewport-fit=cover';
     var DEFAULT = 'initial-scale=1, width=device-width, viewport-fit=cover';
     var longEdge = Math.max(screen.width || 0, screen.height || 0);
     var coarse = window.matchMedia('(pointer: coarse)').matches;
+    // Expliciete schaal = schermbreedte / 1440, zodat de browser de volledige
+    // 1440-layout gegarandeerd naar de schermbreedte krimpt (niet afkapt).
+    var scale = (longEdge / 1440).toFixed(4);
+    var DESKTOP = 'width=1440, initial-scale=' + scale + ', viewport-fit=cover';
     function apply() {
       var landscape = window.matchMedia('(orientation: landscape)').matches;
       var want = coarse && longEdge >= 1000 && longEdge <= 1279 && landscape;
