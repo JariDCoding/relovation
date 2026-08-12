@@ -1,0 +1,94 @@
+{
+  "lede": "We play live. That sounds obvious, but it is the whole reason Relovation exists: a moment you see happen stays with you longer than a moment you only hear.",
+  "index": [
+    {
+      "titel": "Our story",
+      "tekst": "How Relovation began"
+    },
+    {
+      "titel": "The art of <em>presence</em>",
+      "tekst": "How we play"
+    },
+    {
+      "titel": "Our musicians",
+      "tekst": "Robin · Lorenzo · Tim · Joppe"
+    },
+    {
+      "titel": "How we work",
+      "tekst": "Everything around the music"
+    }
+  ],
+  "verhaal": [
+    "Robin picked up the saxophone at eight and never put it down. In 2016 he met Lorenzo at an ensemble rehearsal, a pianist who astonished him from the very first note. Afterwards Robin asked him to play together. That is how it started.",
+    "They rehearsed in Lier, played here and there, and put on their first own concert in 2018. The year after, again. Relovation grew from there organically, not from a plan, but from the music and the people around it.",
+    "That is still the difference. We play together because we want to, not because we were put together. A room hears that difference, even if nobody can quite name it."
+  ],
+  "citaat": "&ldquo;We play together because we want to, not because we were put together.&rdquo;",
+  "visie": {
+    "intro": "Relovation does not play music that asks for attention, but music that lifts the moment. Refined in timing, calm in presence, strong in atmosphere.",
+    "punten": [
+      {
+        "titel": "Subtly present",
+        "tekst": "Never too much, always exactly enough. We read the room and play to it."
+      },
+      {
+        "titel": "In service of the moment",
+        "tekst": "Your programme sets the music, not the other way around. We follow the rhythm of your evening."
+      },
+      {
+        "titel": "Warm and timeless",
+        "tekst": "A repertoire that does not age, delivered with class and without distance."
+      }
+    ]
+  },
+  "muzikanten": {
+    "intro": "Four musicians, each with their own stage outside Relovation. Together they form the sound Relovation stands for.",
+    "leden": [
+      {
+        "naam": "Robin Crauwels",
+        "rol": "Vocals &amp; saxophone",
+        "bio": "Robin picked up the saxophone at eight and never put it down. As a finalist of The Voice van Vlaanderen 2021 and as a singer on stages such as the Queen Elisabeth Hall, with the Radio 2 Ratpack and the VRT Bigband, he brings a level you hear from the first note."
+      },
+      {
+        "naam": "Lorenzo Nsumbi",
+        "rol": "Piano",
+        "bio": "Lorenzo studied at Codarts Rotterdam and has been there from the very beginning. His piano playing is the reason Relovation ever started."
+      },
+      {
+        "naam": "Tim Pensaert",
+        "rol": "Bass",
+        "bio": "Tim lays the foundation everything rests on. As bassist of Meltheads, finalist of De Nieuwe Lichting, runner-up at Humo&rsquo;s Rock Rally, Pukkelpop, he knows what it takes to get a room moving."
+      },
+      {
+        "naam": "Joppe Van Noten",
+        "rol": "Drums",
+        "bio": "Joppe studied at Codarts Rotterdam and leads his own quartet. He knows exactly when a room needs a push, and when it does not."
+      }
+    ],
+    "noot": "Depending on your event we play as a duo, trio or full band. Every line-up is a choice, not a compromise, and we are glad to advise which one suits your moment."
+  },
+  "werkwijze": {
+    "intro": "Musical level is the beginning. The rest matters just as much, and that is where you notice us least.",
+    "punten": [
+      {
+        "titel": "Agreed in advance",
+        "tekst": "We agree repertoire, line-up, volume and timing before the day itself. No surprises."
+      },
+      {
+        "titel": "Our own sound system",
+        "tekst": "Professional system for events up to ±250 guests, included."
+      },
+      {
+        "titel": "On time and prepared",
+        "tekst": "We arrive on time, the soundcheck runs without fuss, and your venue barely notices us."
+      },
+      {
+        "titel": "We think along",
+        "tekst": "From experience we advise on what works at which moment. You do not have to work out the music yourself."
+      }
+    ]
+  },
+  "cta": {
+    "tekst": "A few short questions about your event. We personally look at which formula fits and send you a no-obligation proposal, tailored to you."
+  }
+}

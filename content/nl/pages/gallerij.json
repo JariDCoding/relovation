@@ -1,0 +1,46 @@
+{
+  "intro": "Een avond Relovation, vastgelegd: van het eerste applaus tot het laatste gedempte akkoord.",
+  "bijschriften": [
+    "Duo bij kaarslicht. Een besloten zaal draagt de avond, ingetogen en warm.",
+    "De full band op het podium. Het volledige geluid, voor de grote momenten.",
+    "Saxofoon in het clubdonker.",
+    "Reflectie in het raam, tussen twee sets.",
+    "Eerste dans, trouwfeest.",
+    "Bedrijfsevent, concertzaal.",
+    "Zicht vanaf het podium. De zaal die meebeweegt.",
+    "Toetsen, kaarslicht, tegenlicht.",
+    "Straatfestival, open lucht.",
+    "Een opening op straat.",
+    "Saxofoon in goud licht. Het uur waarop de avond kantelt.",
+    "Privéfeest, warme zaal.",
+    "Detail: de puls, van dichtbij."
+  ],
+  "ensemble": {
+    "intro": "Vier muzikanten, één taal. Van intieme achtergrond tot een dansvloer die niet meer stilstaat.",
+    "leden": [
+      {
+        "naam": "Robin Crauwels",
+        "instrument": "Saxofoon"
+      },
+      {
+        "naam": "Lorenzo Nsumbi",
+        "instrument": "Piano &amp; keys"
+      },
+      {
+        "naam": "Tim Pensaert",
+        "instrument": "Contrabas"
+      },
+      {
+        "naam": "Joppe Van Noten",
+        "instrument": "Drums"
+      }
+    ]
+  },
+  "citaat": "Live is het verschil tussen geluid en een gevoel dat blijft hangen.",
+  "spelen": {
+    "tekst": "Elke avond is anders. De ruimte, de gasten, het uur van de nacht: het bepaalt hoe wij spelen. Geen playlist, geen knop die je omdraait. Wij luisteren naar de zaal en bewegen mee: ingetogen tijdens het diner, los op de dansvloer."
+  },
+  "cta": {
+    "eyebrow": "Klaar voor uw avond?"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "intro": "An evening of Relovation, captured: from the first applause to the last muted chord.",
+  "bijschriften": [
+    "Duo by candlelight. An intimate room carries the evening, restrained and warm.",
+    "The full band on stage. The complete sound, for the big moments.",
+    "Saxophone in the dark of the club.",
+    "Reflection in the window, between two sets.",
+    "First dance, wedding.",
+    "Corporate event, concert hall.",
+    "The view from the stage. The room moving with us.",
+    "Keys, candlelight, backlight.",
+    "Street festival, open air.",
+    "An opening in the street.",
+    "Saxophone in golden light. The hour when the evening tips over.",
+    "Private party, warm room.",
+    "Detail: the pulse, up close."
+  ],
+  "ensemble": {
+    "intro": "Four musicians, one language. From intimate background to a dance floor that will not stand still.",
+    "leden": [
+      {
+        "naam": "Robin Crauwels",
+        "instrument": "Saxophone"
+      },
+      {
+        "naam": "Lorenzo Nsumbi",
+        "instrument": "Piano &amp; keys"
+      },
+      {
+        "naam": "Tim Pensaert",
+        "instrument": "Double bass"
+      },
+      {
+        "naam": "Joppe Van Noten",
+        "instrument": "Drums"
+      }
+    ]
+  },
+  "citaat": "Live is the difference between sound and a feeling that stays with you.",
+  "spelen": {
+    "tekst": "Every evening is different. The room, the guests, the hour of the night: it all decides how we play. No playlist, no switch to flip. We listen to the room and move with it: restrained during dinner, loose on the dance floor."
+  },
+  "cta": {
+    "eyebrow": "Ready for your evening?"
+  }
+}

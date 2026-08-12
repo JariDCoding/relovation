@@ -1,3 +1,55 @@
 {
-  "intro": "Van intieme ceremonie tot groot bedrijfsevent: wij verzorgen de volledige muzikale omkadering. We denken mee over bezetting, sfeer en repertoire, zodat de muziek klopt."
+  "intro": "Van intieme ceremonie tot groot bedrijfsevent: wij verzorgen de volledige muzikale omkadering. We denken mee over bezetting, sfeer en repertoire, zodat de muziek klopt.",
+  "diensten": [
+    {
+      "titel": "Bedrijfsevents",
+      "tekst": "Een ontvangst, walking dinner of netwerkmoment verdient meer dan achtergrondgeluid. Wij zorgen voor een muzikale aanwezigheid die uw gasten op hun gemak stelt en meteen de juiste toon zet.",
+      "punten": [
+        "Live muziek voor recepties, diners en netwerkmomenten",
+        "Bezetting en volume afgestemd op locatie, timing en publiek",
+        "Wij adviseren vanuit ervaring over wat werkt voor uw event"
+      ]
+    },
+    {
+      "titel": "Trouwfeesten",
+      "tekst": "Uw trouwdag is uniek. De muziek mag dat ook zijn. Van ceremonie en welkomstdrink tot het begin van de avond zorgen wij voor de muzikale rode draad.",
+      "punten": [
+        "Van intieme ceremonie tot receptie met live muziek",
+        "Repertoire en bezetting op maat van uw dag",
+        "Wij adviseren vanuit ervaring over wat werkt op welk moment"
+      ]
+    },
+    {
+      "titel": "Privéfeesten &amp; openingen",
+      "tekst": "Voor openingen, private ontvangsten en momenten waar sfeer en gastvrijheid centraal staan. Live muziek die elke ruimte meteen karakter geeft.",
+      "punten": [
+        "Een warme muzikale laag die de sfeer draagt zonder te overstemmen",
+        "Voor foyers, galerieën, salons en verfijnde eventlocaties",
+        "Volledig verzorgd: van opbouw tot laatste noot"
+      ]
+    }
+  ],
+  "bezettingen": [
+    {
+      "naam": "DUO",
+      "instrumenten": "Zang/sax &amp; piano",
+      "tekst": "Onze huidige hoofdformule. Een warm, intiem klankbeeld voor ceremonies, recepties, diners en corporate events."
+    },
+    {
+      "naam": "TRIO",
+      "instrumenten": "Zang/sax, gitaar &amp; contrabas",
+      "tekst": "Een rijkere bezetting met extra warmte en karakter. Voor events waar de muziek meer aanwezigheid mag hebben.",
+      "noot": "De trioformatie is in opbouw. Neem contact op voor beschikbaarheid."
+    },
+    {
+      "naam": "FULL BAND",
+      "instrumenten": "Volledige live bezetting",
+      "tekst": "Voor grotere ruimtes en feesten waar live muziek het karakter van de avond bepaalt."
+    }
+  ],
+  "slotnoot": "Niet zeker welke bezetting bij uw event past? Wij adviseren op basis van uw locatie, publiek en programma.",
+  "cta": {
+    "eyebrow": "Klaar voor live muziek",
+    "tekst": "Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat."
+  }
 }

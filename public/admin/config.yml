@@ -1,4 +1,10 @@
 # Sveltia CMS — Relovation
+#
+# LET OP: dit bestand wordt gegenereerd door tools/build-cms-config.mjs uit de
+# bestanden in content/nl/. Wijzig het niet met de hand; markeer een element in
+# de HTML met data-cms, draai `npm run content:extract` en daarna
+# `npm run cms:config`.
+#
 # Git-backend: opslaan is een commit naar GitHub, en die commit deployt.
 # Geen enkel secret aan de site-kant; het OAuth-secret staat op de gedeelde
 # Worker auth.jdcreations.co.
@@ -13,8 +19,7 @@ backend:
 locale: nl
 
 # Nederlands en Engels naast elkaar in hetzelfde scherm. multiple_folders zet
-# de bestanden in content/nl/... en content/en/..., precies waar de build ze
-# verwacht.
+# de bestanden in content/nl/... en content/en/..., waar de build ze verwacht.
 i18n:
   structure: multiple_folders
   locales: [nl, en]
@@ -24,7 +29,7 @@ media_folder: "public/uploads"
 public_folder: "/uploads"
 
 # Allemaal `files`-collecties: Robin bewerkt bestaande teksten en kan geen
-# pagina's bijmaken of verwijderen. De site-structuur blijft dus intact.
+# pagina's bijmaken of verwijderen. De structuur van de site blijft intact.
 collections:
   - name: "instellingen"
     label: "Site-instellingen"
@@ -41,15 +46,15 @@ collections:
             widget: "object"
             i18n: true
             fields:
-              - { label: "Tekst onder het logo", name: "tagline", widget: "text", i18n: true }
               - { label: "E-mailadres", name: "email", widget: "string", i18n: duplicate }
+              - { label: "Tekst onder het logo", name: "tagline", widget: "text", i18n: true }
               - { label: "Regio", name: "regio", widget: "string", i18n: true }
               - { label: "Titel bij de knop", name: "ctaTitel", widget: "string", i18n: true }
               - { label: "Btw-nummer", name: "btw", widget: "string", i18n: duplicate }
           - label: "Sociale media"
             name: "social"
             widget: "object"
-            i18n: duplicate
+            i18n: true
             fields:
               - { label: "Instagram-link", name: "instagram", widget: "string", i18n: duplicate }
               - { label: "LinkedIn-link", name: "linkedin", widget: "string", i18n: duplicate }
@@ -82,6 +87,7 @@ collections:
             widget: "list"
             i18n: true
             allow_add: false
+            allow_delete: false
             fields:
               - { label: "Titel", name: "titel", widget: "string", i18n: true }
               - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
@@ -90,23 +96,25 @@ collections:
             widget: "object"
             i18n: true
             fields:
-              - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
+              - { label: "Inleiding", name: "intro", widget: "string", i18n: true }
               - label: "Punten"
                 name: "punten"
                 widget: "list"
                 i18n: true
                 allow_add: false
+                allow_delete: false
                 fields:
                   - { label: "Titel", name: "titel", widget: "string", i18n: true }
-                  - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+                  - { label: "Tekst", name: "tekst", widget: "string", i18n: true }
           - label: "Bezettingen"
             name: "bezettingen"
             widget: "list"
             i18n: true
             allow_add: false
+            allow_delete: false
             fields:
-              - { label: "Instrumenten", name: "instrumenten", widget: "string", i18n: true }
-              - { label: "Omschrijving", name: "tekst", widget: "text", i18n: true }
+              - { label: "Instrumenten", name: "instrumenten", widget: "text", i18n: true }
+              - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
           - label: "Slotblok"
             name: "cta"
             widget: "object"
@@ -121,6 +129,159 @@ collections:
         i18n: true
         fields:
           - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
+          - label: "Diensten"
+            name: "diensten"
+            widget: "list"
+            i18n: true
+            allow_add: false
+            allow_delete: false
+            fields:
+              - { label: "Titel", name: "titel", widget: "string", i18n: true }
+              - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+              - label: "Punten"
+                name: "punten"
+                widget: "list"
+                i18n: true
+                allow_add: false
+                allow_delete: false
+                field: { label: "Punten", name: "item", widget: "string", i18n: true }
+          - label: "Bezettingen"
+            name: "bezettingen"
+            widget: "list"
+            i18n: true
+            allow_add: false
+            allow_delete: false
+            fields:
+              - { label: "Naam", name: "naam", widget: "string", i18n: true }
+              - { label: "Instrumenten", name: "instrumenten", widget: "string", i18n: true }
+              - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+          - { label: "Afsluitende noot", name: "slotnoot", widget: "text", i18n: true }
+          - label: "Slotblok"
+            name: "cta"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Bovenschrift", name: "eyebrow", widget: "string", i18n: true }
+              - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+
+      - name: "over"
+        label: "Over ons"
+        file: "content/pages/over.json"
+        i18n: true
+        fields:
+          - { label: "Openingstekst", name: "lede", widget: "text", i18n: true }
+          - label: "Inhoudsopgave"
+            name: "index"
+            widget: "list"
+            i18n: true
+            allow_add: false
+            allow_delete: false
+            fields:
+              - { label: "Titel", name: "titel", widget: "string", i18n: true }
+              - { label: "Tekst", name: "tekst", widget: "string", i18n: true }
+          - label: "Ons verhaal"
+            name: "verhaal"
+            widget: "list"
+            i18n: true
+            allow_add: false
+            allow_delete: false
+            field: { label: "Ons verhaal", name: "item", widget: "text", i18n: true }
+          - { label: "Citaat", name: "citaat", widget: "string", i18n: true }
+          - label: "De kunst van aanwezigheid"
+            name: "visie"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
+              - label: "Punten"
+                name: "punten"
+                widget: "list"
+                i18n: true
+                allow_add: false
+                allow_delete: false
+                fields:
+                  - { label: "Titel", name: "titel", widget: "string", i18n: true }
+                  - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+          - label: "Onze muzikanten"
+            name: "muzikanten"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
+              - label: "Leden"
+                name: "leden"
+                widget: "list"
+                i18n: true
+                allow_add: false
+                allow_delete: false
+                fields:
+                  - { label: "Naam", name: "naam", widget: "string", i18n: true }
+                  - { label: "Rol", name: "rol", widget: "string", i18n: true }
+                  - { label: "Biografie", name: "bio", widget: "text", i18n: true }
+              - { label: "Voetnoot", name: "noot", widget: "text", i18n: true }
+          - label: "Hoe wij werken"
+            name: "werkwijze"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
+              - label: "Punten"
+                name: "punten"
+                widget: "list"
+                i18n: true
+                allow_add: false
+                allow_delete: false
+                fields:
+                  - { label: "Titel", name: "titel", widget: "string", i18n: true }
+                  - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+          - label: "Slotblok"
+            name: "cta"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+
+      - name: "gallerij"
+        label: "Gallerij"
+        file: "content/pages/gallerij.json"
+        i18n: true
+        fields:
+          - { label: "Inleiding", name: "intro", widget: "string", i18n: true }
+          - label: "Bijschriften bij de foto's"
+            name: "bijschriften"
+            widget: "list"
+            i18n: true
+            allow_add: false
+            allow_delete: false
+            field: { label: "Bijschriften bij de foto's", name: "item", widget: "text", i18n: true }
+          - label: "Het ensemble"
+            name: "ensemble"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
+              - label: "Leden"
+                name: "leden"
+                widget: "list"
+                i18n: true
+                allow_add: false
+                allow_delete: false
+                fields:
+                  - { label: "Naam", name: "naam", widget: "string", i18n: true }
+                  - { label: "Instrument", name: "instrument", widget: "string", i18n: true }
+          - { label: "Citaat", name: "citaat", widget: "string", i18n: true }
+          - label: "Hoe wij spelen"
+            name: "spelen"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+          - label: "Slotblok"
+            name: "cta"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Bovenschrift", name: "eyebrow", widget: "string", i18n: true }
 
       - name: "contact"
         label: "Contact"
@@ -129,7 +290,7 @@ collections:
         fields:
           - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
           - { label: "Tekst bij het formulier", name: "formulierIntro", widget: "text", i18n: true }
-          - { label: "Tekst bij sociale media", name: "socialIntro", widget: "text", i18n: true }
+          - { label: "Tekst bij sociale media", name: "socialIntro", widget: "string", i18n: true }
 
   - name: "seo"
     label: "Google-teksten"
@@ -155,7 +316,7 @@ collections:
             fields:
               - { label: "Titel", name: "title", widget: "string", i18n: true }
               - { label: "Omschrijving", name: "description", widget: "text", i18n: true }
-          - label: "Over ons"
+          - label: "Wat is Relovation"
             name: "over"
             widget: "object"
             i18n: true
@@ -174,7 +335,7 @@ collections:
             widget: "object"
             i18n: true
             fields:
-              - { label: "Titel", name: "title", widget: "string", i18n: true }
+              - { label: "Titel", name: "title", widget: "text", i18n: true }
               - { label: "Omschrijving", name: "description", widget: "text", i18n: true }
           - label: "Aanvraag"
             name: "aanvraag"

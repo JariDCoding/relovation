@@ -89,9 +89,18 @@ export function injectContent(html, data) {
 export function flatten(obj, prefix = '', out = {}) {
   for (const [k, v] of Object.entries(obj || {})) {
     const key = prefix ? `${prefix}.${k}` : k;
-    if (v && typeof v === 'object' && !Array.isArray(v)) flatten(v, key, out);
-    else if (Array.isArray(v)) v.forEach((item, i) => flatten(item, `${key}.${i}`, out));
-    else out[key] = v;
+    if (Array.isArray(v)) {
+      // Een lijst van losse teksten (bijvoorbeeld opsommingspunten) mag niet
+      // per letter uit elkaar vallen: alleen objecten gaan een niveau dieper.
+      v.forEach((item, i) => {
+        if (item && typeof item === 'object') flatten(item, `${key}.${i}`, out);
+        else out[`${key}.${i}`] = item;
+      });
+    } else if (v && typeof v === 'object') {
+      flatten(v, key, out);
+    } else {
+      out[key] = v;
+    }
   }
   return out;
 }

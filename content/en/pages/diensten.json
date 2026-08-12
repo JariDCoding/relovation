@@ -1,3 +1,55 @@
 {
-  "intro": "From intimate ceremony to large corporate event: we take care of the whole musical side. We think along about line-up, atmosphere and repertoire, so the music fits."
+  "intro": "From intimate ceremony to large corporate event: we take care of the whole musical side. We think along about line-up, atmosphere and repertoire, so the music fits.",
+  "diensten": [
+    {
+      "titel": "Corporate events",
+      "tekst": "A reception, walking dinner or networking moment deserves more than background noise. We bring a musical presence that puts your guests at ease and sets the right tone straight away.",
+      "punten": [
+        "Live music for receptions, dinners and networking moments",
+        "Line-up and volume tuned to venue, timing and audience",
+        "We advise from experience on what works for your event"
+      ]
+    },
+    {
+      "titel": "Weddings",
+      "tekst": "Your wedding day is one of a kind. The music may be too. From ceremony and welcome drink to the start of the evening, we carry the musical thread.",
+      "punten": [
+        "From intimate ceremony to reception with live music",
+        "Repertoire and line-up tailored to your day",
+        "We advise from experience on what works at which moment"
+      ]
+    },
+    {
+      "titel": "Private parties &amp; openings",
+      "tekst": "For openings, private receptions and moments where atmosphere and hospitality come first. Live music that gives any space instant character.",
+      "punten": [
+        "A warm musical layer that carries the mood without drowning it out",
+        "For foyers, galleries, salons and refined event venues",
+        "Fully taken care of: from set-up to the last note"
+      ]
+    }
+  ],
+  "bezettingen": [
+    {
+      "naam": "DUO",
+      "instrumenten": "Vocals/sax &amp; piano",
+      "tekst": "Our current main line-up. A warm, intimate sound for ceremonies, receptions, dinners and corporate events."
+    },
+    {
+      "naam": "TRIO",
+      "instrumenten": "Vocals/sax, guitar &amp; double bass",
+      "tekst": "A richer line-up with extra warmth and character. For events where the music may take more space.",
+      "noot": "The trio line-up is taking shape. Get in touch for availability."
+    },
+    {
+      "naam": "FULL BAND",
+      "instrumenten": "Full live line-up",
+      "tekst": "For larger spaces and parties where live music sets the character of the evening."
+    }
+  ],
+  "slotnoot": "Not sure which line-up suits your event? We advise based on your venue, audience and programme.",
+  "cta": {
+    "eyebrow": "Ready for live music",
+    "tekst": "A few short questions about your event. We personally look at which formula fits and send you a no-obligation proposal, tailored to you."
+  }
 }

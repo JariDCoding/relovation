@@ -26,8 +26,8 @@ const EXTRACT = process.argv.includes('--extract');
 const PAGES = {
   'index.html': { en: 'en/index.html', seo: 'home', files: ['settings/global.json', 'pages/home.json'] },
   'diensten.html': { en: 'en/services.html', seo: 'diensten', files: ['settings/global.json', 'pages/diensten.json'] },
-  'over.html': { en: 'en/about.html', seo: 'over', files: ['settings/global.json'] },
-  'gallerij.html': { en: 'en/gallery.html', seo: 'gallerij', files: ['settings/global.json'] },
+  'over.html': { en: 'en/about.html', seo: 'over', files: ['settings/global.json', 'pages/over.json'] },
+  'gallerij.html': { en: 'en/gallery.html', seo: 'gallerij', files: ['settings/global.json', 'pages/gallerij.json'] },
   'contact.html': { en: 'en/contact.html', seo: 'contact', files: ['settings/global.json', 'pages/contact.json'] },
   'aanvraag.html': { en: 'en/request.html', seo: 'aanvraag', files: [] },
 };

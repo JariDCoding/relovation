@@ -1,0 +1,94 @@
+{
+  "lede": "Wij spelen live. Dat klinkt vanzelfsprekend, maar het is de hele reden waarom Relovation bestaat: een moment dat u ziet gebeuren, blijft langer hangen dan een moment dat u enkel hoort.",
+  "index": [
+    {
+      "titel": "Ons verhaal",
+      "tekst": "Hoe Relovation begon"
+    },
+    {
+      "titel": "De kunst van <em>aanwezigheid</em>",
+      "tekst": "Onze manier van spelen"
+    },
+    {
+      "titel": "Onze muzikanten",
+      "tekst": "Robin · Lorenzo · Tim · Joppe"
+    },
+    {
+      "titel": "Hoe wij werken",
+      "tekst": "Alles rond de muziek"
+    }
+  ],
+  "verhaal": [
+    "Robin startte op zijn achtste met de saxofoon en is er nooit meer mee gestopt. In 2016 leerde hij Lorenzo kennen op een ensemblerepetitie, een pianist die hem vanaf de eerste noot versteld deed staan. Na afloop vroeg Robin hem om samen te spelen. Zo begon het.",
+    "Ze repeteerden in Lier, speelden hier en daar, en organiseerden in 2018 hun eerste eigen concert. Het jaar nadien opnieuw. Relovation groeide van daaruit organisch, niet vanuit een plan, maar vanuit de muziek en de mensen errond.",
+    "Dat is nog altijd het verschil. Wij spelen samen omdat we dat willen, niet omdat we samengezet zijn. Een zaal hoort dat verschil, ook al kan niemand er de vinger op leggen."
+  ],
+  "citaat": "&ldquo;Wij spelen samen omdat we dat willen, niet omdat we samengezet zijn.&rdquo;",
+  "visie": {
+    "intro": "Relovation brengt geen muziek die om aandacht vraagt, maar muziek die het moment optilt. Verfijnd in timing, rustig in présence, sterk in sfeer.",
+    "punten": [
+      {
+        "titel": "Subtiel aanwezig",
+        "tekst": "Nooit te veel, altijd precies genoeg. We lezen de ruimte en spelen ernaar."
+      },
+      {
+        "titel": "In dienst van het moment",
+        "tekst": "Uw programma bepaalt de muziek, niet omgekeerd. Wij volgen het ritme van uw avond."
+      },
+      {
+        "titel": "Warm en tijdloos",
+        "tekst": "Een repertoire dat niet veroudert, gebracht met klasse en zonder afstand."
+      }
+    ]
+  },
+  "muzikanten": {
+    "intro": "Vier muzikanten, elk met een eigen podium buiten Relovation. Samen vormen zij het geluid waar Relovation voor staat.",
+    "leden": [
+      {
+        "naam": "Robin Crauwels",
+        "rol": "Zang &amp; saxofoon",
+        "bio": "Robin begon op zijn achtste met de saxofoon en stopte er nooit meer mee. Als finalist van The Voice van Vlaanderen 2021 en als zanger op podia als de Koningin Elisabethzaal, met de Radio 2 Ratpack en de VRT Bigband, brengt hij een niveau mee dat u hoort vanaf de eerste noot."
+      },
+      {
+        "naam": "Lorenzo Nsumbi",
+        "rol": "Piano",
+        "bio": "Lorenzo studeerde aan Codarts Rotterdam en is erbij van het eerste uur. Zijn pianospel is de reden dat Relovation ooit begon."
+      },
+      {
+        "naam": "Tim Pensaert",
+        "rol": "Bas",
+        "bio": "Tim legt de basis waar alles op rust. Als bassist van Meltheads, finalist De Nieuwe Lichting, tweede op Humo&rsquo;s Rock Rally, Pukkelpop, weet hij wat het is om een zaal in beweging te krijgen."
+      },
+      {
+        "naam": "Joppe Van Noten",
+        "rol": "Drums",
+        "bio": "Joppe studeerde aan Codarts Rotterdam en leidt zijn eigen kwartet. Hij weet precies wanneer een ruimte een duw nodig heeft, en wanneer net niet."
+      }
+    ],
+    "noot": "Afhankelijk van uw event spelen we in duo, trio of full band. Elke bezetting is een keuze, geen compromis, wij adviseren u graag welke past bij uw moment."
+  },
+  "werkwijze": {
+    "intro": "Muzikaal niveau is het begin. De rest is even belangrijk, en daar merkt u ons het minst van.",
+    "punten": [
+      {
+        "titel": "Vooraf afgestemd",
+        "tekst": "Repertoire, bezetting, volume en timing bespreken we voor de dag zelf. Geen verrassingen."
+      },
+      {
+        "titel": "Eigen geluidsinstallatie",
+        "tekst": "Professionele installatie voor events tot ±250 gasten, inbegrepen."
+      },
+      {
+        "titel": "Stipt en voorbereid",
+        "tekst": "Wij zijn op tijd, de soundcheck verloopt zonder gedoe, en uw locatie merkt het nauwelijks."
+      },
+      {
+        "titel": "Wij denken mee",
+        "tekst": "Vanuit ervaring adviseren we over wat werkt op welk moment. U hoeft de muziek niet uit te vinden."
+      }
+    ]
+  },
+  "cta": {
+    "tekst": "Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat."
+  }
+}
