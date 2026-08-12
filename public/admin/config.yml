@@ -37,7 +37,7 @@ collections:
     files:
       - name: "global"
         label: "Footer & sociale media"
-        file: "content/settings/global.json"
+        file: "content/{{locale}}/settings/global.json"
         i18n: true
         description: "Staat op elke pagina."
         fields:
@@ -66,7 +66,7 @@ collections:
     files:
       - name: "home"
         label: "Home"
-        file: "content/pages/home.json"
+        file: "content/{{locale}}/pages/home.json"
         i18n: true
         fields:
           - label: "Hero"
@@ -125,7 +125,7 @@ collections:
 
       - name: "diensten"
         label: "Diensten"
-        file: "content/pages/diensten.json"
+        file: "content/{{locale}}/pages/diensten.json"
         i18n: true
         fields:
           - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
@@ -166,7 +166,7 @@ collections:
 
       - name: "over"
         label: "Over ons"
-        file: "content/pages/over.json"
+        file: "content/{{locale}}/pages/over.json"
         i18n: true
         fields:
           - { label: "Openingstekst", name: "lede", widget: "text", i18n: true }
@@ -243,7 +243,7 @@ collections:
 
       - name: "gallerij"
         label: "Gallerij"
-        file: "content/pages/gallerij.json"
+        file: "content/{{locale}}/pages/gallerij.json"
         i18n: true
         fields:
           - { label: "Inleiding", name: "intro", widget: "string", i18n: true }
@@ -285,7 +285,7 @@ collections:
 
       - name: "contact"
         label: "Contact"
-        file: "content/pages/contact.json"
+        file: "content/{{locale}}/pages/contact.json"
         i18n: true
         fields:
           - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
@@ -298,7 +298,7 @@ collections:
     files:
       - name: "seo"
         label: "Titel & omschrijving per pagina"
-        file: "content/seo.json"
+        file: "content/{{locale}}/seo.json"
         i18n: true
         description: "Dit is wat Google in de zoekresultaten toont. Houd de titel onder 60 tekens en de omschrijving onder 160."
         fields:

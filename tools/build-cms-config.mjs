@@ -75,10 +75,14 @@ function fields(obj, indent) {
 function fileBlock(name, labelText, relPath, indent, description) {
   const data = JSON.parse(fs.readFileSync(path.join(NL, relPath), 'utf8'));
   const pad = ' '.repeat(indent);
+  // Bij een `files`-collectie neemt Sveltia het pad letterlijk en vervangt
+  // alleen {{locale}}. Er wordt dus géén taalmap ingevoegd op basis van
+  // i18n.structure — zonder deze placeholder zoekt hij content/pages/home.json,
+  // vindt niets, en opent een leeg "Creating"-scherm.
   return [
     `${pad}- name: ${q(name)}`,
     `${pad}  label: ${q(labelText)}`,
-    `${pad}  file: ${q('content/' + relPath)}`,
+    `${pad}  file: ${q('content/{{locale}}/' + relPath)}`,
     `${pad}  i18n: true`,
     ...(description ? [`${pad}  description: ${q(description)}`] : []),
     `${pad}  fields:`,
