@@ -110,6 +110,59 @@ function teSnel(data) {
   return data._t !== undefined && !(Number(data._t) >= 3000);
 }
 
+/**
+ * Foutmeldingen in de taal van de bezoeker. De formulieren sturen `lang` mee;
+ * de Engelse pagina's staan onder /en/. Zonder JS valt de no-JS POST terug op
+ * de verborgen `lang`-input in het formulier, en anders op Nederlands.
+ */
+const MELDINGEN = {
+  nl: {
+    voornaam: "Vul uw voornaam in.",
+    achternaam: "Vul uw achternaam in.",
+    email: "Vul uw e-mailadres in.",
+    emailOngeldig: "Dit lijkt geen geldig e-mailadres.",
+    bericht: "Schrijf hier uw bericht.",
+    berichtTeLang: "Uw bericht is te lang.",
+    telefoon: "Vul uw telefoonnummer in.",
+    eventType: "Kies wat u organiseert.",
+    moment: "Kies minstens één moment.",
+    sfeer: "Kies minstens één sfeer.",
+    periode: "Kies in welke periode u denkt.",
+    datum: "Kies een datum, of vink aan dat de datum nog niet vastligt.",
+    locatie: "Vul in waar het event doorgaat.",
+    gasten: "Kies hoeveel gasten u ongeveer verwacht.",
+    privacy: "Vink dit aan om uw aanvraag te kunnen versturen.",
+  },
+  en: {
+    voornaam: "Fill in your first name.",
+    achternaam: "Fill in your last name.",
+    email: "Fill in your email address.",
+    emailOngeldig: "This does not look like a valid email address.",
+    bericht: "Write your message here.",
+    berichtTeLang: "Your message is too long.",
+    telefoon: "Fill in your phone number.",
+    eventType: "Choose what you are organising.",
+    moment: "Choose at least one moment.",
+    sfeer: "Choose at least one atmosphere.",
+    periode: "Choose which period you have in mind.",
+    datum: "Choose a date, or tick that the date is not settled yet.",
+    locatie: "Tell us where the event takes place.",
+    gasten: "Choose roughly how many guests you expect.",
+    privacy: "Tick this to be able to send your request.",
+  },
+};
+
+function meldingen(data) {
+  return str(data.lang).toLowerCase() === "en" ? MELDINGEN.en : MELDINGEN.nl;
+}
+
+/** Regel voor in de mail naar Robin, zodat hij ziet in welke taal iemand keek. */
+function taalRegel(data) {
+  return str(data.lang).toLowerCase() === "en"
+    ? "Taal:      Engels (via /en/)"
+    : "Taal:      Nederlands";
+}
+
 async function handleContact(request, env, ctx) {
   let data;
   try {
@@ -131,12 +184,13 @@ async function handleContact(request, env, ctx) {
   const country = str(data.country_code).slice(0, MAX_FIELD);
   const message = str(data.message).slice(0, MAX_MESSAGE + 1);
 
+  const M = meldingen(data);
   const errors = {};
-  if (!first) errors.first_name = "Vul uw voornaam in.";
-  if (!email) errors.email = "Vul uw e-mailadres in.";
-  else if (!isEmail(email)) errors.email = "Dit lijkt geen geldig e-mailadres.";
-  if (!message) errors.message = "Schrijf hier uw bericht.";
-  else if (message.length > MAX_MESSAGE) errors.message = "Uw bericht is te lang.";
+  if (!first) errors.first_name = M.voornaam;
+  if (!email) errors.email = M.email;
+  else if (!isEmail(email)) errors.email = M.emailOngeldig;
+  if (!message) errors.message = M.bericht;
+  else if (message.length > MAX_MESSAGE) errors.message = M.berichtTeLang;
 
   if (Object.keys(errors).length > 0) {
     return json({ ok: false, errors }, 400);
@@ -154,6 +208,7 @@ async function handleContact(request, env, ctx) {
     `Naam:      ${naam}`,
     `E-mail:    ${email}`,
     `Telefoon:  ${tel || "-"}`,
+    taalRegel(data),
     ``,
     `Bericht:`,
     message,
@@ -240,24 +295,25 @@ async function handleAanvraag(request, env, ctx) {
 
   // De sleutels komen overeen met de data-q attributen in aanvraag.html, zodat
   // de frontend de melding bij de juiste vraag kan zetten.
+  const M = meldingen(data);
   const errors = {};
-  if (!eventType) errors.event_type = "Kies wat u organiseert.";
-  if (!moment) errors.moment = "Kies minstens één moment.";
-  if (!sfeer) errors.sfeer = "Kies minstens één sfeer.";
+  if (!eventType) errors.event_type = M.eventType;
+  if (!moment) errors.moment = M.moment;
+  if (!sfeer) errors.sfeer = M.sfeer;
   if (datumFlexibel) {
-    if (!periode) errors.datum = "Kies in welke periode u denkt.";
+    if (!periode) errors.datum = M.periode;
   } else if (!datum) {
-    errors.datum = "Kies een datum, of vink aan dat de datum nog niet vastligt.";
+    errors.datum = M.datum;
   }
-  if (!locatie) errors.locatie = "Vul in waar het event doorgaat.";
-  if (!gasten) errors.gasten = "Kies hoeveel gasten u ongeveer verwacht.";
-  if (!voornaam) errors.voornaam = "Vul uw voornaam in.";
-  if (!achternaam) errors.achternaam = "Vul uw achternaam in.";
-  if (!email) errors.email = "Vul uw e-mailadres in.";
-  else if (!isEmail(email)) errors.email = "Dit lijkt geen geldig e-mailadres.";
-  if (!telefoon) errors.telefoon = "Vul uw telefoonnummer in.";
-  if (!privacy) errors.privacy = "Vink dit aan om uw aanvraag te kunnen versturen.";
-  if (bericht.length > MAX_MESSAGE) errors.bericht = "Uw bericht is te lang.";
+  if (!locatie) errors.locatie = M.locatie;
+  if (!gasten) errors.gasten = M.gasten;
+  if (!voornaam) errors.voornaam = M.voornaam;
+  if (!achternaam) errors.achternaam = M.achternaam;
+  if (!email) errors.email = M.email;
+  else if (!isEmail(email)) errors.email = M.emailOngeldig;
+  if (!telefoon) errors.telefoon = M.telefoon;
+  if (!privacy) errors.privacy = M.privacy;
+  if (bericht.length > MAX_MESSAGE) errors.bericht = M.berichtTeLang;
 
   if (Object.keys(errors).length > 0) {
     return json({ ok: false, errors }, 400);

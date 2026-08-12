@@ -19,6 +19,24 @@
   var button = form.querySelector('button[type="submit"]');
   var buttonLabel = button ? button.textContent : "Verstuur";
 
+  // De Engelse pagina's staan onder /en/ en dragen lang="en".
+  var EN = document.documentElement.lang === "en";
+  var T = EN
+    ? {
+        sending: "Sending…",
+        ok: "Thank you, your message has been sent. We will get back to you as soon as possible.",
+        invalid: "A few fields still need attention.",
+        failed: "Sending failed. Please try again later or email us directly at relovation@robinmusic.be.",
+        offline: "No connection. Check your internet and try again, or email us at relovation@robinmusic.be.",
+      }
+    : {
+        sending: "Versturen…",
+        ok: "Bedankt, uw bericht is verstuurd. We nemen zo snel mogelijk contact met u op.",
+        invalid: "Enkele velden hebben nog aandacht nodig.",
+        failed: "Het versturen lukte niet. Probeer het later opnieuw of mail ons rechtstreeks op relovation@robinmusic.be.",
+        offline: "Geen verbinding. Controleer uw internet en probeer opnieuw, of mail ons op relovation@robinmusic.be.",
+      };
+
   var VELD_KLASSE = {
     message: "field-textarea--error",
   };
@@ -74,13 +92,14 @@
     verbergStatus();
 
     form.setAttribute("data-sending", "");
-    if (button) button.textContent = "Versturen…";
+    if (button) button.textContent = T.sending;
 
     var payload = {};
     new FormData(form).forEach(function (waarde, sleutel) {
       payload[sleutel] = waarde;
     });
     payload._t = Date.now() - LAADTIJD;
+    payload.lang = EN ? "en" : "nl";
 
     fetch(form.getAttribute("action") || "/api/contact", {
       method: "POST",
@@ -95,29 +114,20 @@
       .then(function (res) {
         if (res.body && res.body.ok) {
           form.reset();
-          toonStatus(
-            "Bedankt, uw aanvraag is verstuurd. We nemen zo snel mogelijk contact met u op.",
-            "ok"
-          );
+          toonStatus(T.ok, "ok");
           return;
         }
         if (res.body && res.body.errors) {
           toonFouten(res.body.errors);
-          toonStatus("Enkele velden hebben nog aandacht nodig.", "error");
+          toonStatus(T.invalid, "error");
           return;
         }
-        toonStatus(
-          "Het versturen lukte niet. Probeer het later opnieuw of mail ons rechtstreeks op info@relovation.be.",
-          "error"
-        );
+        toonStatus(T.failed, "error");
       })
       .catch(function () {
         // Netwerkfout: de ingevulde velden blijven staan, zodat niemand
         // opnieuw hoeft te typen.
-        toonStatus(
-          "Geen verbinding. Controleer uw internet en probeer opnieuw, of mail ons op info@relovation.be.",
-          "error"
-        );
+        toonStatus(T.offline, "error");
       })
       .finally(function () {
         form.removeAttribute("data-sending");

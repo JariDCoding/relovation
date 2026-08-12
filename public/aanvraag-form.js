@@ -34,11 +34,74 @@
   var announceEl = document.getElementById("progress-announce");
   var segmenten = Array.prototype.slice.call(document.querySelectorAll(".progress__seg"));
 
-  var HOOFDSTUK = {
-    1: "Event & muziek",
-    2: "Praktische info",
-    3: "Uw gegevens",
-  };
+  // De Engelse pagina staat op /en/request en draagt lang="en".
+  var EN = document.documentElement.lang === "en";
+
+  var T = EN
+    ? {
+        hoofdstuk: { 1: "Event & music", 2: "Practical details", 3: "Your details" },
+        stap: function (h, naam) { return "Step <b>" + h + "</b> of 3 · " + naam; },
+        vraag: function (nr, tot) { return "Question " + nr + " of " + tot; },
+        announce: function (h, naam, nr, tot) {
+          return "Step " + h + " of 3, " + naam + ". Question " + nr + " of " + tot + ".";
+        },
+        gekozen: "Chosen",
+        versturen: "Sending…",
+        aandacht: "This question still needs attention.",
+        aandachtMeer: "Some answers still need attention.",
+        mislukt: "Sending failed. Please try again later or email us directly at relovation@robinmusic.be.",
+        offline: "No connection. Check your internet and try again, or email us at relovation@robinmusic.be.",
+        maanden: ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"],
+        dagen: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        regels: {
+          event_type: "Choose what you are organising.",
+          moment: "Choose at least one moment. Not sure yet? Choose \u201cNot sure yet, advice welcome\u201d.",
+          sfeer: "Choose at least one atmosphere. Not sure yet? Choose \u201cNot sure yet, advice welcome\u201d.",
+          datum: "Choose a date, or tick that the date is not settled yet.",
+          locatie: "Tell us where the event takes place. The town or region is enough.",
+          gasten: "Choose roughly how many guests you expect.",
+          voornaam: "Fill in your first name.",
+          achternaam: "Fill in your last name.",
+          email: "Fill in your email address.",
+          emailOngeldig: "This does not look like a valid email address.",
+          telefoon: "Fill in your phone number.",
+          privacy: "Tick this to be able to send your request.",
+        },
+      }
+    : {
+        hoofdstuk: { 1: "Event & muziek", 2: "Praktische info", 3: "Uw gegevens" },
+        stap: function (h, naam) { return "Stap <b>" + h + "</b> van 3 · " + naam; },
+        vraag: function (nr, tot) { return "Vraag " + nr + " van " + tot; },
+        announce: function (h, naam, nr, tot) {
+          return "Stap " + h + " van 3, " + naam + ". Vraag " + nr + " van " + tot + ".";
+        },
+        gekozen: "Gekozen",
+        versturen: "Versturen\u2026",
+        aandacht: "Deze vraag heeft nog aandacht nodig.",
+        aandachtMeer: "Enkele antwoorden hebben nog aandacht nodig.",
+        mislukt: T.mislukt,
+        offline: T.offline,
+        maanden: ["januari", "februari", "maart", "april", "mei", "juni",
+                  "juli", "augustus", "september", "oktober", "november", "december"],
+        dagen: ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"],
+        regels: {
+          event_type: "Kies wat u organiseert.",
+          moment: "Kies minstens \u00e9\u00e9n moment. Weet u het nog niet? Kies \u201cNog niet zeker, graag advies\u201d.",
+          sfeer: "Kies minstens \u00e9\u00e9n sfeer. Weet u het nog niet? Kies \u201cNog niet zeker, graag advies\u201d.",
+          datum: "Kies een datum, of vink aan dat de datum nog niet vastligt.",
+          locatie: "Vul in waar het event doorgaat. De gemeente of regio volstaat.",
+          gasten: "Kies hoeveel gasten u ongeveer verwacht.",
+          voornaam: "Vul uw voornaam in.",
+          achternaam: "Vul uw achternaam in.",
+          email: "Vul uw e-mailadres in.",
+          emailOngeldig: "Dit lijkt geen geldig e-mailadres.",
+          telefoon: "Vul uw telefoonnummer in.",
+          privacy: "Vink dit aan om uw aanvraag te kunnen versturen.",
+        },
+      };
+
+  var HOOFDSTUK = T.hoofdstuk;
 
   // Geen openingsscherm: elk scherm is een vraag. De bezoeker landt meteen op
   // de eerste, makkelijkste vraag.
@@ -115,25 +178,25 @@
   // [veldId of null, check, melding]
 
   var REGELS = {
-    event_type: [[null, function () { return gekozen("event_type").length > 0; }, "Kies wat u organiseert."]],
-    moment: [[null, function () { return gekozen("moment").length > 0; }, "Kies minstens één moment. Weet u het nog niet? Kies “Nog niet zeker, graag advies”."]],
-    sfeer: [[null, function () { return gekozen("sfeer").length > 0; }, "Kies minstens één sfeer. Weet u het nog niet? Kies “Nog niet zeker, graag advies”."]],
+    event_type: [[null, function () { return gekozen("event_type").length > 0; }, T.regels.event_type]],
+    moment: [[null, function () { return gekozen("moment").length > 0; }, T.regels.moment]],
+    sfeer: [[null, function () { return gekozen("sfeer").length > 0; }, T.regels.sfeer]],
     datum: [[null, function () {
       return document.getElementById("datum_flexibel").checked
         ? gekozen("periode").length > 0
         : waarde("datum") !== "";
-    }, "Kies een datum, of vink aan dat de datum nog niet vastligt."]],
-    locatie: [["locatie", function () { return waarde("locatie") !== ""; }, "Vul in waar het event doorgaat — de gemeente of regio volstaat."]],
-    gasten: [[null, function () { return gekozen("gasten").length > 0; }, "Kies hoeveel gasten u ongeveer verwacht."]],
+    }, T.regels.datum]],
+    locatie: [["locatie", function () { return waarde("locatie") !== ""; }, T.regels.locatie]],
+    gasten: [[null, function () { return gekozen("gasten").length > 0; }, T.regels.gasten]],
     contact: [
-      ["voornaam", function () { return waarde("voornaam") !== ""; }, "Vul uw voornaam in."],
-      ["achternaam", function () { return waarde("achternaam") !== ""; }, "Vul uw achternaam in."],
-      ["email", function () { return waarde("email") !== ""; }, "Vul uw e-mailadres in."],
-      ["email", function () { return isEmail(waarde("email")); }, "Dit lijkt geen geldig e-mailadres."],
-      ["telefoon", function () { return waarde("telefoon") !== ""; }, "Vul uw telefoonnummer in."],
+      ["voornaam", function () { return waarde("voornaam") !== ""; }, T.regels.voornaam],
+      ["achternaam", function () { return waarde("achternaam") !== ""; }, T.regels.achternaam],
+      ["email", function () { return waarde("email") !== ""; }, T.regels.email],
+      ["email", function () { return isEmail(waarde("email")); }, T.regels.emailOngeldig],
+      ["telefoon", function () { return waarde("telefoon") !== ""; }, T.regels.telefoon],
     ],
     voorkeur_contact: [], // optioneel
-    bericht: [[null, function () { return document.getElementById("privacy").checked; }, "Vink dit aan om uw aanvraag te kunnen versturen."]],
+    bericht: [[null, function () { return document.getElementById("privacy").checked; }, T.regels.privacy]],
   };
 
   /**
@@ -191,10 +254,9 @@
     var hoofdstuk = parseInt(s.getAttribute("data-chapter"), 10);
     var nr = vragen.indexOf(s) + 1;
 
-    chapterEl.innerHTML = "Stap <b>" + hoofdstuk + "</b> van 3 · " + HOOFDSTUK[hoofdstuk];
-    countEl.textContent = "Vraag " + nr + " van " + TOTAAL;
-    announceEl.textContent =
-      "Stap " + hoofdstuk + " van 3, " + HOOFDSTUK[hoofdstuk] + ". Vraag " + nr + " van " + TOTAAL + ".";
+    chapterEl.innerHTML = T.stap(hoofdstuk, HOOFDSTUK[hoofdstuk]);
+    countEl.textContent = T.vraag(nr, TOTAAL);
+    announceEl.textContent = T.announce(hoofdstuk, HOOFDSTUK[hoofdstuk], nr, TOTAAL);
 
     // Elk segment vult zich naar rato van de vragen die in die stap af zijn.
     segmenten.forEach(function (seg, i) {
@@ -359,11 +421,8 @@
   // kalender. Het native veld blijft de waarde dragen (en submit gewoon mee,
   // ook verborgen), zodat de flow zonder JS blijft werken.
 
-  var MAANDEN = [
-    "januari", "februari", "maart", "april", "mei", "juni",
-    "juli", "augustus", "september", "oktober", "november", "december",
-  ];
-  var DAGEN = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"];
+  var MAANDEN = T.maanden;
+  var DAGEN = T.dagen;
 
   var kalEl = document.getElementById("kalender");
   var kalGrid = kalEl.querySelector("[data-kal-grid]");
@@ -448,7 +507,7 @@
       return;
     }
     kalUitkomst.innerHTML =
-      "Gekozen: <b>" +
+      T.gekozen + ": <b>" +
       DAGEN[gekozenDatum.getDay()] +
       " " +
       gekozenDatum.getDate() +
@@ -705,7 +764,7 @@
         var doel = schermen.indexOf(vragen[i]);
         if (doel !== index) toon(doel, "terug");
         valideer(vragen[i]);
-        toonStatus("Deze vraag heeft nog aandacht nodig.", "error");
+        toonStatus(T.aandacht, "error");
         return;
       }
     }
@@ -713,7 +772,7 @@
     var knop = form.querySelector('button[type="submit"]');
     var label = knop ? knop.textContent : "";
     form.setAttribute("data-sending", "");
-    if (knop) knop.textContent = "Versturen…";
+    if (knop) knop.textContent = T.versturen;
 
     var payload = {};
     new FormData(form).forEach(function (v, k) {
@@ -721,6 +780,7 @@
       else payload[k] = [].concat(payload[k], v).join(", ");
     });
     payload._t = Date.now() - LAADTIJD;
+    payload.lang = EN ? "en" : "nl";
 
     fetch(form.getAttribute("action") || "/api/aanvraag", {
       method: "POST",
@@ -758,18 +818,18 @@
             var blok = el ? el.closest("div") : vraagBlok(veld);
             if (blok) toonFout(blok, res.body.errors[veld], el ? veld : null);
           });
-          toonStatus("Enkele antwoorden hebben nog aandacht nodig.", "error");
+          toonStatus(T.aandachtMeer, "error");
           return;
         }
         toonStatus(
-          "Het versturen lukte niet. Probeer het later opnieuw of mail ons rechtstreeks op relovation@robinmusic.be.",
+          T.mislukt,
           "error"
         );
       })
       .catch(function () {
         // Netwerkfout: alle antwoorden blijven staan, niemand hoeft opnieuw te typen.
         toonStatus(
-          "Geen verbinding. Controleer uw internet en probeer opnieuw, of mail ons op relovation@robinmusic.be.",
+          T.offline,
           "error"
         );
       })

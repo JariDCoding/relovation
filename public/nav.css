@@ -105,6 +105,43 @@ body { padding-top: var(--nav-h); }
   gap: clamp(14px, 1.6vw, 24px);
 }
 
+/* Taalschakelaar NL / EN */
+.r-nav__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--nav-line);
+  border-radius: 999px;
+  background: rgba(247, 242, 213, 0.55);
+}
+
+.r-nav__lang-opt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: rgba(76, 106, 87, 0.6);
+  text-decoration: none;
+  transition:
+    color 0.25s var(--nav-ease-out),
+    background 0.25s var(--nav-ease-out);
+}
+
+.r-nav__lang-opt:hover { color: var(--nav-ink); }
+
+.r-nav__lang-opt.is-active {
+  background: var(--nav-ink);
+  color: var(--nav-cream);
+}
+
 .r-nav__cta {
   display: inline-flex;
   align-items: center;
@@ -456,6 +493,13 @@ body { padding-top: var(--nav-h); }
 .r-footer__copy { font-family: "DM Sans", sans-serif; font-size: clamp(11px, 0.85vw, 13px); color: rgba(244, 237, 207, 0.4); margin: 0; letter-spacing: 0.04em; }
 .r-footer__copy a { color: rgba(244, 237, 207, 0.56); text-decoration: none; transition: color 0.24s; }
 .r-footer__copy a:hover { color: rgba(244, 237, 207, 0.9); }
+
+/* Wettelijke gegevens: naam met het ondernemingsnummer eronder. */
+.r-footer__legal { text-align: center; line-height: 1.5; }
+.r-footer__legal span { display: block; }
+@media (max-width: 900px) {
+  .r-footer__legal { text-align: left; }
+}
 @media (max-width: 900px) {
   .r-footer__top { grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 44px); }
   .r-footer__brand-col { grid-column: 1 / -1; }
@@ -481,6 +525,7 @@ body { padding-top: var(--nav-h); }
 
   /* compact bar CTA + hide the word "Menu", keep icon */
   .r-nav__cta { height: 40px; padding: 0 18px; font-size: 13px; }
+  .r-nav__lang-opt { min-width: 34px; height: 30px; padding: 0 8px; font-size: 11px; }
   .r-nav__cta-arrow { display: none; }
   .r-nav__menu-label { display: none; }
   .r-nav__menu-btn { gap: 0; width: 44px; justify-content: flex-end; }

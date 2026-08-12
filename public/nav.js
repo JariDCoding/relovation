@@ -8,6 +8,13 @@
   var cap = document.getElementById('r-nav-ovl-cap');
   var links = overlay.querySelectorAll('.r-nav__ovl-list a');
 
+  // De Engelse pagina's staan onder /en/ en dragen lang="en".
+  var EN = document.documentElement.lang === 'en';
+  var T = {
+    open: EN ? 'Open menu' : 'Menu openen',
+    close: EN ? 'Close menu' : 'Menu sluiten'
+  };
+
   // ── Active link (normalise clean URLs) ──
   function norm(u) {
     var s = (u || '').split(/[?#]/)[0].split('/').filter(Boolean).pop() || '';
@@ -55,7 +62,7 @@
     overlay.setAttribute('aria-hidden', 'false');
     btn.classList.add('is-open');
     btn.setAttribute('aria-expanded', 'true');
-    btn.setAttribute('aria-label', 'Menu sluiten');
+    btn.setAttribute('aria-label', T.close);
     nav.classList.add('overlay-open');
     document.body.style.overflow = 'hidden';
   }
@@ -66,7 +73,7 @@
     overlay.setAttribute('aria-hidden', 'true');
     btn.classList.remove('is-open');
     btn.setAttribute('aria-expanded', 'false');
-    btn.setAttribute('aria-label', 'Menu openen');
+    btn.setAttribute('aria-label', T.open);
     nav.classList.remove('overlay-open');
     document.body.style.overflow = '';
   }

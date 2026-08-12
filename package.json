@@ -5,7 +5,9 @@
   "description": "Relovation website - Cloudflare Worker met statische assets en contactformulier",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "i18n": "node tools/build-i18n.mjs",
+    "i18n:check": "node tools/build-i18n.mjs --check",
+    "deploy": "npm run i18n && wrangler deploy",
     "tail": "wrangler tail",
     "qa:flow": "playwright test tests/aanvraag-flow.spec.ts",
     "qa:responsive": "playwright test tests/responsive.spec.ts",

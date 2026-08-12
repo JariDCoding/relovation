@@ -1,0 +1,1282 @@
+{
+  "_": "Engelse vertaling van de site. 'common' geldt voor alle pagina's, 'pages' per pagina. De langste zoekterm wordt altijd eerst vervangen, dus korte zinnen kunnen geen langere doormidden knippen.",
+  "head": {
+    "index.html": {
+      "title": "Relovation | Live music for your event",
+      "description": "Live music tailored to your wedding, corporate event or reception. Duo, trio or full band, with our own sound system and conservatoire-trained musicians."
+    },
+    "diensten.html": {
+      "title": "Services | Duo, trio or full band | Relovation",
+      "description": "From intimate duo to full band. Discover our line-ups, what is included and which formula suits your wedding, corporate event or reception."
+    },
+    "over.html": {
+      "title": "About us | Relovation, live music for events",
+      "description": "Who are the musicians behind Relovation? A settled collective from Lier playing live music tailored to your moment, from reception to dance floor."
+    },
+    "gallerij.html": {
+      "title": "Gallery | Relovation in pictures",
+      "description": "An evening of Relovation, captured. Sight and sound from our performances at weddings, corporate events and private parties."
+    },
+    "contact.html": {
+      "title": "Contact | Book Relovation for your event",
+      "description": "Tell us about your event and we will look at which line-up fits. We answer personally, usually within one working day."
+    },
+    "aanvraag.html": {
+      "title": "Tell us about your event | Relovation",
+      "description": "Answer a few short questions. That way we can personally see which musical formula best suits your moment."
+    }
+  },
+  "headings": {
+    "Live gespeeld voor uw moment.": "Live|played / for|your|*moment.*",
+    "Wat is Relovation?": "What|is|Relovation?",
+    "Voor welke gelegenheden?": "For|which|*occasions*|?",
+    "Live muziek die de sfeer draagt, zonder het moment over te nemen.": "Live|music|that|carries|the|mood, / without|taking|over|the|moment.",
+    "Waarom Relovation?": "Why|*Relovation?*",
+    "Beschikbare bezettingen": "Available|*line-ups*",
+    "Vertel ons over uw moment.": "Tell|us|about / your|*moment.*",
+    "Onze diensten": "Our|services",
+    "Contacteer ons": "Contact|*us*",
+    "Stuur ons een bericht": "Send us a|*message*",
+    "Vind ons online": "Find us|*online*"
+  },
+  "common": [
+    [
+      "Live muziek die de sfeer draagt, voor trouwfeesten, bedrijfsevents en priv&eacute;feesten. Volledig verzorgd, op maat.",
+      "Live music that carries the mood, for weddings, corporate events and private parties. Fully taken care of, tailored to you."
+    ],
+    [
+      "Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat.",
+      "A few short questions about your event. We personally look at which formula fits and send you a no-obligation proposal, tailored to you."
+    ],
+    [
+      "&copy; 2026 Relovation &middot; Live muziek sinds 2018",
+      "&copy; 2026 Relovation &middot; Live music since 2018"
+    ],
+    [
+      "Beeld &amp; geluid van onze avonden.",
+      "Sight &amp; sound from our evenings."
+    ],
+    [
+      "Het ensemble achter Relovation.",
+      "The ensemble behind Relovation."
+    ],
+    [
+      "Duo, trio of full band, op maat.",
+      "Duo, trio or full band, tailored to you."
+    ],
+    [
+      "Live jazz die de sfeer draagt.",
+      "Live jazz that carries the mood."
+    ],
+    [
+      "Plan of stel gerust een vraag.",
+      "Plan your event or simply ask."
+    ],
+    [
+      "Welkom bij Relovation",
+      "Welcome to Relovation"
+    ],
+    [
+      "Plan of stel een vraag",
+      "Plan or ask a question"
+    ],
+    [
+      "Klaar voor live muziek?",
+      "Ready for live music?"
+    ],
+    [
+      "Klaar voor live muziek",
+      "Ready for live music"
+    ],
+    [
+      "Privéfeesten &amp; openingen",
+      "Private parties &amp; openings"
+    ],
+    [
+      "Beeld &amp; geluid",
+      "Sight &amp; sound"
+    ],
+    [
+      "Hoofdnavigatie",
+      "Main navigation"
+    ],
+    [
+      "Plan uw event",
+      "Plan your event"
+    ],
+    [
+      "Bedrijfsevents",
+      "Corporate events"
+    ],
+    [
+      "Contacteer ons",
+      "Contact us"
+    ],
+    [
+      "Het ensemble",
+      "The ensemble"
+    ],
+    [
+      "Trouwfeesten",
+      "Weddings"
+    ],
+    [
+      "Pagina laden",
+      "Loading page"
+    ],
+    [
+      "Menu openen",
+      "Open menu"
+    ],
+    [
+      "Hoofdmenu",
+      "Main menu"
+    ],
+    [
+      "Footer menu",
+      "Footer menu"
+    ],
+    [
+      "Diensten",
+      "Services"
+    ],
+    [
+      "Gallerij",
+      "Gallery"
+    ],
+    [
+      "Over ons",
+      "About us"
+    ],
+    [
+      "In beeld",
+      "In pictures"
+    ],
+    [
+      "Sluiten",
+      "Close"
+    ],
+    [
+      "Taal",
+      "Language"
+    ],
+    [
+      "BTW BE 0773.507.001",
+      "VAT BE 0773.507.001"
+    ]
+  ],
+  "pages": {
+    "index.html": [
+      [
+        "Relovation is een flexibel live muziekconcept voor stijlvolle events. Geen vaste formule, maar muziek die meebeweegt met het moment, afgestemd op uw publiek, locatie en programma. Wij nemen de volledige muzikale omkadering op ons en denken met u mee.",
+        "Relovation is a flexible live music concept for stylish events. No fixed formula, but music that moves with the moment, tuned to your audience, venue and programme. We take care of the whole musical side and think along with you."
+      ],
+      [
+        "Live muzikanten die de dansvloer vullen op uw trouwfeest, bedrijfsevent of privéfeest. Volledig verzorgd, op maat.",
+        "Live musicians who fill the dance floor at your wedding, corporate event or private party. Fully taken care of, tailored to you."
+      ],
+      [
+        "Van ceremonie en welkomstdrink tot het begin van de avond. Wij verzorgen de muzikale rode draad door uw trouwdag, afgestemd op elk moment.",
+        "From ceremony and welcome drink to the start of the evening. We carry the musical thread through your wedding day, tuned to every moment."
+      ],
+      [
+        "Stijlvolle live muziek voor recepties, netwerkmomenten en bedrijfsfeesten. Muziek die uw gasten op hun gemak stelt en de juiste toon zet.",
+        "Stylish live music for receptions, networking moments and company parties. Music that puts your guests at ease and sets the right tone."
+      ],
+      [
+        "Warme live muziek die gesprekken draagt zonder te overstemmen. Voor openingen, ontvangsten en avonden waar sfeer centraal staat.",
+        "Warm live music that carries conversation without drowning it out. For openings, receptions and evenings where atmosphere comes first."
+      ],
+      [
+        "Ervaren, conservatoriumgeschoolde muzikanten met het juiste niveau én de juiste rust.",
+        "Experienced, conservatoire-trained musicians with the right level and the right calm."
+      ],
+      [
+        "Warm en intiem, voor ceremonies, recepties, diners en corporate events. Aanwezig zonder te overheersen.",
+        "Warm and intimate, for ceremonies, receptions, dinners and corporate events. Present without taking over."
+      ],
+      [
+        "Rijker, met extra warmte en karakter. Voor events waar de muziek meer aanwezigheid mag hebben.",
+        "Richer, with extra warmth and character. For events where the music may take more space."
+      ],
+      [
+        "Voor grotere ruimtes en feesten waar de muziek de avond bepaalt.",
+        "For larger spaces and parties where the music sets the evening."
+      ],
+      [
+        "Elke reden een eigen maat, samen één ritme dat uw avond draagt.",
+        "Every reason its own measure, together one rhythm that carries your evening."
+      ],
+      [
+        "Repertoire, bezetting en volume afgestemd op uw sfeer en programma.",
+        "Repertoire, line-up and volume tuned to your atmosphere and programme."
+      ],
+      [
+        "Voor events tot ±250 gasten, inbegrepen zonder extra gedoe.",
+        "For events up to ±250 guests, included without any fuss."
+      ],
+      [
+        "Heldere afspraken, stipt aanwezig, professioneel ter plaatse.",
+        "Clear agreements, on time, professional on site."
+      ],
+      [
+        "Zang/sax &amp; piano. Onze huidige hoofdformule.",
+        "Vocals/sax &amp; piano. Our current main line-up."
+      ],
+      [
+        "Zang/sax, gitaar &amp; contrabas. Momenteel in opbouw.",
+        "Vocals/sax, guitar &amp; double bass. Currently taking shape."
+      ],
+      [
+        "Gasten op een netwerkevent met live muziek van Relovation",
+        "Guests at a networking event with live music by Relovation"
+      ],
+      [
+        "Getekende illustratie van de Relovation band",
+        "Drawn illustration of the Relovation band"
+      ],
+      [
+        "Live muzikant speelt tijdens een trouwfeest",
+        "Live musician playing at a wedding"
+      ],
+      [
+        "Pianist speelt live op een bedrijfsevent",
+        "Pianist playing live at a corporate event"
+      ],
+      [
+        "Gasten op een receptie met live jazz",
+        "Guests at a reception with live jazz"
+      ],
+      [
+        "Professionele muzikanten",
+        "Professional musicians"
+      ],
+      [
+        "Eigen geluidsinstallatie",
+        "Our own sound system"
+      ],
+      [
+        "beluister een fragment hier",
+        "listen to a fragment here"
+      ],
+      [
+        "Eerder speelden wij voor",
+        "We have played for"
+      ],
+      [
+        "Ervaar een live moment",
+        "Experience a live moment"
+      ],
+      [
+        "Ontdek de bezetting",
+        "Discover the line-up"
+      ],
+      [
+        "Sleep om te ontdekken",
+        "Drag to explore"
+      ],
+      [
+        "De volledige bezetting.",
+        "The full line-up."
+      ],
+      [
+        "Volledig afgestemd",
+        "Fully tailored"
+      ],
+      [
+        "Zorgeloos geregeld",
+        "Handled end to end"
+      ],
+      [
+        "Meer over ons →",
+        "More about us →"
+      ],
+      [
+        "Speel fragment af",
+        "Play fragment"
+      ],
+      [
+        "Video sluiten",
+        "Close video"
+      ],
+      [
+        "Gelegenheden",
+        "Occasions"
+      ],
+      [
+        "Stad Lier",
+        "City of Lier"
+      ],
+      [
+        "Live muziek",
+        "Live music"
+      ]
+    ],
+    "diensten.html": [
+      [
+        "Van intieme ceremonie tot groot bedrijfsevent: wij verzorgen de volledige muzikale omkadering. We denken mee over bezetting, sfeer en repertoire, zodat de muziek klopt.",
+        "From intimate ceremony to large corporate event: we take care of the whole musical side. We think along about line-up, atmosphere and repertoire, so the music fits."
+      ],
+      [
+        "Een ontvangst, walking dinner of netwerkmoment verdient meer dan achtergrondgeluid. Wij zorgen voor een muzikale aanwezigheid die uw gasten op hun gemak stelt en meteen de juiste toon zet.",
+        "A reception, walking dinner or networking moment deserves more than background noise. We bring a musical presence that puts your guests at ease and sets the right tone straight away."
+      ],
+      [
+        "Uw trouwdag is uniek. De muziek mag dat ook zijn. Van ceremonie en welkomstdrink tot het begin van de avond zorgen wij voor de muzikale rode draad.",
+        "Your wedding day is one of a kind. The music may be too. From ceremony and welcome drink to the start of the evening, we carry the musical thread."
+      ],
+      [
+        "Voor openingen, private ontvangsten en momenten waar sfeer en gastvrijheid centraal staan. Live muziek die elke ruimte meteen karakter geeft.",
+        "For openings, private receptions and moments where atmosphere and hospitality come first. Live music that gives any space instant character."
+      ],
+      [
+        "Niet zeker welke bezetting bij uw event past? Wij adviseren op basis van uw locatie, publiek en programma.",
+        "Not sure which line-up suits your event? We advise based on your venue, audience and programme."
+      ],
+      [
+        "Onze huidige hoofdformule. Een warm, intiem klankbeeld voor ceremonies, recepties, diners en corporate events.",
+        "Our current main line-up. A warm, intimate sound for ceremonies, receptions, dinners and corporate events."
+      ],
+      [
+        "Een rijkere bezetting met extra warmte en karakter. Voor events waar de muziek meer aanwezigheid mag hebben.",
+        "A richer line-up with extra warmth and character. For events where the music may take more space."
+      ],
+      [
+        "Voor grotere ruimtes en feesten waar live muziek het karakter van de avond bepaalt.",
+        "For larger spaces and parties where live music sets the character of the evening."
+      ],
+      [
+        "Zanger in gilet en das in een spotlight op een concertzaalpodium tijdens een bedrijfsevent",
+        "Singer in waistcoat and tie in a spotlight on a concert hall stage during a corporate event"
+      ],
+      [
+        "Saxofonist speelt op een trouwfeest terwijl het bruidspaar op de achtergrond danst",
+        "Saxophonist playing at a wedding while the couple dances in the background"
+      ],
+      [
+        "Volle feestzaal onder een boog van kaarsen en lichtjes, gasten dansen in warm oranje licht",
+        "Full ballroom under an arch of candles and lights, guests dancing in warm orange light"
+      ],
+      [
+        "Een warme muzikale laag die de sfeer draagt zonder te overstemmen",
+        "A warm musical layer that carries the mood without drowning it out"
+      ],
+      [
+        "Bezetting en volume afgestemd op locatie, timing en publiek",
+        "Line-up and volume tuned to venue, timing and audience"
+      ],
+      [
+        "Wij adviseren vanuit ervaring over wat werkt op welk moment",
+        "We advise from experience on what works at which moment"
+      ],
+      [
+        "Wij adviseren vanuit ervaring over wat werkt voor uw event",
+        "We advise from experience on what works for your event"
+      ],
+      [
+        "De trioformatie is in opbouw. Neem contact op voor beschikbaarheid.",
+        "The trio line-up is taking shape. Get in touch for availability."
+      ],
+      [
+        "Live muziek voor recepties, diners en netwerkmomenten",
+        "Live music for receptions, dinners and networking moments"
+      ],
+      [
+        "Van intieme ceremonie tot receptie met live muziek",
+        "From intimate ceremony to reception with live music"
+      ],
+      [
+        "Voor foyers, galerieën, salons en verfijnde eventlocaties",
+        "For foyers, galleries, salons and refined event venues"
+      ],
+      [
+        "Repertoire en bezetting op maat van uw dag",
+        "Repertoire and line-up tailored to your day"
+      ],
+      [
+        "Volledig verzorgd: van opbouw tot laatste noot",
+        "Fully taken care of: from set-up to the last note"
+      ],
+      [
+        "Zang/sax, gitaar &amp; contrabas",
+        "Vocals/sax, guitar &amp; double bass"
+      ],
+      [
+        "Volledige live bezetting",
+        "Full live line-up"
+      ],
+      [
+        "Zang/sax &amp; piano",
+        "Vocals/sax &amp; piano"
+      ]
+    ],
+    "over.html": [
+      [
+        "Robin startte op zijn achtste met de saxofoon en is er nooit meer mee gestopt. In 2016 leerde hij Lorenzo kennen op een ensemblerepetitie, een pianist die hem vanaf de eerste noot versteld deed staan. Na afloop vroeg Robin hem om samen te spelen. Zo begon het.",
+        "Robin picked up the saxophone at eight and never put it down. In 2016 he met Lorenzo at an ensemble rehearsal, a pianist who astonished him from the very first note. Afterwards Robin asked him to play together. That is how it started."
+      ],
+      [
+        "Ze repeteerden in Lier, speelden hier en daar, en organiseerden in 2018 hun eerste eigen concert. Het jaar nadien opnieuw. Relovation groeide van daaruit organisch, niet vanuit een plan, maar vanuit de muziek en de mensen errond.",
+        "They rehearsed in Lier, played here and there, and put on their first own concert in 2018. The year after, again. Relovation grew from there organically, not from a plan, but from the music and the people around it."
+      ],
+      [
+        "Dat is nog altijd het verschil. Wij spelen samen omdat we dat willen, niet omdat we samengezet zijn. Een zaal hoort dat verschil, ook al kan niemand er de vinger op leggen.",
+        "That is still the difference. We play together because we want to, not because we were put together. A room hears that difference, even if nobody can quite name it."
+      ],
+      [
+        "Wij spelen live. Dat klinkt vanzelfsprekend, maar het is de hele reden waarom Relovation bestaat: een moment dat u ziet gebeuren, blijft langer hangen dan een moment dat u enkel hoort.",
+        "We play live. That sounds obvious, but it is the whole reason Relovation exists: a moment you see happen stays with you longer than a moment you only hear."
+      ],
+      [
+        "Robin begon op zijn achtste met de saxofoon en stopte er nooit meer mee. Als finalist van The Voice van Vlaanderen 2021 en als zanger op podia als de Koningin Elisabethzaal, met de Radio 2 Ratpack en de VRT Bigband, brengt hij een niveau mee dat u hoort vanaf de eerste noot.",
+        "Robin picked up the saxophone at eight and never put it down. As a finalist of The Voice van Vlaanderen 2021 and as a singer on stages such as the Queen Elisabeth Hall, with the Radio 2 Ratpack and the VRT Bigband, he brings a level you hear from the first note."
+      ],
+      [
+        "Tim legt de basis waar alles op rust. Als bassist van Meltheads, finalist De Nieuwe Lichting, tweede op Humo&rsquo;s Rock Rally, Pukkelpop, weet hij wat het is om een zaal in beweging te krijgen.",
+        "Tim lays the foundation everything rests on. As bassist of Meltheads, finalist of De Nieuwe Lichting, runner-up at Humo&rsquo;s Rock Rally, Pukkelpop, he knows what it takes to get a room moving."
+      ],
+      [
+        "Lorenzo studeerde aan Codarts Rotterdam en is erbij van het eerste uur. Zijn pianospel is de reden dat Relovation ooit begon.",
+        "Lorenzo studied at Codarts Rotterdam and has been there from the very beginning. His piano playing is the reason Relovation ever started."
+      ],
+      [
+        "Joppe studeerde aan Codarts Rotterdam en leidt zijn eigen kwartet. Hij weet precies wanneer een ruimte een duw nodig heeft, en wanneer net niet.",
+        "Joppe studied at Codarts Rotterdam and leads his own quartet. He knows exactly when a room needs a push, and when it does not."
+      ],
+      [
+        "Relovation brengt geen muziek die om aandacht vraagt, maar muziek die het moment optilt. Verfijnd in timing, rustig in présence, sterk in sfeer.",
+        "Relovation does not play music that asks for attention, but music that lifts the moment. Refined in timing, calm in presence, strong in atmosphere."
+      ],
+      [
+        "Afhankelijk van uw event spelen we in duo, trio of full band. Elke bezetting is een keuze, geen compromis, wij adviseren u graag welke past bij uw moment.",
+        "Depending on your event we play as a duo, trio or full band. Every line-up is a choice, not a compromise, and we are glad to advise which one suits your moment."
+      ],
+      [
+        "Muzikaal niveau is het begin. De rest is even belangrijk, en daar merkt u ons het minst van.",
+        "Musical level is the beginning. The rest matters just as much, and that is where you notice us least."
+      ],
+      [
+        "Vier muzikanten, elk met een eigen podium buiten Relovation. Samen vormen zij het geluid waar Relovation voor staat.",
+        "Four musicians, each with their own stage outside Relovation. Together they form the sound Relovation stands for."
+      ],
+      [
+        "Vanuit ervaring adviseren we over wat werkt op welk moment. U hoeft de muziek niet uit te vinden.",
+        "From experience we advise on what works at which moment. You do not have to work out the music yourself."
+      ],
+      [
+        "Repertoire, bezetting, volume en timing bespreken we voor de dag zelf. Geen verrassingen.",
+        "We agree repertoire, line-up, volume and timing before the day itself. No surprises."
+      ],
+      [
+        "Wij zijn op tijd, de soundcheck verloopt zonder gedoe, en uw locatie merkt het nauwelijks.",
+        "We arrive on time, the soundcheck runs without fuss, and your venue barely notices us."
+      ],
+      [
+        "Professionele installatie voor events tot ±250 gasten, inbegrepen.",
+        "Professional system for events up to ±250 guests, included."
+      ],
+      [
+        "Nooit te veel, altijd precies genoeg. We lezen de ruimte en spelen ernaar.",
+        "Never too much, always exactly enough. We read the room and play to it."
+      ],
+      [
+        "Uw programma bepaalt de muziek, niet omgekeerd. Wij volgen het ritme van uw avond.",
+        "Your programme sets the music, not the other way around. We follow the rhythm of your evening."
+      ],
+      [
+        "Een repertoire dat niet veroudert, gebracht met klasse en zonder afstand.",
+        "A repertoire that does not age, delivered with class and without distance."
+      ],
+      [
+        "&ldquo;Wij spelen samen omdat we dat willen, niet omdat we samengezet zijn.&rdquo;",
+        "&ldquo;We play together because we want to, not because we were put together.&rdquo;"
+      ],
+      [
+        "De muzikanten van Relovation op het podium.",
+        "The musicians of Relovation on stage."
+      ],
+      [
+        "Robin Crauwels, oprichter Relovation",
+        "Robin Crauwels, founder of Relovation"
+      ],
+      [
+        "Robin Crauwels met saxofoon.",
+        "Robin Crauwels with saxophone."
+      ],
+      [
+        "Inhoud van deze pagina",
+        "On this page"
+      ],
+      [
+        "Vorige muzikant",
+        "Previous musician"
+      ],
+      [
+        "Volgende muzikant",
+        "Next musician"
+      ],
+      [
+        "Vertel ons over uw <em>moment</em>.",
+        "Tell us about your <em>moment</em>."
+      ],
+      [
+        "De kunst van aanwezigheid",
+        "The art of presence"
+      ],
+      [
+        "Over <em>ons</em>",
+        "About <em>us</em>"
+      ],
+      [
+        "De kunst van",
+        "The art of"
+      ],
+      [
+        "aanwezigheid",
+        "presence"
+      ],
+      [
+        "Sinds 2018 · Lier",
+        "Since 2018 · Lier"
+      ],
+      [
+        "Hoe Relovation begon",
+        "How Relovation began"
+      ],
+      [
+        "Onze manier van spelen",
+        "How we play"
+      ],
+      [
+        "Robin · Lorenzo · Tim · Joppe",
+        "Robin · Lorenzo · Tim · Joppe"
+      ],
+      [
+        "Alles rond de muziek",
+        "Everything around the music"
+      ],
+      [
+        "Onze muzikanten",
+        "Our musicians"
+      ],
+      [
+        "Hoe wij werken",
+        "How we work"
+      ],
+      [
+        "Ons verhaal",
+        "Our story"
+      ],
+      [
+        "Zang &amp; saxofoon",
+        "Vocals &amp; saxophone"
+      ],
+      [
+        "Subtiel aanwezig",
+        "Subtly present"
+      ],
+      [
+        "In dienst van het moment",
+        "In service of the moment"
+      ],
+      [
+        "Warm en tijdloos",
+        "Warm and timeless"
+      ],
+      [
+        "Vooraf afgestemd",
+        "Agreed in advance"
+      ],
+      [
+        "Eigen geluidsinstallatie",
+        "Our own sound system"
+      ],
+      [
+        "Stipt en voorbereid",
+        "On time and prepared"
+      ],
+      [
+        "Wij denken mee",
+        "We think along"
+      ],
+      [
+        "Tot slot",
+        "Finally"
+      ],
+      [
+        "Piano",
+        "Piano"
+      ],
+      [
+        "Bas",
+        "Bass"
+      ],
+      [
+        "Drums",
+        "Drums"
+      ],
+      [
+        "Live muziek",
+        "Live music"
+      ]
+    ],
+    "gallerij.html": [
+      [
+        "Elke avond is anders. De ruimte, de gasten, het uur van de nacht: het bepaalt hoe wij spelen. Geen playlist, geen knop die je omdraait. Wij luisteren naar de zaal en bewegen mee: ingetogen tijdens het diner, los op de dansvloer.",
+        "Every evening is different. The room, the guests, the hour of the night: it all decides how we play. No playlist, no switch to flip. We listen to the room and move with it: restrained during dinner, loose on the dance floor."
+      ],
+      [
+        "Vier muzikanten, één taal. Van intieme achtergrond tot een dansvloer die niet meer stilstaat.",
+        "Four musicians, one language. From intimate background to a dance floor that will not stand still."
+      ],
+      [
+        "Een avond Relovation, vastgelegd: van het eerste applaus tot het laatste gedempte akkoord.",
+        "An evening of Relovation, captured: from the first applause to the last muted chord."
+      ],
+      [
+        "Live is het verschil tussen geluid en een gevoel dat blijft hangen.",
+        "Live is the difference between sound and a feeling that stays with you."
+      ],
+      [
+        "Duo bij kaarslicht. Een besloten zaal draagt de avond, ingetogen en warm.",
+        "Duo by candlelight. An intimate room carries the evening, restrained and warm."
+      ],
+      [
+        "De full band op het podium. Het volledige geluid, voor de grote momenten.",
+        "The full band on stage. The complete sound, for the big moments."
+      ],
+      [
+        "Saxofoon in goud licht. Het uur waarop de avond kantelt.",
+        "Saxophone in golden light. The hour when the evening tips over."
+      ],
+      [
+        "Zicht vanaf het podium. De zaal die meebeweegt.",
+        "The view from the stage. The room moving with us."
+      ],
+      [
+        "Duo van Relovation speelt bij kaarslicht in een besloten zaal",
+        "Relovation duo playing by candlelight in an intimate room"
+      ],
+      [
+        "De full band van Relovation op het podium",
+        "The full Relovation band on stage"
+      ],
+      [
+        "Saxofoon in het gedempte licht van een club",
+        "Saxophone in the dimmed light of a club"
+      ],
+      [
+        "Reflectie van de saxofonist in een raam",
+        "Reflection of the saxophonist in a window"
+      ],
+      [
+        "Bruidspaar tijdens de eerste dans op live jazz",
+        "Newlyweds during their first dance to live jazz"
+      ],
+      [
+        "Relovation tijdens een bedrijfsevent in een concertzaal",
+        "Relovation during a corporate event in a concert hall"
+      ],
+      [
+        "Zicht vanaf het podium op een volle zaal",
+        "View from the stage over a full room"
+      ],
+      [
+        "Handen op de toetsen in kaarslicht met tegenlicht",
+        "Hands on the keys in candlelight and backlight"
+      ],
+      [
+        "Relovation speelt op een straatfestival",
+        "Relovation playing at a street festival"
+      ],
+      [
+        "Sfeerbeeld van een opening op straat",
+        "Atmosphere shot of an opening in the street"
+      ],
+      [
+        "Saxofonist in warm goud licht",
+        "Saxophonist in warm golden light"
+      ],
+      [
+        "Warme zaal tijdens een privéfeest",
+        "Warm room during a private party"
+      ],
+      [
+        "Detailbeeld van een drumpedaal op een tapijt",
+        "Close-up of a drum pedal on a carpet"
+      ],
+      [
+        "Robin Crauwels met saxofoon",
+        "Robin Crauwels with saxophone"
+      ],
+      [
+        "Lorenzo Nsumbi achter de piano",
+        "Lorenzo Nsumbi at the piano"
+      ],
+      [
+        "Tim Pensaert met contrabas",
+        "Tim Pensaert with double bass"
+      ],
+      [
+        "Joppe Van Noten achter het drumstel",
+        "Joppe Van Noten behind the drum kit"
+      ],
+      [
+        "Editie Nº 01 · Lier, sinds 2018",
+        "Edition Nº 01 · Lier, since 2018"
+      ],
+      [
+        "Relovation &middot; Live jazz",
+        "Relovation &middot; Live jazz"
+      ],
+      [
+        "Nº 02 &middot; De bezetting",
+        "Nº 02 &middot; The line-up"
+      ],
+      [
+        "Reflectie in het raam, tussen twee sets.",
+        "Reflection in the window, between two sets."
+      ],
+      [
+        "Saxofoon in het clubdonker.",
+        "Saxophone in the dark of the club."
+      ],
+      [
+        "Eerste dans, trouwfeest.",
+        "First dance, wedding."
+      ],
+      [
+        "Bedrijfsevent, concertzaal.",
+        "Corporate event, concert hall."
+      ],
+      [
+        "Toetsen, kaarslicht, tegenlicht.",
+        "Keys, candlelight, backlight."
+      ],
+      [
+        "Straatfestival, open lucht.",
+        "Street festival, open air."
+      ],
+      [
+        "Een opening op straat.",
+        "An opening in the street."
+      ],
+      [
+        "Privéfeest, warme zaal.",
+        "Private party, warm room."
+      ],
+      [
+        "Detail: de puls, van dichtbij.",
+        "Detail: the pulse, up close."
+      ],
+      [
+        "Het <em>ensemble</em>",
+        "The <em>ensemble</em>"
+      ],
+      [
+        "In <em>beeld</em>",
+        "In <em>pictures</em>"
+      ],
+      [
+        "Hoe wij spelen",
+        "How we play"
+      ],
+      [
+        "Geen vaste set.",
+        "No fixed set."
+      ],
+      [
+        "Een zaal die ademt.",
+        "A room that breathes."
+      ],
+      [
+        "Klaar voor uw avond?",
+        "Ready for your evening?"
+      ],
+      [
+        "Laat Relovation",
+        "Let Relovation"
+      ],
+      [
+        "uw moment",
+        "carry your"
+      ],
+      [
+        "dragen.",
+        "moment."
+      ],
+      [
+        "Saxofoon",
+        "Saxophone"
+      ],
+      [
+        "Piano &amp; keys",
+        "Piano &amp; keys"
+      ],
+      [
+        "Contrabas",
+        "Double bass"
+      ],
+      [
+        "Drums",
+        "Drums"
+      ]
+    ],
+    "contact.html": [
+      [
+        "Een vraag over uw event of wilt u Relovation boeken? Vertel ons wat u voor ogen heeft. U krijgt snel een voorstel op maat.",
+        "A question about your event, or would you like to book Relovation? Tell us what you have in mind. You will get a tailored proposal soon."
+      ],
+      [
+        "Liever meteen een voorstel op maat? Beantwoord enkele korte vragen over uw event.",
+        "Prefer a tailored proposal straight away? Answer a few short questions about your event."
+      ],
+      [
+        "Volg Relovation voor sfeerbeelden, live fragmenten en nieuwe momenten.",
+        "Follow Relovation for atmosphere shots, live fragments and new moments."
+      ],
+      [
+        "Saxofonist van Relovation weerspiegeld in het raam van een lichte lounge",
+        "Relovation saxophonist reflected in the window of a bright lounge"
+      ],
+      [
+        "Toetsenist van achteren gezien tegen kaarslicht en een starburst-lamp boven het publiek",
+        "Keyboard player seen from behind against candlelight and a starburst lamp above the audience"
+      ],
+      [
+        "Blik vanaf het podium over de schouder van de saxofonist naar een publiek in kaarslicht",
+        "View from the stage over the saxophonist's shoulder towards an audience in candlelight"
+      ],
+      [
+        "Schrijf hier uw bericht",
+        "Write your message here"
+      ],
+      [
+        "Laat dit veld leeg",
+        "Leave this field empty"
+      ],
+      [
+        "Telefoonnummer",
+        "Phone number"
+      ],
+      [
+        "Achternaam",
+        "Last name"
+      ],
+      [
+        "Voornaam",
+        "First name"
+      ],
+      [
+        "Landcode",
+        "Country code"
+      ],
+      [
+        "Verstuur",
+        "Send"
+      ],
+      [
+        "Email",
+        "Email"
+      ]
+    ],
+    "aanvraag.html": [
+      [
+        "We hebben uw aanvraag goed ontvangen. We bekijken persoonlijk welke muzikale formule het best past bij uw event en nemen binnenkort contact met u op met een voorstel op maat.",
+        "We have received your request. We will personally look at which musical formula best suits your event and will get in touch soon with a tailored proposal."
+      ],
+      [
+        "Bijvoorbeeld: gewenste muziekstijl, speciaal moment, timing, praktische info of de sfeer die u voor ogen heeft.",
+        "For example: the style of music you want, a special moment, timing, practical details or the atmosphere you have in mind."
+      ],
+      [
+        "gelezen en begrijp dat mijn gegevens gebruikt worden om mijn aanvraag te beantwoorden en, indien nodig, contact met mij op te nemen over dit event.",
+        "and understand that my details will be used to answer my request and, if needed, to contact me about this event."
+      ],
+      [
+        "We gebruiken deze gegevens enkel om uw aanvraag snel en persoonlijk op te volgen.",
+        "We only use these details to follow up on your request quickly and personally."
+      ],
+      [
+        "Robin leest persoonlijk mee wat u voor ogen heeft en welke formule daarbij past.",
+        "Robin personally reads what you have in mind and which formula fits it."
+      ],
+      [
+        "Via de manier die u koos. Heeft u vragen, dan beantwoorden we die meteen.",
+        "In the way you chose. If you have questions, we answer them right away."
+      ],
+      [
+        "De gemeente of regio volstaat als de exacte locatie nog niet vastligt.",
+        "The town or region is enough if the exact venue is not settled yet."
+      ],
+      [
+        "Afgestemd op uw moment, uw sfeer en de schaal van uw event.",
+        "Tuned to your moment, your atmosphere and the scale of your event."
+      ],
+      [
+        "De datum ligt nog niet definitief vast",
+        "The date is not final yet"
+      ],
+      [
+        "Horeca / opening / concept event",
+        "Hospitality / opening / concept event"
+      ],
+      [
+        "Achtergrondmuziek doorheen het event",
+        "Background music throughout the event"
+      ],
+      [
+        "Voor welk moment zoekt u live muziek?",
+        "For which moment are you looking for live music?"
+      ],
+      [
+        "Hoe mogen we u het liefst contacteren?",
+        "How would you prefer us to contact you?"
+      ],
+      [
+        "Hoeveel gasten verwacht u ongeveer?",
+        "Roughly how many guests do you expect?"
+      ],
+      [
+        "Voorprogramma / openingsmoment",
+        "Opening act / opening moment"
+      ],
+      [
+        "Receptie / welkomstdrink",
+        "Reception / welcome drink"
+      ],
+      [
+        "Nog niet zeker, graag advies",
+        "Not sure yet, advice welcome"
+      ],
+      [
+        "Diner / walking dinner",
+        "Dinner / walking dinner"
+      ],
+      [
+        "Publiek event / festival",
+        "Public event / festival"
+      ],
+      [
+        "Welke sfeer wilt u creëren?",
+        "What atmosphere do you want to create?"
+      ],
+      [
+        "Wanneer gaat het event door?",
+        "When does the event take place?"
+      ],
+      [
+        "Waar gaat het event door?",
+        "Where does the event take place?"
+      ],
+      [
+        "Wil u nog iets kort meegeven?",
+        "Anything else you would like to add?"
+      ],
+      [
+        "Vertel ons over uw event",
+        "Tell us about your event"
+      ],
+      [
+        "Bedankt voor uw aanvraag",
+        "Thank you for your request"
+      ],
+      [
+        "We bekijken uw aanvraag",
+        "We look at your request"
+      ],
+      [
+        "U krijgt een voorstel op maat",
+        "You get a tailored proposal"
+      ],
+      [
+        "Terug naar de website",
+        "Back to the website"
+      ],
+      [
+        "Vraag uw voorstel aan",
+        "Request your proposal"
+      ],
+      [
+        "Locatie, gemeente of regio",
+        "Venue, town or region"
+      ],
+      [
+        "Meerdere antwoorden mogelijk.",
+        "More than one answer possible."
+      ],
+      [
+        "Kies er maximaal twee.",
+        "Choose up to two."
+      ],
+      [
+        "0 van 2 gekozen",
+        "0 of 2 chosen"
+      ],
+      [
+        "Volgende: praktische info",
+        "Next: practical details"
+      ],
+      [
+        "In welke periode denkt u?",
+        "Which period are you thinking of?"
+      ],
+      [
+        "Datum van het event",
+        "Date of the event"
+      ],
+      [
+        "Wat organiseert u?",
+        "What are you organising?"
+      ],
+      [
+        "Hoe bereiken we u?",
+        "How can we reach you?"
+      ],
+      [
+        "We nemen contact op",
+        "We get in touch"
+      ],
+      [
+        "Stijlvol op de achtergrond",
+        "Stylish in the background"
+      ],
+      [
+        "Feestelijk en herkenbaar",
+        "Festive and familiar"
+      ],
+      [
+        "Classy en professioneel",
+        "Classy and professional"
+      ],
+      [
+        "Interactief en energiek",
+        "Interactive and lively"
+      ],
+      [
+        "Warm en intiem",
+        "Warm and intimate"
+      ],
+      [
+        "Ik heb de",
+        "I have read the"
+      ],
+      [
+        "privacyverklaring",
+        "privacy statement"
+      ],
+      [
+        "of druk op Enter",
+        "or press Enter"
+      ],
+      [
+        "Vorige maand",
+        "Previous month"
+      ],
+      [
+        "Volgende maand",
+        "Next month"
+      ],
+      [
+        "Kies maand en jaar",
+        "Choose month and year"
+      ],
+      [
+        "Kies een datum",
+        "Choose a date"
+      ],
+      [
+        "Vorig jaar",
+        "Previous year"
+      ],
+      [
+        "Volgend jaar",
+        "Next year"
+      ],
+      [
+        "Minder dan 30",
+        "Fewer than 30"
+      ],
+      [
+        "Meer dan 300",
+        "More than 300"
+      ],
+      [
+        "van 3 · Event &amp; muziek",
+        "of 3 · Event &amp; music"
+      ],
+      [
+        "Vraag 1 van 9",
+        "Question 1 of 9"
+      ],
+      [
+        "Vraag 8 · optioneel",
+        "Question 8 · optional"
+      ],
+      [
+        "Vraag 9 · optioneel",
+        "Question 9 · optional"
+      ],
+      [
+        "Telefoonnummer",
+        "Phone number"
+      ],
+      [
+        "E-mailadres",
+        "Email address"
+      ],
+      [
+        "Laat dit veld leeg",
+        "Leave this field empty"
+      ],
+      [
+        "naam@email.com",
+        "name@email.com"
+      ],
+      [
+        "Achternaam",
+        "Last name"
+      ],
+      [
+        "Voornaam",
+        "First name"
+      ],
+      [
+        "Bedrijfsfeest",
+        "Company party"
+      ],
+      [
+        "Trouwfeest",
+        "Wedding"
+      ],
+      [
+        "Privéfeest",
+        "Private party"
+      ],
+      [
+        "Ander event",
+        "Other event"
+      ],
+      [
+        "Ceremonie",
+        "Ceremony"
+      ],
+      [
+        "Avondfeest",
+        "Evening party"
+      ],
+      [
+        "Voorjaar",
+        "Spring"
+      ],
+      [
+        "Zomer",
+        "Summer"
+      ],
+      [
+        "Najaar",
+        "Autumn"
+      ],
+      [
+        "Winter",
+        "Winter"
+      ],
+      [
+        "Nog niet zeker",
+        "Not sure yet"
+      ],
+      [
+        "Volgende",
+        "Next"
+      ],
+      [
+        "Terug",
+        "Back"
+      ],
+      [
+        "Overslaan",
+        "Skip"
+      ],
+      [
+        "Vraag 1",
+        "Question 1"
+      ],
+      [
+        "Vraag 2",
+        "Question 2"
+      ],
+      [
+        "Vraag 3",
+        "Question 3"
+      ],
+      [
+        "Vraag 4",
+        "Question 4"
+      ],
+      [
+        "Vraag 5",
+        "Question 5"
+      ],
+      [
+        "Vraag 6",
+        "Question 6"
+      ],
+      [
+        "Vraag 7",
+        "Question 7"
+      ],
+      [
+        "Telefoon",
+        "Phone"
+      ],
+      [
+        "E-mail",
+        "Email"
+      ],
+      [
+        "Maakt niet uit",
+        "No preference"
+      ],
+      [
+        "Stap",
+        "Step"
+      ],
+      [
+        "Jan",
+        "John"
+      ],
+      [
+        "Janssen",
+        "Smith"
+      ],
+      [
+        "ma",
+        "Mo"
+      ],
+      [
+        "di",
+        "Tu"
+      ],
+      [
+        "wo",
+        "We"
+      ],
+      [
+        "do",
+        "Th"
+      ],
+      [
+        "vr",
+        "Fr"
+      ],
+      [
+        "za",
+        "Sa"
+      ],
+      [
+        "zo",
+        "Su"
+      ]
+    ]
+  }
+}
