@@ -1,0 +1,14 @@
+{
+  "name": "Relovation",
+  "short_name": "Relovation",
+  "description": "Live muziek voor trouwfeesten, bedrijfsevents en recepties.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4edcf",
+  "theme_color": "#4c6a57",
+  "icons": [
+    { "src": "/assets/brand/round-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/brand/round-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/assets/brand/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
