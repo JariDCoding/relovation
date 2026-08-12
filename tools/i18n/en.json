@@ -2,23 +2,23 @@
   "_": "Engelse vertaling van de site. 'common' geldt voor alle pagina's, 'pages' per pagina. De langste zoekterm wordt altijd eerst vervangen, dus korte zinnen kunnen geen langere doormidden knippen.",
   "head": {
     "index.html": {
-      "title": "Relovation | Live music for your event",
-      "description": "Live music tailored to your wedding, corporate event or reception. Duo, trio or full band, with our own sound system and conservatoire-trained musicians."
+      "title": "Live music for your event | Relovation",
+      "description": "Live music for your wedding, corporate event or reception. Duo, trio or full band from Lier, with our own sound system and conservatoire-trained musicians."
     },
     "diensten.html": {
-      "title": "Services | Duo, trio or full band | Relovation",
-      "description": "From intimate duo to full band. Discover our line-ups, what is included and which formula suits your wedding, corporate event or reception."
+      "title": "Book live music: duo, trio or full band | Relovation",
+      "description": "Which line-up suits your event? Discover our duo, trio and full band formulas, what is included and what live music does for your day."
     },
     "over.html": {
-      "title": "About us | Relovation, live music for events",
-      "description": "Who are the musicians behind Relovation? A settled collective from Lier playing live music tailored to your moment, from reception to dance floor."
+      "title": "About Relovation | Live music from Lier",
+      "description": "Four musicians from Lier who have played live music together since 2018 at weddings, corporate events and receptions. This is us and how we work."
     },
     "gallerij.html": {
-      "title": "Gallery | Relovation in pictures",
-      "description": "An evening of Relovation, captured. Sight and sound from our performances at weddings, corporate events and private parties."
+      "title": "Live music in pictures | Relovation gallery",
+      "description": "Sight and sound from our evenings. Live music at weddings, corporate events and private parties, from the first applause to the last chord."
     },
     "contact.html": {
-      "title": "Contact | Book Relovation for your event",
+      "title": "Book live music? Contact Relovation",
       "description": "Tell us about your event and we will look at which line-up fits. We answer personally, usually within one working day."
     },
     "aanvraag.html": {
@@ -27,7 +27,6 @@
     }
   },
   "headings": {
-    "Live gespeeld voor uw moment.": "Live|played / for|your|*moment.*",
     "Wat is Relovation?": "What|is|Relovation?",
     "Voor welke gelegenheden?": "For|which|*occasions*|?",
     "Live muziek die de sfeer draagt, zonder het moment over te nemen.": "Live|music|that|carries|the|mood, / without|taking|over|the|moment.",
@@ -37,7 +36,8 @@
     "Onze diensten": "Our|services",
     "Contacteer ons": "Contact|*us*",
     "Stuur ons een bericht": "Send us a|*message*",
-    "Vind ons online": "Find us|*online*"
+    "Vind ons online": "Find us|*online*",
+    "Live muziek voor uw moment.": "Live|music / for|your|*moment.*"
   },
   "common": [
     [
@@ -308,8 +308,8 @@
         "City of Lier"
       ],
       [
-        "Live muziek",
-        "Live music"
+        "Sinds 2018 &middot; Lier",
+        "Since 2018 &middot; Lier"
       ]
     ],
     "diensten.html": [

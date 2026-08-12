@@ -14,6 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { applyPairs, segment, join } from './i18n-lib.mjs';
+import { PAGE_SEO, graphFor, SITE as SEO_SITE } from './seo-data.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PUB = path.join(ROOT, 'public');
@@ -164,9 +165,10 @@ function rewriteHead(html, nlFile) {
 
 function alternates(nlFile, lang) {
   const meta = PAGES[nlFile];
+  // nl-BE en niet kaal nl: de site mikt op Vlaanderen, niet op Nederland.
   return [
     `  <link rel="canonical" href="${SITE}${lang === 'nl' ? meta.nl : meta.en}">`,
-    `  <link rel="alternate" hreflang="nl" href="${SITE}${meta.nl}">`,
+    `  <link rel="alternate" hreflang="nl-BE" href="${SITE}${meta.nl}">`,
     `  <link rel="alternate" hreflang="en" href="${SITE}${meta.en}">`,
     `  <link rel="alternate" hreflang="x-default" href="${SITE}${meta.nl}">`,
     '',
@@ -178,6 +180,58 @@ function setAlternates(html, nlFile, lang) {
   const existing = /(  <link rel="canonical"[\s\S]*?hreflang="x-default"[^>]*>\n)/;
   if (existing.test(html)) return html.replace(existing, block);
   return html.replace('  <link rel="manifest"', block + '  <link rel="manifest"');
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Deelkaarten en structured data
+   ───────────────────────────────────────────────────────────── */
+
+const SEO_START = '  <!-- seo:start -->';
+const SEO_END = '  <!-- seo:end -->';
+const attr = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+
+function stripSeo(html) {
+  const re = new RegExp(`${SEO_START}[\\s\\S]*?${SEO_END}\\n`, 'g');
+  return html.replace(re, '');
+}
+
+function seoBlock(nlFile, lang) {
+  const page = PAGES[nlFile];
+  const meta = PAGE_SEO[nlFile][lang];
+  const url = SEO_SITE + (lang === 'nl' ? page.nl : page.en);
+  const image = `${SEO_SITE}/assets/brand/og-${lang}.png`;
+  const alt = lang === 'nl'
+    ? 'Relovation, live muziek voor uw event'
+    : 'Relovation, live music for your event';
+
+  const lines = [
+    SEO_START,
+    '  <meta property="og:type" content="website">',
+    '  <meta property="og:site_name" content="Relovation">',
+    `  <meta property="og:locale" content="${lang === 'nl' ? 'nl_BE' : 'en_GB'}">`,
+    `  <meta property="og:locale:alternate" content="${lang === 'nl' ? 'en_GB' : 'nl_BE'}">`,
+    `  <meta property="og:url" content="${attr(url)}">`,
+    `  <meta property="og:title" content="${attr(meta.ogTitle)}">`,
+    `  <meta property="og:description" content="${attr(meta.ogDescription)}">`,
+    `  <meta property="og:image" content="${attr(image)}">`,
+    '  <meta property="og:image:width" content="1200">',
+    '  <meta property="og:image:height" content="630">',
+    `  <meta property="og:image:alt" content="${attr(alt)}">`,
+    '  <meta name="twitter:card" content="summary_large_image">',
+    `  <meta name="twitter:title" content="${attr(meta.ogTitle)}">`,
+    `  <meta name="twitter:description" content="${attr(meta.ogDescription)}">`,
+    `  <meta name="twitter:image" content="${attr(image)}">`,
+    '  <script type="application/ld+json">',
+    '  ' + JSON.stringify(graphFor(nlFile, lang)),
+    '  </script>',
+    SEO_END,
+    '',
+  ];
+  return lines.join('\n');
+}
+
+function injectSeo(html, nlFile, lang) {
+  return stripSeo(html).replace('  <link rel="manifest"', seoBlock(nlFile, lang) + '  <link rel="manifest"');
 }
 
 /** Zet de actieve knop van de taalschakelaar op de juiste taal. */
@@ -222,13 +276,14 @@ for (const [nlFile, meta] of Object.entries(PAGES)) {
   const src = path.join(PUB, nlFile);
   let html = fs.readFileSync(src, 'utf8');
 
-  // 1. De Nederlandse bron krijgt zijn eigen canonical + hreflang.
-  const nlUpdated = setAlternates(setActiveLang(html, 'nl'), nlFile, 'nl');
+  // 1. De Nederlandse bron krijgt zijn eigen canonical, hreflang en SEO-blok.
+  const nlUpdated = injectSeo(setAlternates(setActiveLang(html, 'nl'), nlFile, 'nl'), nlFile, 'nl');
   if (nlUpdated !== html && !CHECK_ONLY) fs.writeFileSync(src, nlUpdated, 'utf8');
   html = nlUpdated;
 
-  // 2. Engelse versie opbouwen.
-  let en = rebuildHeadings(html, nlFile);
+  // 2. Engelse versie opbouwen. Het Nederlandse SEO-blok gaat er eerst uit;
+  //    aan het eind komt de Engelse versie ervan terug.
+  let en = rebuildHeadings(stripSeo(html), nlFile);
 
   // Pagina- en gedeelde regels gaan samen in één lijst: applyPairs vervangt de
   // langste zoekterm eerst, en dat mag niet doorbroken worden door de volgorde
@@ -255,12 +310,59 @@ for (const [nlFile, meta] of Object.entries(PAGES)) {
   const left = leftoverDutch(en);
   if (left.length) note(`${nlFile}: mogelijk nog Nederlands -> ${JSON.stringify(left.slice(0, 8))}${left.length > 8 ? ` (+${left.length - 8})` : ''}`);
 
+  // Vangnet: een korte zoekterm mag nooit binnen een pad, mime-type of
+  // klassenaam terechtkomen. Deze reeksen moeten letterlijk overeind blijven.
+  for (const invariant of ['type="image/png"', 'rel="manifest"', 'display=swap', 'fonts.googleapis.com']) {
+    if (html.includes(invariant) && !en.includes(invariant)) {
+      note(`${nlFile}: vertaling brak ${JSON.stringify(invariant)} in de Engelse pagina`);
+    }
+  }
+
+  en = injectSeo(en, nlFile, 'en');
+
   if (!CHECK_ONLY) fs.writeFileSync(path.join(OUT, meta.file), en, 'utf8');
   console.log(`${nlFile.padEnd(15)} -> en/${meta.file}`);
 }
 
 for (const [nl, c] of commonHits) {
   if (c === 0) note(`gedeelde regel nooit gevonden -> ${JSON.stringify(nl.slice(0, 70))}`);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Sitemap
+   ───────────────────────────────────────────────────────────── */
+
+function buildSitemap() {
+  const rows = [];
+  for (const [nlFile, meta] of Object.entries(PAGES)) {
+    const mtime = fs.statSync(path.join(PUB, nlFile)).mtime.toISOString().slice(0, 10);
+    for (const lang of ['nl', 'en']) {
+      const loc = SITE + (lang === 'nl' ? meta.nl : meta.en);
+      rows.push([
+        '  <url>',
+        `    <loc>${loc}</loc>`,
+        `    <lastmod>${mtime}</lastmod>`,
+        `    <xhtml:link rel="alternate" hreflang="nl-BE" href="${SITE}${meta.nl}"/>`,
+        `    <xhtml:link rel="alternate" hreflang="en" href="${SITE}${meta.en}"/>`,
+        `    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}${meta.nl}"/>`,
+        `    <priority>${nlFile === 'index.html' ? '1.0' : '0.8'}</priority>`,
+        '  </url>',
+      ].join('\n'));
+    }
+  }
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+    '        xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    ...rows,
+    '</urlset>',
+    '',
+  ].join('\n');
+}
+
+if (!CHECK_ONLY) {
+  fs.writeFileSync(path.join(PUB, 'sitemap.xml'), buildSitemap(), 'utf8');
+  console.log('sitemap.xml    -> 12 URL\'s');
 }
 
 if (problems.length) {

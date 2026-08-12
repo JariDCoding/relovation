@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://relovation.be/</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/"/>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/en/</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/"/>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/diensten</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/diensten"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/services"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/diensten"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/en/services</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/diensten"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/services"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/diensten"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/over</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/over"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/over"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/en/about</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/over"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/over"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/gallerij</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/gallerij"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/gallery"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/gallerij"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/en/gallery</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/gallerij"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/gallery"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/gallerij"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/contact</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/contact"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/en/contact</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/contact"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/aanvraag</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/aanvraag"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/request"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/aanvraag"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://relovation.be/en/request</loc>
+    <lastmod>2026-08-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://relovation.be/aanvraag"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://relovation.be/en/request"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://relovation.be/aanvraag"/>
+    <priority>0.8</priority>
+  </url>
+</urlset>

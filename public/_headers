@@ -5,3 +5,16 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Beeldmateriaal en merkbestanden veranderen zelden en dragen een eigen naam.
+# Een jaar cache scheelt herhaalde downloads bij terugkerende bezoekers, wat
+# rechtstreeks in de Core Web Vitals telt.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# CSS en JS wél herzien bij elke deploy: geen hash in de bestandsnaam.
+/*.css
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/*.js
+  Cache-Control: public, max-age=3600, must-revalidate
