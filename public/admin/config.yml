@@ -1,0 +1,185 @@
+# Sveltia CMS — Relovation
+# Git-backend: opslaan is een commit naar GitHub, en die commit deployt.
+# Geen enkel secret aan de site-kant; het OAuth-secret staat op de gedeelde
+# Worker auth.jdcreations.co.
+backend:
+  name: github
+  repo: JariDCoding/relovation
+  branch: main
+  base_url: https://auth.jdcreations.co
+  commit_messages:
+    update: "Content: {{collection}} · {{slug}} bijgewerkt via CMS"
+
+locale: nl
+
+# Nederlands en Engels naast elkaar in hetzelfde scherm. multiple_folders zet
+# de bestanden in content/nl/... en content/en/..., precies waar de build ze
+# verwacht.
+i18n:
+  structure: multiple_folders
+  locales: [nl, en]
+  default_locale: nl
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+# Allemaal `files`-collecties: Robin bewerkt bestaande teksten en kan geen
+# pagina's bijmaken of verwijderen. De site-structuur blijft dus intact.
+collections:
+  - name: "instellingen"
+    label: "Site-instellingen"
+    i18n: true
+    files:
+      - name: "global"
+        label: "Footer & sociale media"
+        file: "content/settings/global.json"
+        i18n: true
+        description: "Staat op elke pagina."
+        fields:
+          - label: "Footer"
+            name: "footer"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Tekst onder het logo", name: "tagline", widget: "text", i18n: true }
+              - { label: "E-mailadres", name: "email", widget: "string", i18n: duplicate }
+              - { label: "Regio", name: "regio", widget: "string", i18n: true }
+              - { label: "Titel bij de knop", name: "ctaTitel", widget: "string", i18n: true }
+              - { label: "Btw-nummer", name: "btw", widget: "string", i18n: duplicate }
+          - label: "Sociale media"
+            name: "social"
+            widget: "object"
+            i18n: duplicate
+            fields:
+              - { label: "Instagram-link", name: "instagram", widget: "string", i18n: duplicate }
+              - { label: "LinkedIn-link", name: "linkedin", widget: "string", i18n: duplicate }
+              - { label: "Facebook-link", name: "facebook", widget: "string", i18n: duplicate }
+
+  - name: "paginas"
+    label: "Pagina's"
+    i18n: true
+    files:
+      - name: "home"
+        label: "Home"
+        file: "content/pages/home.json"
+        i18n: true
+        fields:
+          - label: "Hero"
+            name: "hero"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Bovenschrift", name: "eyebrow", widget: "string", i18n: true }
+              - { label: "Tekst onder de titel", name: "subtitel", widget: "text", i18n: true }
+          - label: "Wat is Relovation"
+            name: "over"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+          - label: "Gelegenheden"
+            name: "gelegenheden"
+            widget: "list"
+            i18n: true
+            allow_add: false
+            fields:
+              - { label: "Titel", name: "titel", widget: "string", i18n: true }
+              - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+          - label: "Waarom Relovation"
+            name: "waarom"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
+              - label: "Punten"
+                name: "punten"
+                widget: "list"
+                i18n: true
+                allow_add: false
+                fields:
+                  - { label: "Titel", name: "titel", widget: "string", i18n: true }
+                  - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+          - label: "Bezettingen"
+            name: "bezettingen"
+            widget: "list"
+            i18n: true
+            allow_add: false
+            fields:
+              - { label: "Instrumenten", name: "instrumenten", widget: "string", i18n: true }
+              - { label: "Omschrijving", name: "tekst", widget: "text", i18n: true }
+          - label: "Slotblok"
+            name: "cta"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Bovenschrift", name: "eyebrow", widget: "string", i18n: true }
+              - { label: "Tekst", name: "tekst", widget: "text", i18n: true }
+
+      - name: "diensten"
+        label: "Diensten"
+        file: "content/pages/diensten.json"
+        i18n: true
+        fields:
+          - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
+
+      - name: "contact"
+        label: "Contact"
+        file: "content/pages/contact.json"
+        i18n: true
+        fields:
+          - { label: "Inleiding", name: "intro", widget: "text", i18n: true }
+          - { label: "Tekst bij het formulier", name: "formulierIntro", widget: "text", i18n: true }
+          - { label: "Tekst bij sociale media", name: "socialIntro", widget: "text", i18n: true }
+
+  - name: "seo"
+    label: "Google-teksten"
+    i18n: true
+    files:
+      - name: "seo"
+        label: "Titel & omschrijving per pagina"
+        file: "content/seo.json"
+        i18n: true
+        description: "Dit is wat Google in de zoekresultaten toont. Houd de titel onder 60 tekens en de omschrijving onder 160."
+        fields:
+          - label: "Home"
+            name: "home"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Titel", name: "title", widget: "string", i18n: true }
+              - { label: "Omschrijving", name: "description", widget: "text", i18n: true }
+          - label: "Diensten"
+            name: "diensten"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Titel", name: "title", widget: "string", i18n: true }
+              - { label: "Omschrijving", name: "description", widget: "text", i18n: true }
+          - label: "Over ons"
+            name: "over"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Titel", name: "title", widget: "string", i18n: true }
+              - { label: "Omschrijving", name: "description", widget: "text", i18n: true }
+          - label: "Gallerij"
+            name: "gallerij"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Titel", name: "title", widget: "string", i18n: true }
+              - { label: "Omschrijving", name: "description", widget: "text", i18n: true }
+          - label: "Contact"
+            name: "contact"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Titel", name: "title", widget: "string", i18n: true }
+              - { label: "Omschrijving", name: "description", widget: "text", i18n: true }
+          - label: "Aanvraag"
+            name: "aanvraag"
+            widget: "object"
+            i18n: true
+            fields:
+              - { label: "Titel", name: "title", widget: "string", i18n: true }
+              - { label: "Omschrijving", name: "description", widget: "text", i18n: true }

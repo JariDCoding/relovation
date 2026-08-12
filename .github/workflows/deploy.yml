@@ -1,0 +1,32 @@
+name: Deploy naar Cloudflare
+
+# Elke push naar main gaat live. Dat is ook wat het CMS doet: opslaan in
+# /admin maakt een commit, en die commit rolt de site uit.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency: deploy-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Engelse pagina's, sitemap en de content uit content/ opnieuw opbouwen,
+      # zodat wat live gaat altijd klopt met wat er in de repo staat.
+      - name: Site opbouwen
+        run: npm run build:site
+
+      - name: Uitrollen
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

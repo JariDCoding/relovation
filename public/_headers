@@ -12,6 +12,12 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Het CMS mag nooit gecachet of geïndexeerd worden. X-Frame-Options staat
+# hierboven al op DENY, dus /admin kan ook niet in een iframe gezet worden.
+/admin/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
 # CSS en JS wél herzien bij elke deploy: geen hash in de bestandsnaam.
 /*.css
   Cache-Control: public, max-age=3600, must-revalidate

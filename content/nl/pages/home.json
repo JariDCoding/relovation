@@ -1,0 +1,62 @@
+{
+  "hero": {
+    "eyebrow": "Sinds 2018 &middot; Lier",
+    "subtitel": "Live muzikanten die de dansvloer vullen op uw trouwfeest, bedrijfsevent of privéfeest. Volledig verzorgd, op maat."
+  },
+  "over": {
+    "tekst": "Relovation is een flexibel live muziekconcept voor stijlvolle events. Geen vaste formule, maar muziek die meebeweegt met het moment, afgestemd op uw publiek, locatie en programma. Wij nemen de volledige muzikale omkadering op ons en denken met u mee."
+  },
+  "gelegenheden": [
+    {
+      "titel": "Trouwfeesten",
+      "tekst": "Van ceremonie en welkomstdrink tot het begin van de avond. Wij verzorgen de muzikale rode draad door uw trouwdag, afgestemd op elk moment."
+    },
+    {
+      "titel": "Bedrijfsevents",
+      "tekst": "Stijlvolle live muziek voor recepties, netwerkmomenten en bedrijfsfeesten. Muziek die uw gasten op hun gemak stelt en de juiste toon zet."
+    },
+    {
+      "titel": "Privéfeesten &amp; openingen",
+      "tekst": "Warme live muziek die gesprekken draagt zonder te overstemmen. Voor openingen, ontvangsten en avonden waar sfeer centraal staat."
+    }
+  ],
+  "waarom": {
+    "intro": "Elke reden een eigen maat, samen één ritme dat uw avond draagt.",
+    "punten": [
+      {
+        "titel": "Professionele muzikanten",
+        "tekst": "Ervaren, conservatoriumgeschoolde muzikanten met het juiste niveau én de juiste rust."
+      },
+      {
+        "titel": "Volledig afgestemd",
+        "tekst": "Repertoire, bezetting en volume afgestemd op uw sfeer en programma."
+      },
+      {
+        "titel": "Eigen geluidsinstallatie",
+        "tekst": "Voor events tot ±250 gasten, inbegrepen zonder extra gedoe."
+      },
+      {
+        "titel": "Zorgeloos geregeld",
+        "tekst": "Heldere afspraken, stipt aanwezig, professioneel ter plaatse."
+      }
+    ]
+  },
+  "bezettingen": [
+    {
+      "instrumenten": "Zang/sax &amp; piano. Onze huidige hoofdformule.",
+      "tekst": "Warm en intiem, voor ceremonies, recepties, diners en corporate events. Aanwezig zonder te overheersen."
+    },
+    {
+      "instrumenten": "Zang/sax, gitaar &amp; contrabas. Momenteel in opbouw.",
+      "tekst": "Rijker, met extra warmte en karakter. Voor events waar de muziek meer aanwezigheid mag hebben."
+    },
+    {
+      "instrumenten": "De volledige bezetting.",
+      "tekst": "Voor grotere ruimtes en feesten waar de muziek de avond bepaalt."
+    }
+  ],
+  "cta": {
+    "eyebrow": "Klaar voor live muziek",
+    "tekst": "Enkele korte vragen over uw event. Wij bekijken persoonlijk welke formule past en sturen u snel een vrijblijvend voorstel op maat."
+  }
+}

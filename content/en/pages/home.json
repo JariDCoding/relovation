@@ -1,0 +1,62 @@
+{
+  "hero": {
+    "eyebrow": "Since 2018 &middot; Lier",
+    "subtitel": "Live musicians who fill the dance floor at your wedding, corporate event or private party. Fully taken care of, tailored to you."
+  },
+  "over": {
+    "tekst": "Relovation is a flexible live music concept for stylish events. No fixed formula, but music that moves with the moment, tuned to your audience, venue and programme. We take care of the whole musical side and think along with you."
+  },
+  "gelegenheden": [
+    {
+      "titel": "Weddings",
+      "tekst": "From ceremony and welcome drink to the start of the evening. We carry the musical thread through your wedding day, tuned to every moment."
+    },
+    {
+      "titel": "Corporate events",
+      "tekst": "Stylish live music for receptions, networking moments and company parties. Music that puts your guests at ease and sets the right tone."
+    },
+    {
+      "titel": "Private parties &amp; openings",
+      "tekst": "Warm live music that carries conversation without drowning it out. For openings, receptions and evenings where atmosphere comes first."
+    }
+  ],
+  "waarom": {
+    "intro": "Every reason its own measure, together one rhythm that carries your evening.",
+    "punten": [
+      {
+        "titel": "Professional musicians",
+        "tekst": "Experienced, conservatoire-trained musicians with the right level and the right calm."
+      },
+      {
+        "titel": "Fully tailored",
+        "tekst": "Repertoire, line-up and volume tuned to your atmosphere and programme."
+      },
+      {
+        "titel": "Our own sound system",
+        "tekst": "For events up to ±250 guests, included without any fuss."
+      },
+      {
+        "titel": "Handled end to end",
+        "tekst": "Clear agreements, on time, professional on site."
+      }
+    ]
+  },
+  "bezettingen": [
+    {
+      "instrumenten": "Vocals/sax &amp; piano. Our current main line-up.",
+      "tekst": "Warm and intimate, for ceremonies, receptions, dinners and corporate events. Present without taking over."
+    },
+    {
+      "instrumenten": "Vocals/sax, guitar &amp; double bass. Currently taking shape.",
+      "tekst": "Richer, with extra warmth and character. For events where the music may take more space."
+    },
+    {
+      "instrumenten": "The full line-up.",
+      "tekst": "For larger spaces and parties where the music sets the evening."
+    }
+  ],
+  "cta": {
+    "eyebrow": "Ready for live music",
+    "tekst": "A few short questions about your event. We personally look at which formula fits and send you a no-obligation proposal, tailored to you."
+  }
+}
