@@ -4377,16 +4377,23 @@
       .hero,
       .hero-inner {
         /* Onderkant van de player + ademruimte, i.p.v. de volle schermhoogte. */
-        min-height: calc(710px * var(--hero-scale) + var(--player-ring-size) * 0.95 + 70px);
+        min-height: calc(675px * var(--hero-scale) + var(--player-ring-size) * 0.95 + 40px);
       }
 
       .player-wrap {
         --player-shrink: 0.8;
         /* Tekstcirkel ruimer dan de knop: meer lucht rond het driehoekje. */
         --player-ring-shrink: 0.95;
-        /* 26% lager dan de basis-offset (562): eerst 10% weg van de knoppenrij,
-           daarna nog 15% zodat hij dichter bij de logobalk landt. */
-        top: calc(710px * var(--hero-scale));
+        /* 20% lager dan de basis-offset (562): weg van de knoppenrij, maar niet
+           tot tegen de logobalk. */
+        top: calc(675px * var(--hero-scale));
+      }
+
+      /* Logobalk mee omhoog: de eigen padding is hier krapper dan de standaard
+         --space-4, zodat "Eerder speelden wij voor" dichter bij de player komt
+         te staan zonder dat de ring de sectierand raakt. */
+      .logos-section {
+        padding-top: 36px;
       }
     }
 
