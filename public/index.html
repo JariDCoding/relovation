@@ -2443,15 +2443,18 @@
     }
 
     .player-wrap {
-      /* Eén knop om de hele player (ring + tekst + knop) te verkleinen. De ring
-         is een SVG met viewBox 0 0 120 120 op inset:0, dus de tekst schaalt mee
-         met de box; alleen de knop heeft vaste px en krijgt een transform. */
+      /* Twee knoppen om de player te schalen. De ring is een SVG met viewBox
+         0 0 120 120 op inset:0, dus de tekstcirkel schaalt mee met de box-maat
+         (--player-ring-shrink); de knop heeft vaste px en krijgt een transform
+         (--player-shrink). Los van elkaar, zodat de tekstcirkel ruimer om een
+         kleine knop kan staan. */
       --player-shrink: 1;
+      --player-ring-shrink: var(--player-shrink);
       position: absolute;
       left: calc(574px * var(--hero-scale));
       top: calc(562px * var(--hero-scale));
-      width: calc(var(--player-ring-size) * var(--player-shrink));
-      height: calc(var(--player-ring-size) * var(--player-shrink));
+      width: calc(var(--player-ring-size) * var(--player-ring-shrink));
+      height: calc(var(--player-ring-size) * var(--player-ring-shrink));
       display: grid;
       place-items: center;
     }
@@ -4357,6 +4360,7 @@
 
       .player-wrap {
         --player-shrink: 0.8;
+        --player-ring-shrink: 0.95;
         position: relative;
         left: auto;
         right: auto;
@@ -4373,13 +4377,16 @@
       .hero,
       .hero-inner {
         /* Onderkant van de player + ademruimte, i.p.v. de volle schermhoogte. */
-        min-height: calc(618px * var(--hero-scale) + var(--player-ring-size) * 0.8 + 150px);
+        min-height: calc(710px * var(--hero-scale) + var(--player-ring-size) * 0.95 + 70px);
       }
 
       .player-wrap {
         --player-shrink: 0.8;
-        /* 10% lager dan de basis-offset (562): weg van de knoppenrij. */
-        top: calc(618px * var(--hero-scale));
+        /* Tekstcirkel ruimer dan de knop: meer lucht rond het driehoekje. */
+        --player-ring-shrink: 0.95;
+        /* 26% lager dan de basis-offset (562): eerst 10% weg van de knoppenrij,
+           daarna nog 15% zodat hij dichter bij de logobalk landt. */
+        top: calc(710px * var(--hero-scale));
       }
     }
 
