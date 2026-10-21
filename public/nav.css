@@ -517,6 +517,22 @@ body { padding-top: var(--nav-h); }
   .r-nav__cta-ovl { flex: 1 1 auto; }
 }
 
+/* Gangbare telefoons (375 tot 429 breed): logo, taalkeuze, knop en menu
+   pasten niet; het logo plakte tegen NL/EN en op 375 viel het menu-icoon
+   9px buiten beeld. Woordmerk op de gescrolde maat, alles iets compacter. */
+@media (max-width: 429px) {
+  .r-nav__wordmark { font-size: 22px; }
+  .r-nav__actions { gap: 8px; }
+  .r-nav__lang-opt { min-width: 30px; padding: 0 7px; }
+  .r-nav__cta { padding: 0 14px; }
+  .r-nav__menu-btn { width: 40px; }
+}
+
+@media (max-width: 380px) {
+  .r-nav__lang-opt { min-width: 28px; padding: 0 6px; }
+  .r-nav__cta { padding: 0 12px; font-size: 12px; }
+}
+
 @media (max-width: 360px) {
   .r-nav__cta { display: none; }
 }

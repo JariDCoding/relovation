@@ -2412,7 +2412,9 @@
 
     .notes {
       position: absolute;
-      left: calc(681px * var(--hero-scale));
+      /* Volgt de player (107px rechts van z'n linkerrand), zodat de noten uit
+         de cirkel blijven komen als de player opschuift. */
+      left: calc(max(calc(574px * var(--hero-scale)), calc(70px * var(--hero-scale) + 546px)) + 107px * var(--hero-scale));
       top: calc(416px * var(--hero-scale));
       width: calc(133px * var(--hero-scale));
       height: calc(116px * var(--hero-scale));
@@ -2451,7 +2453,11 @@
       --player-shrink: 1;
       --player-ring-shrink: var(--player-shrink);
       position: absolute;
-      left: calc(574px * var(--hero-scale));
+      /* De knoppen hebben vaste px, de player schaalt mee. Op laptops (1280 tot
+         1536 breed) liep de tekstcirkel daardoor over "Contacteer ons". De
+         tweede term houdt de player altijd rechts van de knoppenrij
+         (70 marge + 502 knoppen + lucht); waar 574 al ruimer is, blijft dat. */
+      left: max(calc(574px * var(--hero-scale)), calc(70px * var(--hero-scale) + 546px));
       top: calc(562px * var(--hero-scale));
       width: calc(var(--player-ring-size) * var(--player-ring-shrink));
       height: calc(var(--player-ring-size) * var(--player-ring-shrink));
@@ -4235,11 +4241,14 @@
       }
 
       .notes {
+        left: calc(max(calc(520px * var(--hero-scale)), calc(70px * var(--hero-scale) + 542px)) + 161px * var(--hero-scale));
         top: calc(520px * var(--hero-scale));
       }
 
+      /* Zelfde vrijloop als de basisregel: de 200px-ring blijft rechts van de
+         knoppenrij (1440 tot 1536 breed overlapte hij "Contacteer ons"). */
       .player-wrap {
-        left: calc(520px * var(--hero-scale));
+        left: max(calc(520px * var(--hero-scale)), calc(70px * var(--hero-scale) + 542px));
         top: calc(632px * var(--hero-scale));
       }
 
@@ -4397,12 +4406,33 @@
       }
     }
 
+    /* Desktopvenster 1121 tot 1279 breed: de hero staat hier al in de
+       canvasopmaak, maar de regel voor 1024-1279 zette player en noten links
+       onderaan, bovenop "Plan uw event". Hier dezelfde plek als vanaf 1280. */
+    @media (min-width: 1121px) and (max-width: 1279px) {
+      .notes {
+        left: calc(max(calc(574px * var(--hero-scale)), calc(70px * var(--hero-scale) + 546px)) + 107px * var(--hero-scale));
+        top: calc(416px * var(--hero-scale));
+      }
+
+      .player-wrap {
+        left: max(calc(574px * var(--hero-scale)), calc(70px * var(--hero-scale) + 546px));
+        bottom: auto;
+      }
+    }
+
     /* iPad mini / Air / Pro 11" liggend: die draaien in de geschaalde
        1440-modus (zie het viewport-script bovenaan). Daar zit de player al laag
        genoeg; hij hoeft alleen kleiner, en de hero mag niet langer meegroeien
-       met een schermhoogte die groter is dan de compositie. */
+       met een schermhoogte die groter is dan de compositie. Hij staat daar al
+       vrij van de knoppen, dus de vrijloop naar rechts geldt hier niet. */
     html.is-ipad-canvas .player-wrap {
       --player-shrink: 0.8;
+      left: calc(520px * var(--hero-scale));
+    }
+
+    html.is-ipad-canvas .notes {
+      left: calc(681px * var(--hero-scale));
     }
 
     html.is-ipad-canvas .hero,
