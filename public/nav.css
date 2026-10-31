@@ -475,8 +475,20 @@ body { padding-top: var(--nav-h); }
   gap: 12px;
 }
 .r-footer__copy { font-family: "DM Sans", sans-serif; font-size: clamp(11px, 0.85vw, 13px); color: rgba(244, 237, 207, 0.4); margin: 0; letter-spacing: 0.04em; }
-.r-footer__copy a { color: rgba(244, 237, 207, 0.56); text-decoration: none; transition: color 0.24s; }
-.r-footer__copy a:hover { color: rgba(244, 237, 207, 0.9); }
+.r-footer__copy a, .r-footer__credit a { color: rgba(244, 237, 207, 0.56); text-decoration: none; transition: color 0.24s; }
+.r-footer__copy a:hover, .r-footer__credit a:hover { color: rgba(244, 237, 207, 0.9); }
+
+/* Maker-credit: een eigen, heel kleine regel onder alles, los van copyright
+   en juridische gegevens. Zelfde containerrand en gedempte kleur als de copy. */
+.r-footer__credit {
+  max-width: var(--nav-max, 1320px);
+  margin: 28px auto 0;
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: rgba(244, 237, 207, 0.4);
+}
 
 /* Wettelijke gegevens: naam met het ondernemingsnummer eronder. */
 .r-footer__legal { text-align: center; line-height: 1.5; }
